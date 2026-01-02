@@ -11,40 +11,52 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const urduTranslations = {
     translation: {
         // App branding
-        appName: 'جامعہ نورِ ایمان',
-        portalSubtitle: 'ڈیجیٹل پورٹل میں لاگ ان کریں',
+        appName: 'نورِ ایمان',
+        portalSubtitle: 'ڈیجیٹل پورٹل',
+
+        // Welcome section
+        welcome: {
+            title: 'خوش آمدید',
+            subtitle: 'نورِ ایمان ڈیجیٹل پورٹل',
+            description: 'یہ پورٹل طلباء، اساتذہ اور منتظمین کے لیے ڈیزائن کیا گیا ہے۔',
+            feature1: '📊 حاضری اور نتائج دیکھیں',
+            feature2: '💰 فیس کی تفصیلات',
+            feature3: '📝 اساتذہ کی رپورٹس',
+        },
 
         // Login page
         login: {
-            title: 'لاگ ان',
-            usernameLabel: 'یوزر نیم / جی آر نمبر',
-            usernamePlaceholder: 'اپنا یوزر نیم درج کریں',
+            title: 'لاگ ان کریں',
+            grNumberLabel: 'جی آر نمبر',
+            grNumberPlaceholder: 'اپنا جی آر نمبر درج کریں',
             passwordLabel: 'پاس ورڈ',
-            passwordPlaceholder: 'اپنا پاس ورڈ درج کریں',
+            passwordPlaceholder: 'پاس ورڈ درج کریں',
             submitButton: 'لاگ ان',
             loadingButton: 'لاگ ان ہو رہا ہے...',
             forgotPassword: 'پاس ورڈ بھول گئے؟',
-            helpText: 'یا مدد کے لیے رابطہ کریں',
-            secureConnection: 'محفوظ کنکشن',
         },
 
         // Validation messages
         validation: {
-            usernameRequired: 'براہ کرم یوزر نیم درج کریں',
+            grNumberRequired: 'براہ کرم جی آر نمبر درج کریں',
             passwordMinLength: 'پاسورڈ کم از کم 6 حروف کا ہونا چاہیے',
-            invalidCredentials: 'یوزر نیم یا پاسورڈ غلط ہے',
+            invalidCredentials: 'جی آر نمبر یا پاسورڈ غلط ہے',
+            tooManyAttempts: 'بہت زیادہ کوششیں۔ بعد میں دوبارہ کوشش کریں',
+            networkError: 'نیٹ ورک کی خرابی۔ اپنا انٹرنیٹ چیک کریں',
+            accountDisabled: 'یہ اکاؤنٹ غیر فعال ہے',
+            loginFailed: 'لاگ ان ناکام۔ دوبارہ کوشش کریں',
         },
 
         // Accessibility
         accessibility: {
             showPassword: 'پاسورڈ دکھائیں',
             hidePassword: 'پاسورڈ چھپائیں',
-            logoAlt: 'جامعہ نورِ ایمان لوگو',
+            logoAlt: 'نورِ ایمان لوگو',
         },
 
         // Footer
         footer: {
-            copyright: '© 2026 جامعہ نورِ ایمان | جملہ حقوق محفوظ ہیں',
+            copyright: '© 2026 نورِ ایمان - تمام حقوق محفوظ ہیں',
         },
 
         // Success messages
@@ -58,40 +70,52 @@ const urduTranslations = {
 const englishTranslations = {
     translation: {
         // App branding
-        appName: 'Jamia Nooriemaan',
-        portalSubtitle: 'Login to Digital Portal',
+        appName: 'Nooriemaan',
+        portalSubtitle: 'Digital Portal',
+
+        // Welcome section
+        welcome: {
+            title: 'Welcome',
+            subtitle: 'Nooriemaan Digital Portal',
+            description: 'This portal is designed for students, teachers and administrators.',
+            feature1: '📊 View Attendance & Results',
+            feature2: '💰 Fee Details',
+            feature3: '📝 Teacher Reports',
+        },
 
         // Login page
         login: {
             title: 'Login',
-            usernameLabel: 'Username / GR Number',
-            usernamePlaceholder: 'Enter username',
+            grNumberLabel: 'GR Number',
+            grNumberPlaceholder: 'Enter GR Number',
             passwordLabel: 'Password',
-            passwordPlaceholder: 'Enter password',
+            passwordPlaceholder: 'Enter Password',
             submitButton: 'Login',
             loadingButton: 'Logging in...',
             forgotPassword: 'Forgot Password?',
-            helpText: 'Or contact us for help',
-            secureConnection: 'Secure Connection',
         },
 
         // Validation messages
         validation: {
-            usernameRequired: 'Please enter username',
+            grNumberRequired: 'Please enter GR Number',
             passwordMinLength: 'Password must be at least 6 characters',
-            invalidCredentials: 'Invalid username or password',
+            invalidCredentials: 'Invalid GR Number or Password',
+            tooManyAttempts: 'Too many attempts. Please try again later',
+            networkError: 'Network error. Check your internet connection',
+            accountDisabled: 'This account has been disabled',
+            loginFailed: 'Login failed. Please try again',
         },
 
         // Accessibility
         accessibility: {
             showPassword: 'Show password',
             hidePassword: 'Hide password',
-            logoAlt: 'Jamia Nooriemaan Logo',
+            logoAlt: 'Nooriemaan Logo',
         },
 
         // Footer
         footer: {
-            copyright: '© 2026 Jamia Nooriemaan - All Rights Reserved',
+            copyright: '© 2026 Nooriemaan - All Rights Reserved',
         },
 
         // Success messages
