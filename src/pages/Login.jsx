@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type } from 'lucide-react';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Import main logo
 import logoMain from '../assets/logo-main.png';
@@ -20,7 +21,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
     const [shouldShake, setShouldShake] = useState(false);
     const [showFontSettings, setShowFontSettings] = useState(false);
 
@@ -32,16 +32,132 @@ const Login = () => {
         document.documentElement.style.setProperty('--font-english', savedEnglish.family);
     }, []);
 
+
+    // Show error toast helper
+    const showErrorToast = (message) => {
+        toast.custom((t) => (
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    color: '#fff',
+                    fontWeight: '600',
+                    padding: '16px 20px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)',
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                    fontSize: isRTL ? '16px' : '14px',
+                    direction: isRTL ? 'rtl' : 'ltr',
+                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
+                    opacity: t.visible ? 1 : 0,
+                    transition: 'all 0.3s ease-in-out',
+                    minWidth: '280px',
+                    zIndex: 99999
+                }}
+            >
+                <span style={{ fontSize: '20px' }}>⚠️</span>
+                <span style={{ flex: 1 }}>{message}</span>
+                <button
+                    onClick={() => toast.dismiss(t.id)}
+                    style={{
+                        background: 'rgba(255,255,255,0.2)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '28px',
+                        height: '28px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        color: '#fff',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        transition: 'all 0.2s ease',
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.35)';
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                >
+                    ✕
+                </button>
+            </div>
+        ), { duration: 4000, position: 'top-center' });
+    };
+
+    // Show success toast helper
+    const showSuccessToast = (message) => {
+        toast.custom((t) => (
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    color: '#fff',
+                    fontWeight: '600',
+                    padding: '16px 20px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 40px rgba(16, 185, 129, 0.4)',
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                    fontSize: isRTL ? '16px' : '14px',
+                    direction: isRTL ? 'rtl' : 'ltr',
+                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
+                    opacity: t.visible ? 1 : 0,
+                    transition: 'all 0.3s ease-in-out',
+                    minWidth: '280px',
+                    zIndex: 99999
+                }}
+            >
+                <span style={{ fontSize: '20px' }}>✅</span>
+                <span style={{ flex: 1 }}>{message}</span>
+                <button
+                    onClick={() => toast.dismiss(t.id)}
+                    style={{
+                        background: 'rgba(255,255,255,0.2)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '28px',
+                        height: '28px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        color: '#fff',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        transition: 'all 0.2s ease',
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.35)';
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                >
+                    ✕
+                </button>
+            </div>
+        ), { duration: 4000, position: 'top-center' });
+    };
+
     // Validation
     const validateForm = () => {
-        setError('');
         if (!grNumber.trim()) {
-            setError(t('validation.grNumberRequired'));
+            showErrorToast(t('validation.grNumberRequired'));
             triggerShake();
             return false;
         }
         if (password.length < 6) {
-            setError(t('validation.passwordMinLength'));
+            showErrorToast(t('validation.passwordMinLength'));
             triggerShake();
             return false;
         }
@@ -59,18 +175,18 @@ const Login = () => {
         if (!validateForm()) return;
 
         setIsLoading(true);
-        setError('');
 
         setTimeout(() => {
-            if (grNumber === 'admin' && password === 'admin123') {
+            // Updated test credentials
+            if (grNumber === '12345' && password === '654321') {
                 console.log('✅ Login successful!');
-                alert(t('success.loginSuccess'));
+                showSuccessToast(t('success.loginSuccess'));
             } else {
-                setError(t('validation.invalidCredentials'));
+                showErrorToast(t('validation.invalidCredentials'));
                 triggerShake();
             }
             setIsLoading(false);
-        }, 2000);
+        }, 3000);
     };
 
     // Animation Variants
@@ -96,463 +212,445 @@ const Login = () => {
     const isRTL = i18n.language === 'ur';
 
     return (
-        <div
-            dir={isRTL ? 'rtl' : 'ltr'}
-            style={{
-                minHeight: '100vh',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
-                background: '#ffffff',
-                position: 'relative',
-                overflow: 'hidden'
-            }}
-        >
-            {/* Background Logo Watermark */}
-            <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '350px',
-                height: '350px',
-                backgroundImage: `url(${logoMain})`,
-                backgroundSize: 'contain',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                opacity: 0.08,
-                pointerEvents: 'none'
-            }} />
-
-            {/* Decorative Elements */}
-            <div style={{
-                position: 'absolute',
-                top: '-100px',
-                right: '-100px',
-                width: '300px',
-                height: '300px',
-                background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)',
-                borderRadius: '50%'
-            }} />
-            <div style={{
-                position: 'absolute',
-                bottom: '-80px',
-                left: '-80px',
-                width: '250px',
-                height: '250px',
-                background: 'radial-gradient(circle, rgba(4, 120, 87, 0.1) 0%, transparent 70%)',
-                borderRadius: '50%'
-            }} />
-
-            {/* Language Toggle */}
-            <div style={{
-                position: 'fixed',
-                top: '16px',
-                [isRTL ? 'left' : 'right']: '16px',
-                zIndex: 20,
-                display: 'flex',
-                gap: '8px'
-            }}>
-                <button
-                    onClick={toggleLanguage}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '8px 14px',
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '12px',
-                        color: '#475569',
-                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-                        transition: 'all 0.2s',
-                        fontWeight: '500'
-                    }}
-                    onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor = '#047857';
-                        e.currentTarget.style.color = '#047857';
-                    }}
-                    onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor = '#e2e8f0';
-                        e.currentTarget.style.color = '#475569';
-                    }}
-                >
-                    <span>{isRTL ? '🇬🇧' : '🇵🇰'}</span>
-                    <span>{isRTL ? 'EN' : 'اردو'}</span>
-                </button>
-
-                <button
-                    onClick={() => setShowFontSettings(true)}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '8px 14px',
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '12px',
-                        color: '#475569',
-                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-                        transition: 'all 0.2s',
-                        fontWeight: '500'
-                    }}
-                    onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor = '#047857';
-                        e.currentTarget.style.color = '#047857';
-                    }}
-                    onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor = '#e2e8f0';
-                        e.currentTarget.style.color = '#475569';
-                    }}
-                >
-                    <Type size={14} />
-                    <span>{isRTL ? 'فونٹ' : 'Font'}</span>
-                </button>
-            </div>
-
-            {/* Compact Login Card */}
-            <motion.div
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
+        <>
+            <Toaster containerStyle={{ zIndex: 99999 }} />
+            <div
+                dir={isRTL ? 'rtl' : 'ltr'}
                 style={{
+                    minHeight: '100vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                    background: '#ffffff',
                     position: 'relative',
-                    zIndex: 10,
-                    width: '100%',
-                    maxWidth: '400px',
-                    padding: '0 16px'
+                    overflow: 'hidden'
                 }}
             >
+                {/* Background Logo Watermark */}
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '350px',
+                    height: '350px',
+                    backgroundImage: `url(${logoMain})`,
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    opacity: 0.08,
+                    pointerEvents: 'none'
+                }} />
+
+                {/* Decorative Elements */}
+                <div style={{
+                    position: 'absolute',
+                    top: '-100px',
+                    right: '-100px',
+                    width: '300px',
+                    height: '300px',
+                    background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)',
+                    borderRadius: '50%'
+                }} />
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-80px',
+                    left: '-80px',
+                    width: '250px',
+                    height: '250px',
+                    background: 'radial-gradient(circle, rgba(4, 120, 87, 0.1) 0%, transparent 70%)',
+                    borderRadius: '50%'
+                }} />
+
+                {/* Language Toggle */}
+                <div style={{
+                    position: 'fixed',
+                    top: '16px',
+                    [isRTL ? 'left' : 'right']: '16px',
+                    zIndex: 20,
+                    display: 'flex',
+                    gap: '8px'
+                }}>
+                    <button
+                        onClick={toggleLanguage}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '8px 14px',
+                            backgroundColor: '#ffffff',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            color: '#475569',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+                            transition: 'all 0.2s',
+                            fontWeight: '500'
+                        }}
+                        onMouseOver={(e) => {
+                            e.currentTarget.style.borderColor = '#047857';
+                            e.currentTarget.style.color = '#047857';
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.borderColor = '#e2e8f0';
+                            e.currentTarget.style.color = '#475569';
+                        }}
+                    >
+                        <span>{isRTL ? '🇬🇧' : '🇵🇰'}</span>
+                        <span>{isRTL ? 'EN' : 'اردو'}</span>
+                    </button>
+
+                    <button
+                        onClick={() => setShowFontSettings(true)}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '8px 14px',
+                            backgroundColor: '#ffffff',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            color: '#475569',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+                            transition: 'all 0.2s',
+                            fontWeight: '500'
+                        }}
+                        onMouseOver={(e) => {
+                            e.currentTarget.style.borderColor = '#047857';
+                            e.currentTarget.style.color = '#047857';
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.borderColor = '#e2e8f0';
+                            e.currentTarget.style.color = '#475569';
+                        }}
+                    >
+                        <Type size={14} />
+                        <span>{isRTL ? 'فونٹ' : 'Font'}</span>
+                    </button>
+                </div>
+
+                {/* Compact Login Card */}
                 <motion.div
-                    animate={shouldShake ? 'shake' : ''}
-                    variants={shakeVariants}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
                     style={{
-                        backgroundColor: '#ffffff',
-                        borderRadius: '16px',
-                        boxShadow: '0 10px 40px -10px rgba(4, 120, 87, 0.2), 0 0 0 1px rgba(4, 120, 87, 0.05)',
-                        padding: '36px 32px',
-                        position: 'relative'
+                        position: 'relative',
+                        zIndex: 10,
+                        width: '100%',
+                        maxWidth: '400px',
+                        padding: '0 16px'
                     }}
                 >
-                    {/* Top Green Line */}
-                    <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        width: '60px',
-                        height: '4px',
-                        background: 'linear-gradient(90deg, #10b981, #047857)',
-                        borderRadius: '0 0 4px 4px'
-                    }} />
+                    <motion.div
+                        animate={shouldShake ? 'shake' : ''}
+                        variants={shakeVariants}
+                        style={{
+                            backgroundColor: '#ffffff',
+                            borderRadius: '16px',
+                            boxShadow: '0 10px 40px -10px rgba(4, 120, 87, 0.2), 0 0 0 1px rgba(4, 120, 87, 0.05)',
+                            padding: '36px 32px',
+                            position: 'relative'
+                        }}
+                    >
+                        {/* Top Green Line */}
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '60px',
+                            height: '4px',
+                            background: 'linear-gradient(90deg, #10b981, #047857)',
+                            borderRadius: '0 0 4px 4px'
+                        }} />
 
-                    {/* Logo */}
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginBottom: '16px'
-                    }}>
-                        <img
-                            src={logoMain}
-                            alt={t('accessibility.logoAlt')}
-                            style={{
-                                height: '56px',
-                                width: 'auto',
-                                objectFit: 'contain'
-                            }}
-                        />
-                    </div>
-
-                    {/* Heading */}
-                    <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                        <h1 style={{
-                            fontSize: isRTL ? '22px' : '18px',
-                            fontWeight: '700',
-                            color: '#0f172a',
-                            marginBottom: '4px'
-                        }}>
-                            {isRTL ? 'نورِ ایمان ڈیجیٹل پورٹل' : 'Nooriemaan Digital Portal'}
-                        </h1>
-                        <p style={{
-                            color: '#64748b',
-                            fontSize: '12px'
-                        }}>
-                            {isRTL ? 'اپنے اکاؤنٹ میں لاگ ان کریں' : 'Sign in to continue'}
-                        </p>
-                    </div>
-
-                    {/* Error Message */}
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            style={{
-                                marginBottom: '16px',
-                                padding: '10px 12px',
-                                backgroundColor: '#fef2f2',
-                                border: '1px solid #fecaca',
-                                borderRadius: '8px'
-                            }}
-                        >
-                            <p style={{
-                                color: '#dc2626',
-                                fontSize: '12px',
-                                textAlign: 'center',
-                                fontWeight: '500',
-                                margin: 0
-                            }}>
-                                {error}
-                            </p>
-                        </motion.div>
-                    )}
-
-                    {/* Login Form */}
-                    <form onSubmit={handleLogin}>
-                        {/* GR Number Field */}
-                        <div style={{ marginBottom: '12px' }}>
-                            <div style={{
-                                position: 'relative',
-                                border: '1.5px solid #e2e8f0',
-                                borderRadius: '10px',
-                                transition: 'all 0.2s',
-                                backgroundColor: '#f8fafc'
-                            }}>
-                                <span style={{
-                                    position: 'absolute',
-                                    [isRTL ? 'right' : 'left']: '12px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    color: '#94a3b8'
-                                }}>
-                                    <User size={16} />
-                                </span>
-                                <input
-                                    id="grNumber"
-                                    type="text"
-                                    value={grNumber}
-                                    onChange={(e) => setGrNumber(e.target.value)}
-                                    placeholder={isRTL ? 'جی آر نمبر' : 'GR Number / Username'}
-                                    disabled={isLoading}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        [isRTL ? 'paddingRight' : 'paddingLeft']: '38px',
-                                        backgroundColor: 'transparent',
-                                        border: 'none',
-                                        borderRadius: '10px',
-                                        fontSize: '13px',
-                                        color: '#1e293b',
-                                        outline: 'none',
-                                        boxSizing: 'border-box',
-                                        textAlign: isRTL ? 'right' : 'left'
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.parentElement.style.borderColor = '#10b981';
-                                        e.target.parentElement.style.backgroundColor = '#ffffff';
-                                        e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.parentElement.style.borderColor = '#e2e8f0';
-                                        e.target.parentElement.style.backgroundColor = '#f8fafc';
-                                        e.target.parentElement.style.boxShadow = 'none';
-                                    }}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Password Field */}
-                        <div style={{ marginBottom: '14px' }}>
-                            <div style={{
-                                position: 'relative',
-                                border: '1.5px solid #e2e8f0',
-                                borderRadius: '10px',
-                                transition: 'all 0.2s',
-                                backgroundColor: '#f8fafc'
-                            }}>
-                                <span style={{
-                                    position: 'absolute',
-                                    [isRTL ? 'right' : 'left']: '12px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    color: '#94a3b8'
-                                }}>
-                                    <Lock size={16} />
-                                </span>
-                                <input
-                                    id="password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder={isRTL ? 'پاس ورڈ' : 'Password'}
-                                    disabled={isLoading}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        [isRTL ? 'paddingRight' : 'paddingLeft']: '38px',
-                                        [isRTL ? 'paddingLeft' : 'paddingRight']: '40px',
-                                        backgroundColor: 'transparent',
-                                        border: 'none',
-                                        borderRadius: '10px',
-                                        fontSize: '13px',
-                                        color: '#1e293b',
-                                        outline: 'none',
-                                        boxSizing: 'border-box',
-                                        textAlign: isRTL ? 'right' : 'left'
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.parentElement.style.borderColor = '#10b981';
-                                        e.target.parentElement.style.backgroundColor = '#ffffff';
-                                        e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.parentElement.style.borderColor = '#e2e8f0';
-                                        e.target.parentElement.style.backgroundColor = '#f8fafc';
-                                        e.target.parentElement.style.boxShadow = 'none';
-                                    }}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    disabled={isLoading}
-                                    style={{
-                                        position: 'absolute',
-                                        [isRTL ? 'left' : 'right']: '12px',
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        color: '#94a3b8',
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        padding: '2px',
-                                        display: 'flex'
-                                    }}
-                                    onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
-                                    onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}
-                                >
-                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Submit Button */}
-                        <motion.button
-                            type="submit"
-                            disabled={isLoading}
-                            whileHover={{ scale: isLoading ? 1 : 1.01 }}
-                            whileTap={{ scale: isLoading ? 1 : 0.99 }}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                background: isLoading
-                                    ? '#94a3b8'
-                                    : 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
-                                color: 'white',
-                                fontWeight: '600',
-                                fontSize: '13px',
-                                borderRadius: '10px',
-                                border: 'none',
-                                cursor: isLoading ? 'not-allowed' : 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px',
-                                boxShadow: '0 4px 12px rgba(4, 120, 87, 0.3)',
-                                transition: 'all 0.2s'
-                            }}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <Loader2 size={16} className="animate-spin" />
-                                    <span>{isRTL ? 'انتظار...' : 'Please wait...'}</span>
-                                </>
-                            ) : (
-                                <>
-                                    <ArrowRight size={16} style={{ transform: isRTL ? 'rotate(180deg)' : 'none' }} />
-                                    <span>{isRTL ? 'لاگ ان' : 'LOG IN'}</span>
-                                </>
-                            )}
-                        </motion.button>
-
-                        {/* Footer Links */}
+                        {/* Logo */}
                         <div style={{
                             display: 'flex',
                             justifyContent: 'center',
-                            gap: '16px',
-                            marginTop: '16px'
+                            marginBottom: '16px'
                         }}>
-                            <button
-                                type="button"
+                            <img
+                                src={logoMain}
+                                alt={t('accessibility.logoAlt')}
                                 style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    fontSize: '11px',
-                                    color: '#64748b',
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer'
+                                    height: '56px',
+                                    width: 'auto',
+                                    objectFit: 'contain'
                                 }}
-                                onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
-                                onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
-                            >
-                                <HelpCircle size={12} />
-                                <span>{isRTL ? 'پاس ورڈ بھولے؟' : 'Forgot Password?'}</span>
-                            </button>
-
-                            <span style={{ color: '#e2e8f0' }}>|</span>
-
-                            <button
-                                type="button"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    fontSize: '11px',
-                                    color: '#64748b',
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer'
-                                }}
-                                onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
-                                onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
-                            >
-                                <Phone size={12} />
-                                <span>{isRTL ? 'رابطہ' : 'Support'}</span>
-                            </button>
+                            />
                         </div>
-                    </form>
+
+                        {/* Heading */}
+                        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                            <h1 style={{
+                                fontSize: isRTL ? '22px' : '18px',
+                                fontWeight: '700',
+                                color: '#0f172a',
+                                marginBottom: '4px'
+                            }}>
+                                {isRTL ? 'نورِ ایمان ڈیجیٹل پورٹل' : 'Nooriemaan Digital Portal'}
+                            </h1>
+                            <p style={{
+                                color: '#64748b',
+                                fontSize: '12px'
+                            }}>
+                                {isRTL ? 'اپنے اکاؤنٹ میں لاگ ان کریں' : 'Sign in to continue'}
+                            </p>
+                        </div>
+
+
+
+                        {/* Login Form */}
+                        <form onSubmit={handleLogin}>
+                            {/* GR Number Field */}
+                            <div style={{ marginBottom: '12px' }}>
+                                <div style={{
+                                    position: 'relative',
+                                    border: '1.5px solid #e2e8f0',
+                                    borderRadius: '10px',
+                                    transition: 'all 0.2s',
+                                    backgroundColor: '#f8fafc'
+                                }}>
+                                    <span style={{
+                                        position: 'absolute',
+                                        [isRTL ? 'right' : 'left']: '12px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        color: '#94a3b8'
+                                    }}>
+                                        <User size={16} />
+                                    </span>
+                                    <input
+                                        id="grNumber"
+                                        type="text"
+                                        value={grNumber}
+                                        onChange={(e) => setGrNumber(e.target.value)}
+                                        placeholder={isRTL ? 'جی آر نمبر' : 'GR Number / Username'}
+                                        disabled={isLoading}
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            [isRTL ? 'paddingRight' : 'paddingLeft']: '38px',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            borderRadius: '10px',
+                                            fontSize: '14px',
+                                            color: '#1e293b',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            textAlign: isRTL ? 'right' : 'left',
+                                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                        }}
+                                        onFocus={(e) => {
+                                            e.target.parentElement.style.borderColor = '#10b981';
+                                            e.target.parentElement.style.backgroundColor = '#ffffff';
+                                            e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                                        }}
+                                        onBlur={(e) => {
+                                            e.target.parentElement.style.borderColor = '#e2e8f0';
+                                            e.target.parentElement.style.backgroundColor = '#f8fafc';
+                                            e.target.parentElement.style.boxShadow = 'none';
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Password Field */}
+                            <div style={{ marginBottom: '14px' }}>
+                                <div style={{
+                                    position: 'relative',
+                                    border: '1.5px solid #e2e8f0',
+                                    borderRadius: '10px',
+                                    transition: 'all 0.2s',
+                                    backgroundColor: '#f8fafc'
+                                }}>
+                                    <span style={{
+                                        position: 'absolute',
+                                        [isRTL ? 'right' : 'left']: '12px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        color: '#94a3b8'
+                                    }}>
+                                        <Lock size={16} />
+                                    </span>
+                                    <input
+                                        id="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder={isRTL ? 'پاس ورڈ' : 'Password'}
+                                        disabled={isLoading}
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            [isRTL ? 'paddingRight' : 'paddingLeft']: '38px',
+                                            [isRTL ? 'paddingLeft' : 'paddingRight']: '40px',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            borderRadius: '10px',
+                                            fontSize: '14px',
+                                            color: '#1e293b',
+                                            outline: 'none',
+                                            boxSizing: 'border-box',
+                                            textAlign: isRTL ? 'right' : 'left',
+                                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                        }}
+                                        onFocus={(e) => {
+                                            e.target.parentElement.style.borderColor = '#10b981';
+                                            e.target.parentElement.style.backgroundColor = '#ffffff';
+                                            e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                                        }}
+                                        onBlur={(e) => {
+                                            e.target.parentElement.style.borderColor = '#e2e8f0';
+                                            e.target.parentElement.style.backgroundColor = '#f8fafc';
+                                            e.target.parentElement.style.boxShadow = 'none';
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        disabled={isLoading}
+                                        style={{
+                                            position: 'absolute',
+                                            [isRTL ? 'left' : 'right']: '12px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            color: '#94a3b8',
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            padding: '2px',
+                                            display: 'flex'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
+                                        onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}
+                                    >
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Submit Button */}
+                            <motion.button
+                                type="submit"
+                                disabled={isLoading}
+                                whileHover={{ scale: isLoading ? 1 : 1.01 }}
+                                whileTap={{ scale: isLoading ? 1 : 0.99 }}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    background: isLoading
+                                        ? '#94a3b8'
+                                        : 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+                                    color: 'white',
+                                    fontWeight: '600',
+                                    fontSize: '13px',
+                                    borderRadius: '10px',
+                                    border: 'none',
+                                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '8px',
+                                    boxShadow: '0 4px 12px rgba(4, 120, 87, 0.3)',
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 size={16} className="animate-spin" />
+                                        <span>{isRTL ? 'انتظار...' : 'Please wait...'}</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <ArrowRight size={16} style={{ transform: isRTL ? 'rotate(180deg)' : 'none' }} />
+                                        <span>{isRTL ? 'لاگ ان' : 'LOG IN'}</span>
+                                    </>
+                                )}
+                            </motion.button>
+
+                            {/* Footer Links */}
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                gap: '16px',
+                                marginTop: '16px'
+                            }}>
+                                <button
+                                    type="button"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        fontSize: '11px',
+                                        color: '#64748b',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
+                                    onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
+                                >
+                                    <HelpCircle size={12} />
+                                    <span>{isRTL ? 'پاس ورڈ بھولے؟' : 'Forgot Password?'}</span>
+                                </button>
+
+                                <span style={{ color: '#e2e8f0' }}>|</span>
+
+                                <button
+                                    type="button"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        fontSize: '11px',
+                                        color: '#64748b',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
+                                    onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
+                                >
+                                    <Phone size={12} />
+                                    <span>{isRTL ? 'رابطہ' : 'Support'}</span>
+                                </button>
+                            </div>
+                        </form>
+                    </motion.div>
+
                 </motion.div>
 
-            </motion.div>
-
-            {/* Footer - Fixed at Bottom */}
-            <div style={{
-                position: 'fixed',
-                bottom: '16px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 10
-            }}>
-                <p style={{
-                    textAlign: 'center',
-                    fontSize: '11px',
-                    color: '#64748b',
-                    margin: 0
+                {/* Footer - Fixed at Bottom */}
+                <div style={{
+                    position: 'fixed',
+                    bottom: '16px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 10
                 }}>
-                    {isRTL ? '© 2026 جامعہ نورِ ایمان - تمام حقوق محفوظ ہیں' : '© 2026 Jamia Nooriemaan - All Rights Reserved'}
-                </p>
+                    <p style={{
+                        textAlign: 'center',
+                        fontSize: '11px',
+                        color: '#64748b',
+                        margin: 0
+                    }}>
+                        {isRTL ? '© 2026 جامعہ نورِ ایمان - تمام حقوق محفوظ ہیں' : '© 2026 Jamia Nooriemaan - All Rights Reserved'}
+                    </p>
+                </div>
+                {/* Font Settings Modal */}
+                <FontSettings
+                    isOpen={showFontSettings}
+                    onClose={() => setShowFontSettings(false)}
+                />
             </div>
-            {/* Font Settings Modal */}
-            <FontSettings
-                isOpen={showFontSettings}
-                onClose={() => setShowFontSettings(false)}
-            />
-        </div>
+        </>
     );
 };
 

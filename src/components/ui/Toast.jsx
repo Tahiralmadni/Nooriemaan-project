@@ -1,5 +1,5 @@
 // Enterprise Toast Notification Component
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { CheckCircle, XCircle, X } from 'lucide-react';
 
 export default function Toast({
@@ -11,16 +11,23 @@ export default function Toast({
 }) {
     const [isShowing, setIsShowing] = useState(false);
 
+    const handleClose = useCallback(() => {
+        setIsShowing(false);
+        setTimeout(onClose, 300);
+    }, [onClose]);
+
     useEffect(() => {
         if (isVisible) {
-            setIsShowing(true);
+            // Use requestAnimationFrame to batch state updates
+            requestAnimationFrame(() => {
+                setIsShowing(true);
+            });
             const timer = setTimeout(() => {
-                setIsShowing(false);
-                setTimeout(onClose, 300);
+                handleClose();
             }, duration);
             return () => clearTimeout(timer);
         }
-    }, [isVisible, duration, onClose]);
+    }, [isVisible, duration, handleClose]);
 
     if (!isVisible && !isShowing) return null;
 
@@ -68,10 +75,7 @@ export default function Toast({
             </p>
 
             <button
-                onClick={() => {
-                    setIsShowing(false);
-                    setTimeout(onClose, 300);
-                }}
+                onClick={handleClose}
                 className={`p-1 rounded-full hover:bg-black/5 transition-colors ${currentStyle.icon}`}
             >
                 <X className="w-4 h-4" />

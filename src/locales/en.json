@@ -1,0 +1,42 @@
+{
+    "appName": "Nooriemaan",
+    "portalSubtitle": "Digital Portal",
+    "welcome": {
+        "title": "Welcome",
+        "subtitle": "Nooriemaan Digital Portal",
+        "description": "This portal is designed for students, teachers and administrators.",
+        "feature1": "📊 View Attendance & Results",
+        "feature2": "💰 Fee Details",
+        "feature3": "📝 Teacher Reports"
+    },
+    "login": {
+        "title": "Login",
+        "grNumberLabel": "GR Number",
+        "grNumberPlaceholder": "Enter GR Number",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Enter Password",
+        "submitButton": "Login",
+        "loadingButton": "Please wait...",
+        "forgotPassword": "Forgot Password?"
+    },
+    "validation": {
+        "grNumberRequired": "Please enter GR Number",
+        "passwordMinLength": "Password must be at least 6 characters",
+        "invalidCredentials": "Invalid GR Number or Password",
+        "tooManyAttempts": "Too many attempts. Please try again later",
+        "networkError": "Network error. Check your internet connection",
+        "accountDisabled": "This account has been disabled",
+        "loginFailed": "Login failed. Please try again"
+    },
+    "accessibility": {
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "logoAlt": "Nooriemaan Logo"
+    },
+    "footer": {
+        "copyright": "© 2026 Jamia Nooriemaan - All Rights Reserved"
+    },
+    "success": {
+        "loginSuccess": "Login Successful!"
+    }
+}

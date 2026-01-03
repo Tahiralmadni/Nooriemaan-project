@@ -13,7 +13,7 @@ import {
     onAuthStateChanged,
     sendPasswordResetEmail
 } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, collection } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 // Firebase Configuration
 // TODO: Replace with your actual Firebase project credentials
