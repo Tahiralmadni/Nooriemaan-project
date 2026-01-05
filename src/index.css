@@ -196,3 +196,18 @@ input[type="email"] {
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+
+/* Pulse Animation - Offline banner ke liye blinking dot */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
