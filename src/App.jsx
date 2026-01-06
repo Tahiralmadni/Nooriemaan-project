@@ -1,32 +1,24 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
+import DashboardLayout from './layouts/DashboardLayout';
 
 /**
  * App Component
  * NooriEmaan Digital Portal - Main Application Entry
- * 
- * TODO: Add React Router for navigation between pages
- * - /login -> Login page
- * - /dashboard -> Dashboard (after authentication)
- * - /students -> Student management
- * - etc.
+ * Routes setup for Login and Dashboard
  */
 function App() {
-    return (
-        <>
-            {/* 
-        Currently rendering Login page directly.
-        Replace with React Router setup when implementing full navigation:
-        
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          </Routes>
-        </BrowserRouter>
-      */}
-            <Login />
-        </>
-    );
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Login Page - "/" */}
+        <Route path="/" element={<Login />} />
+
+        {/* Dashboard - "/dashboard" */}
+        <Route path="/dashboard" element={<DashboardLayout />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

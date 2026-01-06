@@ -17,7 +17,10 @@
         "passwordPlaceholder": "Enter Password",
         "submitButton": "Login",
         "loadingButton": "Please wait...",
-        "forgotPassword": "Forgot Password?"
+        "forgotPassword": "Forgot Password?",
+        "rememberMe": "Remember Me",
+        "signInToContinue": "Sign in to continue",
+        "support": "Support"
     },
     "validation": {
         "grNumberRequired": "Please enter GR Number",
@@ -34,9 +37,41 @@
         "logoAlt": "Nooriemaan Logo"
     },
     "footer": {
-        "copyright": "© 2026 Jamia Nooriemaan - All Rights Reserved"
+        "copyright": "© 2026 Nooriemaan - All Rights Reserved"
     },
     "success": {
         "loginSuccess": "Login Successful!"
+    },
+    "connectivity": {
+        "offline": "Internet Connection Lost",
+        "backOnline": "You are back online!",
+        "capsLockWarning": "Warning: Caps Lock is ON"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome!",
+        "loginSuccessful": "Login Successful!",
+        "welcomeMessage": "Welcome to Nooriemaan Digital Portal Dashboard",
+        "quickStats": "Quick Stats",
+        "totalStudents": "Total Students",
+        "presentToday": "Present Today",
+        "feesPending": "Fees Pending",
+        "newNotices": "New Notices",
+        "recentActivity": "Recent Activity",
+        "noActivity": "No recent activity",
+        "logout": "Logout",
+        "profile": "Profile",
+        "settings": "Settings"
+    },
+    "sidebar": {
+        "home": "Home",
+        "students": "Students",
+        "teachers": "Teachers",
+        "attendance": "Attendance",
+        "fees": "Fees",
+        "results": "Results",
+        "reports": "Reports",
+        "notices": "Notices",
+        "settings": "Settings"
     }
 }

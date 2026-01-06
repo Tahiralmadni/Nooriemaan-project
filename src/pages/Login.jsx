@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';  // React ke hooks jo state (data) aur side effects (jaise font load karna) sambhalte hain
 import { useTranslation } from 'react-i18next'; // Urdu/English language badalne ke liye library
-import { motion } from 'framer-motion'; // Smooth animation ke liye (card ka entry effect, shake effect)
-import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type } from 'lucide-react'; // Icons ki library (Tala, Aankh, User wagera)
+import { useNavigate } from 'react-router-dom'; // Navigation ke liye
+import { motion, AnimatePresence } from 'framer-motion'; // Smooth animation ke liye (card ka entry effect, shake effect)
+import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
 import FontSettings, { getSavedFont } from '../components/FontSettings'; // Font change karne wala component
 import toast, { Toaster } from 'react-hot-toast'; // Khubsurat notifications (popups) ke liye
 
-// Import main logo
+// Import main logo & config
 import logoMain from '../assets/logo-main.png'; // Madrassa ka main logo import kiya
 import i18n from '../config/i18n'; // Language configuration file
+import appConfig from '../config/appConfig'; // App ki branding aur settings
 
 /**
  * Login Component - NooriEmaan Digital Portal
@@ -16,6 +18,7 @@ import i18n from '../config/i18n'; // Language configuration file
 const Login = () => {
     // Translation hook (t('key') use karke hum urdu/english text dikhayenge)
     const { t } = useTranslation();
+    const navigate = useNavigate(); // Navigation hook
 
     // --- STATE MANAGEMENT (Data Store Karne Ki Jagah) ---
     const [grNumber, setGrNumber] = useState(''); // User jo ID/GR Number type karega wo yahan save hoga
@@ -259,10 +262,12 @@ const Login = () => {
 
         // Fake network delay (3 second ka intezar) taaki loading feel ho
         setTimeout(() => {
-            // Test Credentials check karna (Hardcoded logic)
-            if (grNumber === '12345' && password === '654321') {
+            // Updated Credentials: GR = 21435, Password = User134
+            if (grNumber === '21435' && password === 'User134') {
                 console.log('✅ Login successful!');
                 showSuccessToast(t('success.loginSuccess'));
+                // Dashboard page par le jao
+                navigate('/dashboard');
             } else {
                 showErrorToast(t('validation.invalidCredentials'));
                 triggerShake(); // Ghalat password par shake karo
@@ -401,76 +406,72 @@ const Login = () => {
                     borderRadius: '50%'
                 }} />
 
-                {/* Top Buttons (Language & Font) */}
+                {/* Top Buttons (Language & Font) - Modern Hover Effects */}
                 <div style={{
                     position: 'fixed',
                     top: '16px',
-                    [isRTL ? 'left' : 'right']: '16px', // Side change based on language
+                    [isRTL ? 'left' : 'right']: '16px',
                     zIndex: 20,
                     display: 'flex',
                     gap: '8px'
                 }}>
-                    {/* Language Switcher Button */}
-                    <button
+                    {/* Language Switcher Button - motion se hover effect */}
+                    <motion.button
                         onClick={toggleLanguage}
+                        whileHover={{
+                            scale: 1.05,
+                            boxShadow: '0 4px 15px rgba(4, 120, 87, 0.25)',
+                            borderColor: '#10b981'
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
                             gap: '6px',
-                            padding: '8px 14px',
+                            padding: '10px 16px',
                             backgroundColor: '#ffffff',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
+                            border: '1.5px solid #e2e8f0',
+                            borderRadius: '10px',
                             cursor: 'pointer',
                             fontSize: '12px',
                             color: '#475569',
-                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-                            transition: 'all 0.2s',
-                            fontWeight: '500'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.borderColor = '#047857';
-                            e.currentTarget.style.color = '#047857';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.borderColor = '#e2e8f0';
-                            e.currentTarget.style.color = '#475569';
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                            fontWeight: '600'
                         }}
                     >
-                        <span>{isRTL ? '🇬🇧' : '🇵🇰'}</span>
-                        <span>{isRTL ? 'EN' : 'اردو'}</span>
-                    </button>
+                        <span style={{ fontSize: '16px' }}>{isRTL ? '🇬🇧' : '🇵🇰'}</span>
+                        <span>{isRTL ? 'English' : 'اردو'}</span>
+                    </motion.button>
 
-                    {/* Font Settings Button */}
-                    <button
+                    {/* Font Settings Button - motion se hover effect */}
+                    <motion.button
                         onClick={() => setShowFontSettings(true)}
+                        whileHover={{
+                            scale: 1.05,
+                            boxShadow: '0 4px 15px rgba(4, 120, 87, 0.25)',
+                            borderColor: '#10b981'
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
                             gap: '6px',
-                            padding: '8px 14px',
+                            padding: '10px 16px',
                             backgroundColor: '#ffffff',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
+                            border: '1.5px solid #e2e8f0',
+                            borderRadius: '10px',
                             cursor: 'pointer',
                             fontSize: '12px',
                             color: '#475569',
-                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-                            transition: 'all 0.2s',
-                            fontWeight: '500'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.borderColor = '#047857';
-                            e.currentTarget.style.color = '#047857';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.borderColor = '#e2e8f0';
-                            e.currentTarget.style.color = '#475569';
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                            fontWeight: '600'
                         }}
                     >
                         <Type size={14} />
                         <span>{isRTL ? 'فونٹ' : 'Font'}</span>
-                    </button>
+                    </motion.button>
                 </div>
 
                 {/* --- LOGIN CARD CONTAINER --- */}
@@ -497,51 +498,75 @@ const Login = () => {
                             position: 'relative'
                         }}
                     >
-                        {/* Top Green Decoration Line */}
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: '60px',
-                            height: '4px',
-                            background: 'linear-gradient(90deg, #10b981, #047857)',
-                            borderRadius: '0 0 4px 4px'
-                        }} />
+                        {/* Top Green Decoration Line - Animated glow effect */}
+                        <motion.div
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: '60px', opacity: 1 }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                height: '4px',
+                                background: 'linear-gradient(90deg, #10b981, #047857)',
+                                borderRadius: '0 0 4px 4px',
+                                boxShadow: '0 2px 10px rgba(16, 185, 129, 0.4)'
+                            }}
+                        />
 
-                        {/* Logo Image */}
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            marginBottom: '16px'
-                        }}>
-                            <img
+                        {/* Logo Image - Subtle hover animation */}
+                        <motion.div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                marginBottom: '16px'
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: 'spring', stiffness: 300 }}
+                        >
+                            <motion.img
                                 src={logoMain}
                                 alt={t('accessibility.logoAlt')}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5, ease: 'easeOut' }}
                                 style={{
                                     height: '56px',
                                     width: 'auto',
-                                    objectFit: 'contain'
+                                    objectFit: 'contain',
+                                    cursor: 'pointer'
                                 }}
                             />
-                        </div>
+                        </motion.div>
 
-                        {/* Headings */}
+                        {/* Headings - Config se text aayega */}
                         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                            <h1 style={{
-                                fontSize: isRTL ? '22px' : '18px',
-                                fontWeight: '700',
-                                color: '#0f172a',
-                                marginBottom: '4px'
-                            }}>
-                                {isRTL ? 'نورِ ایمان ڈیجیٹل پورٹل' : 'Nooriemaan Digital Portal'}
-                            </h1>
-                            <p style={{
-                                color: '#64748b',
-                                fontSize: '12px'
-                            }}>
+                            <motion.h1
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                style={{
+                                    fontSize: isRTL ? '22px' : '18px',
+                                    fontWeight: '700',
+                                    color: '#0f172a',
+                                    marginBottom: '4px'
+                                }}
+                            >
+                                {/* Config se naam - White-labeling ke liye */}
+                                {isRTL ? appConfig.fullName.ur : appConfig.fullName.en}
+                            </motion.h1>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                style={{
+                                    color: '#64748b',
+                                    fontSize: '12px'
+                                }}
+                            >
                                 {isRTL ? 'اپنے اکاؤنٹ میں لاگ ان کریں' : 'Sign in to continue'}
-                            </p>
+                            </motion.p>
                         </div>
 
                         {/* --- LOGIN FORM --- */}
@@ -660,11 +685,14 @@ const Login = () => {
                                             setCapsLockOn(false);
                                         }}
                                     />
-                                    {/* Eye Toggle Button */}
-                                    <button
+                                    {/* Eye Toggle Button - Animated microinteraction */}
+                                    <motion.button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
                                         disabled={isLoading}
+                                        whileHover={{ scale: 1.2, color: '#047857' }}
+                                        whileTap={{ scale: 0.9 }}
+                                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                                         style={{
                                             position: 'absolute',
                                             [isRTL ? 'left' : 'right']: '12px',
@@ -674,41 +702,76 @@ const Login = () => {
                                             background: 'none',
                                             border: 'none',
                                             cursor: 'pointer',
-                                            padding: '2px',
-                                            display: 'flex'
+                                            padding: '4px',
+                                            display: 'flex',
+                                            borderRadius: '50%'
                                         }}
-                                        onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
-                                        onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}
                                     >
-                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                    </button>
+                                        <AnimatePresence mode="wait">
+                                            {showPassword ? (
+                                                <motion.div
+                                                    key="eyeOff"
+                                                    initial={{ opacity: 0, rotate: -90 }}
+                                                    animate={{ opacity: 1, rotate: 0 }}
+                                                    exit={{ opacity: 0, rotate: 90 }}
+                                                    transition={{ duration: 0.2 }}
+                                                >
+                                                    <EyeOff size={16} />
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div
+                                                    key="eye"
+                                                    initial={{ opacity: 0, rotate: 90 }}
+                                                    animate={{ opacity: 1, rotate: 0 }}
+                                                    exit={{ opacity: 0, rotate: -90 }}
+                                                    transition={{ duration: 0.2 }}
+                                                >
+                                                    <Eye size={16} />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </motion.button>
                                 </div>
 
-                                {/* Caps Lock Warning Alert */}
-                                {capsLockOn && (
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '6px',
-                                        marginTop: '8px',
-                                        padding: '8px 12px',
-                                        backgroundColor: '#fffbeb',
-                                        border: '1px solid #fcd34d',
-                                        borderRadius: '8px',
-                                        color: '#d97706',
-                                        fontSize: '12px',
-                                        fontWeight: '500',
-                                        fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
-                                    }}>
-                                        <span style={{ fontSize: '14px' }}>⚠️</span>
-                                        <span>
-                                            {isRTL
-                                                ? 'دھیان دیں: Caps Lock آن ہے'
-                                                : 'Warning: Caps Lock is ON'
-                                            }
-                                        </span>
-                                    </div>
-                                )}
+                                {/* Caps Lock Warning Alert - Animated entry */}
+                                <AnimatePresence>
+                                    {capsLockOn && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                marginTop: '8px',
+                                                padding: '8px 12px',
+                                                backgroundColor: '#fffbeb',
+                                                border: '1px solid #fcd34d',
+                                                borderRadius: '8px',
+                                                color: '#d97706',
+                                                fontSize: '12px',
+                                                fontWeight: '500',
+                                                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                            }}
+                                        >
+                                            <motion.span
+                                                animate={{ rotate: [0, -10, 10, -10, 0] }}
+                                                transition={{ duration: 0.5, repeat: 2 }}
+                                                style={{ fontSize: '14px' }}
+                                            >
+                                                ⚠️
+                                            </motion.span>
+                                            <span>
+                                                {isRTL
+                                                    ? 'دھیان دیں: Caps Lock آن ہے'
+                                                    : 'Warning: Caps Lock is ON'
+                                                }
+                                            </span>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
 
                             {/* 3. Remember Me Checkbox - Mujhe Yaad Rakhein Option */}
@@ -857,23 +920,29 @@ const Login = () => {
 
                 </motion.div>
 
-                {/* Footer Credits - Fixed at Bottom */}
-                <div style={{
-                    position: 'fixed',
-                    bottom: '16px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 10
-                }}>
+                {/* Footer Credits - Config se copyright aayega */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    style={{
+                        position: 'fixed',
+                        bottom: '16px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        zIndex: 10
+                    }}
+                >
                     <p style={{
                         textAlign: 'center',
                         fontSize: '11px',
                         color: '#64748b',
                         margin: 0
                     }}>
-                        {isRTL ? '© 2026 جامعہ نورِ ایمان - تمام حقوق محفوظ ہیں' : '© 2026 Jamia Nooriemaan - All Rights Reserved'}
+                        {/* Config se copyright text */}
+                        {isRTL ? appConfig.copyright.ur : appConfig.copyright.en}
                     </p>
-                </div>
+                </motion.div>
                 {/* Font Settings Modal */}
                 <FontSettings
                     isOpen={showFontSettings}

@@ -17,7 +17,10 @@
         "passwordPlaceholder": "پاس ورڈ درج کریں",
         "submitButton": "لاگ ان",
         "loadingButton": "انتظار...",
-        "forgotPassword": "پاس ورڈ بھول گئے؟"
+        "forgotPassword": "پاس ورڈ بھول گئے؟",
+        "rememberMe": "مجھے یاد رکھیں",
+        "signInToContinue": "اپنے اکاؤنٹ میں لاگ ان کریں",
+        "support": "رابطہ"
     },
     "validation": {
         "grNumberRequired": "براہ کرم جی آر نمبر درج کریں",
@@ -34,9 +37,41 @@
         "logoAlt": "نورِ ایمان لوگو"
     },
     "footer": {
-        "copyright": "© 2026 جامعہ نورِ ایمان - تمام حقوق محفوظ ہیں"
+        "copyright": "© 2026 نورِ ایمان - تمام حقوق محفوظ ہیں"
     },
     "success": {
         "loginSuccess": "لاگ ان کامیاب!"
+    },
+    "connectivity": {
+        "offline": "انٹرنیٹ کنکشن منقطع ہے",
+        "backOnline": "انٹرنیٹ کنکشن بحال ہو گیا!",
+        "capsLockWarning": "دھیان دیں: Caps Lock آن ہے"
+    },
+    "dashboard": {
+        "title": "ڈیش بورڈ",
+        "welcome": "خوش آمدید!",
+        "loginSuccessful": "لاگ ان کامیاب!",
+        "welcomeMessage": "نورِ ایمان ڈیجیٹل پورٹل میں خوش آمدید",
+        "quickStats": "فوری اعداد و شمار",
+        "totalStudents": "کل طلباء",
+        "presentToday": "آج حاضر",
+        "feesPending": "باقی فیس",
+        "newNotices": "نئے نوٹس",
+        "recentActivity": "حالیہ سرگرمیاں",
+        "noActivity": "کوئی حالیہ سرگرمی نہیں",
+        "logout": "لاگ آؤٹ",
+        "profile": "پروفائل",
+        "settings": "سیٹنگز"
+    },
+    "sidebar": {
+        "home": "ہوم",
+        "students": "طلباء",
+        "teachers": "اساتذہ",
+        "attendance": "حاضری",
+        "fees": "فیس",
+        "results": "نتائج",
+        "reports": "رپورٹس",
+        "notices": "نوٹس",
+        "settings": "سیٹنگز"
     }
 }
