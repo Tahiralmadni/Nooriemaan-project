@@ -18,8 +18,8 @@ const appConfig = {
     },
 
     fullName: {
-        en: 'Jamia Nooriemaan Digital Portal',
-        ur: 'جامعہ نورِ ایمان ڈیجیٹل پورٹل'
+        en: 'Nooriemaan Digital Portal',
+        ur: 'نورِ ایمان ڈیجیٹل پورٹل'
     },
 
     tagline: {

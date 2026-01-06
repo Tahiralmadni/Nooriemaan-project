@@ -38,10 +38,10 @@ const DashboardLayout = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '15px' }}>
                     {[
-                        { label: t('dashboard.totalStudents'), val: '1,234', col: '#10b981' },
-                        { label: t('dashboard.presentToday'), val: '1,180', col: '#3b82f6' },
-                        { label: t('dashboard.feesPending'), val: '₨ 45K', col: '#f59e0b' },
-                        { label: t('dashboard.newNotices'), val: '3', col: '#ef4444' },
+                        // { label: t('dashboard.totalStudents'), val: '1,234', col: '#10b981' },
+                        { label: t('dashboard.presentToday'), val: '15', col: '#3b82f6' },
+                        // { label: t('dashboard.feesPending'), val: '₨ 45K', col: '#f59e0b' },
+                        // { label: t('dashboard.newNotices'), val: '3', col: '#ef4444' },
                     ].map((s, i) => (
                         <div key={i} style={{ background: '#fff', padding: '16px', borderRadius: '8px', borderTop: `3px solid ${s.col}` }}>
                             <div style={{ fontSize: '12px', color: '#64748b' }}>{s.label}</div>
