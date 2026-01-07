@@ -50,6 +50,8 @@
     "dashboard": {
         "title": "ڈیش بورڈ",
         "welcome": "خوش آمدید!",
+        "welcomeToDashboard": "ڈیش بورڈ میں خوش آمدید",
+        "admin": "ایڈمن",
         "loginSuccessful": "لاگ ان کامیاب!",
         "welcomeMessage": "نورِ ایمان ڈیجیٹل پورٹل میں خوش آمدید",
         "quickStats": "فوری اعداد و شمار",
@@ -73,5 +75,9 @@
         "reports": "رپورٹس",
         "notices": "نوٹس",
         "settings": "سیٹنگز"
+    },
+    "loader": {
+        "loading": "برائے مہربانی انتظار کریں",
+        "preparingDashboard": "آپ کا ڈیش بورڈ تیار ہو رہا ہے"
     }
 }

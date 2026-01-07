@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'; // Smooth animation ke 
 import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
 import FontSettings, { getSavedFont } from '../components/FontSettings'; // Font change karne wala component
 import toast, { Toaster } from 'react-hot-toast'; // Khubsurat notifications (popups) ke liye
+import PageLoader from '../components/PageLoader'; // Professional transition loader
 
 // Import main logo & config
 import logoMain from '../assets/logo-main.png'; // Madrassa ka main logo import kiya
@@ -30,6 +31,8 @@ const Login = () => {
     const [capsLockOn, setCapsLockOn] = useState(false); // Ye check karne ke liye ke user ka Caps Lock On to nahi?
     const [rememberMe, setRememberMe] = useState(false); // "Mujhe Yaad Rakhein" checkbox ki state
     const [isOnline, setIsOnline] = useState(navigator.onLine); // Internet connection ki halat (true = online, false = offline)
+    const [showPageLoader, setShowPageLoader] = useState(false); // Professional transition loader dikhane ke liye
+    const [initialLoading, setInitialLoading] = useState(true); // Website pehli baar khulne par loader dikhaye
 
     // --- USE EFFECT (Page Load Hote Hi Kya Ho?) ---
     // Jab page pehli baar khulega, to saved font settings apply hongi
@@ -39,6 +42,11 @@ const Login = () => {
         // CSS variables update kiye taaki poore page ka font change ho jaye
         document.documentElement.style.setProperty('--font-urdu', savedUrdu.family);
         document.documentElement.style.setProperty('--font-english', savedEnglish.family);
+
+        // Initial loading animation - 5 seconds for better visibility
+        setTimeout(() => {
+            setInitialLoading(false);
+        }, 5000);
     }, []);
 
     // --- INTERNET CONNECTIVITY CHECK (Online/Offline Status) ---
@@ -260,20 +268,38 @@ const Login = () => {
 
         setIsLoading(true); // Spinner ghuma do
 
-        // Fake network delay (3 second ka intezar) taaki loading feel ho
+        // Network delay increased to 4.5 seconds for better UX
         setTimeout(() => {
             // Updated Credentials: GR = 21435, Password = User134
             if (grNumber === '21435' && password === 'User134') {
                 console.log('✅ Login successful!');
                 showSuccessToast(t('success.loginSuccess'));
-                // Dashboard page par le jao
-                navigate('/dashboard');
+                setIsLoading(false);
+
+                // Remember Me functionality
+                if (rememberMe) {
+                    // Agar checkbox checked hai to localStorage mein save karo
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userGR', grNumber);
+                } else {
+                    // Agar checked nahi to clear karo
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userGR');
+                }
+
+                // PageLoader dikhao - Professional UX ke liye smooth transition
+                setShowPageLoader(true);
+
+                // 5 seconds baad dashboard par redirect (matches PageLoader duration)
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 5000);
             } else {
                 showErrorToast(t('validation.invalidCredentials'));
                 triggerShake(); // Ghalat password par shake karo
+                setIsLoading(false); // Loading band
             }
-            setIsLoading(false); // Loading band
-        }, 3000);
+        }, 4500);  // 4.5 seconds delay
     };
 
     // --- ANIMATIONS CONFIGURATION ---
@@ -303,6 +329,18 @@ const Login = () => {
     const isRTL = i18n.language === 'ur';
 
     // --- MAIN UI RENDER ---
+
+    // 1. Initial Load State
+    if (initialLoading) {
+        return <PageLoader loadingText={t('loader.loading')} />;
+    }
+
+    // 2. Post-Login Transition State
+    if (showPageLoader) {
+        return <PageLoader loadingText={t('loader.preparingDashboard')} />;
+    }
+
+    // 3. Main Login Form State
     return (
         <>
             {/* Toaster Component (Notifications ke liye) */}

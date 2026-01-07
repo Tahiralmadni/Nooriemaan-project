@@ -23,8 +23,9 @@ i18n
             ur: { translation: urduTranslations },
             en: { translation: englishTranslations },
         },
-        lng: 'ur', // Default language is Urdu
-        fallbackLng: 'ur',
+        // Don't set lng here - let the detector handle it
+        // It will check localStorage first, then fallback to 'en'
+        fallbackLng: 'en',
         interpolation: {
             escapeValue: false, // React already handles XSS
         },

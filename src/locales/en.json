@@ -50,6 +50,8 @@
     "dashboard": {
         "title": "Dashboard",
         "welcome": "Welcome!",
+        "welcomeToDashboard": "Welcome to Dashboard",
+        "admin": "Admin",
         "loginSuccessful": "Login Successful!",
         "welcomeMessage": "Welcome to Nooriemaan Digital Portal Dashboard",
         "quickStats": "Quick Stats",
@@ -73,5 +75,9 @@
         "reports": "Reports",
         "notices": "Notices",
         "settings": "Settings"
+    },
+    "loader": {
+        "loading": "Loading, please wait",
+        "preparingDashboard": "Preparing your dashboard"
     }
 }
