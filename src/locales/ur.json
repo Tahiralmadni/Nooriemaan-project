@@ -66,9 +66,11 @@
         "settings": "سیٹنگز"
     },
     "sidebar": {
+        "dashboard": "ڈیش بورڈ",
         "home": "ہوم",
         "students": "طلباء",
         "teachers": "اساتذہ",
+        "staff": "عملہ",
         "attendance": "حاضری",
         "fees": "فیس",
         "results": "نتائج",

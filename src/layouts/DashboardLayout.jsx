@@ -21,21 +21,19 @@ const DashboardLayout = () => {
         document.documentElement.style.setProperty('--font-english', savedEnglish.family);
     }, []);
 
-    // Logout Handler - Remember Me data clear karo
+    // Logout Handler
     const handleLogout = () => {
-        // localStorage se login data clear karo
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userGR');
-        // Login page par wapas jao
         navigate('/');
     };
 
     // Sidebar menu items
     const menuItems = [
-        { label: 'ڈیش بورڈ', path: '/dashboard' },
-        { label: 'طلباء', path: '/students' },
-        { label: 'اساتذہ', path: '/staff' },
-        { label: 'حاضری', path: '/attendance' },
+        { labelKey: 'sidebar.dashboard', path: '/dashboard' },
+        { labelKey: 'sidebar.students', path: '/dashboard/students' },
+        { labelKey: 'sidebar.teachers', path: '/dashboard/staff' },
+        { labelKey: 'sidebar.attendance', path: '/dashboard/attendance' },
     ];
 
     return (
@@ -45,18 +43,19 @@ const DashboardLayout = () => {
                 display: 'flex',
                 fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
             }}
-            dir="rtl"
+            dir={isRTL ? 'rtl' : 'ltr'}
         >
-            {/* Sidebar - Right Side (because of RTL) */}
+            {/* Sidebar */}
             <aside style={{
                 width: '250px',
                 background: '#fff',
-                borderLeft: '1px solid #e2e8f0',
+                borderLeft: isRTL ? '1px solid #e2e8f0' : 'none',
+                borderRight: isRTL ? 'none' : '1px solid #e2e8f0',
                 display: 'flex',
                 flexDirection: 'column',
-                flexShrink: 0
+                flexShrink: 0,
+                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
             }}>
-                {/* Sidebar Header */}
                 <div style={{
                     padding: '16px',
                     borderBottom: '1px solid #e2e8f0',
@@ -65,12 +64,15 @@ const DashboardLayout = () => {
                     gap: '10px'
                 }}>
                     <img src={logoMain} alt="logo" style={{ height: '32px' }} />
-                    <span style={{ fontSize: '14px', fontWeight: 600 }}>
+                    <span style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                    }}>
                         {isRTL ? appConfig.appName.ur : appConfig.appName.en}
                     </span>
                 </div>
 
-                {/* Navigation Links */}
                 <nav style={{ flex: 1, padding: '16px 0' }}>
                     {menuItems.map((item, index) => (
                         <NavLink
@@ -82,18 +84,19 @@ const DashboardLayout = () => {
                                 textDecoration: 'none',
                                 color: isActive ? '#10b981' : '#374151',
                                 background: isActive ? '#f0fdf4' : 'transparent',
-                                fontSize: '14px',
+                                fontSize: isRTL ? '15px' : '14px',
                                 fontWeight: isActive ? 600 : 400,
-                                borderRight: isActive ? '3px solid #10b981' : '3px solid transparent',
+                                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                                borderRight: isRTL ? (isActive ? '3px solid #10b981' : '3px solid transparent') : 'none',
+                                borderLeft: isRTL ? 'none' : (isActive ? '3px solid #10b981' : '3px solid transparent'),
                                 transition: 'all 0.2s ease'
                             })}
                         >
-                            {item.label}
+                            {t(item.labelKey)}
                         </NavLink>
                     ))}
                 </nav>
 
-                {/* Logout Button at Bottom */}
                 <div style={{ padding: '16px', borderTop: '1px solid #e2e8f0' }}>
                     <button
                         onClick={handleLogout}
@@ -103,19 +106,19 @@ const DashboardLayout = () => {
                             background: 'transparent',
                             border: 'none',
                             color: '#dc2626',
-                            fontSize: '14px',
+                            fontSize: isRTL ? '15px' : '14px',
+                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
                             cursor: 'pointer',
                             textAlign: 'center'
                         }}
                     >
-                        لاگ آؤٹ
+                        {t('dashboard.logout')}
                     </button>
                 </div>
             </aside>
 
-            {/* Main Content Area - Left Side */}
+            {/* Main Content Area */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                {/* Header */}
                 <div style={{
                     background: '#fff',
                     padding: '12px 20px',
@@ -156,32 +159,11 @@ const DashboardLayout = () => {
                     </button>
                 </div>
 
-                {/* Scrollable Content */}
-                <div style={{ flex: 1, overflow: 'auto', background: '#f1f5f9' }}>
-                    {/* Content */}
-                    <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-                        <div style={{ background: '#10b981', color: '#fff', padding: '24px', borderRadius: '10px', textAlign: 'center', marginBottom: '20px' }}>
-                            <h1 style={{ margin: 0, fontSize: isRTL ? '22px' : '18px' }}>{t('dashboard.welcomeToDashboard')}</h1>
-                            <p style={{ margin: '8px 0 0', opacity: 0.9, fontSize: '13px' }}>{t('dashboard.admin')}</p>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '15px' }}>
-                            {[
-                                { label: t('dashboard.presentToday'), val: '15', col: '#3b82f6' },
-                            ].map((s, i) => (
-                                <div key={i} style={{ background: '#fff', padding: '16px', borderRadius: '8px', borderTop: `3px solid ${s.col}` }}>
-                                    <div style={{ fontSize: '12px', color: '#64748b' }}>{s.label}</div>
-                                    <div style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b' }}>{s.val}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
+                <div style={{ flex: 1, overflow: 'auto', background: '#f1f5f9', padding: '20px' }}>
                     <Outlet />
                 </div>
             </div>
 
-            {/* Font Settings Modal */}
             <FontSettings
                 isOpen={showFontSettings}
                 onClose={() => setShowFontSettings(false)}

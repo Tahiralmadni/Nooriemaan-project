@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import DeveloperIntro from './components/DeveloperIntro';
 import Login from './pages/Login';
 import DashboardLayout from './layouts/DashboardLayout';
+import Dashboard from './pages/Dashboard';
+// import Students from './pages/Students'; // Month 7+ - Abhi nahi
 
 /**
  * App Component
@@ -43,8 +45,13 @@ function App() {
           element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
         />
 
-        {/* Dashboard - "/dashboard" */}
-        <Route path="/dashboard" element={<DashboardLayout />} />
+        {/* Dashboard Layout with nested routes */}
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          {/* <Route path="students" element={<Students />} /> */}
+          {/* Fallback for other routes */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -66,9 +66,11 @@
         "settings": "Settings"
     },
     "sidebar": {
+        "dashboard": "Dashboard",
         "home": "Home",
         "students": "Students",
         "teachers": "Teachers",
+        "staff": "Staff",
         "attendance": "Attendance",
         "fees": "Fees",
         "results": "Results",

@@ -1,65 +1,57 @@
 import { useTranslation } from 'react-i18next';
 import i18n from '../config/i18n';
+import DigitalClock from '../components/DigitalClock';
 
 const Dashboard = () => {
     const { t } = useTranslation();
     const isRTL = i18n.language === 'ur';
 
-    // Stats data
+    // Simplified Stats data matching the original "clear" layout
     const stats = [
-        { label: isRTL ? 'کل طلباء' : 'Total Students', value: '1,234', color: '#10b981' },
-        { label: isRTL ? 'آج حاضر' : 'Present Today', value: '1,180', color: '#3b82f6' },
-        { label: isRTL ? 'واجب الادا فیس' : 'Fees Pending', value: '₨ 45K', color: '#f59e0b' },
-        { label: isRTL ? 'نئے نوٹس' : 'New Notices', value: '3', color: '#ef4444' },
+        { label: t('dashboard.presentToday'), val: '15', col: '#3b82f6' },
     ];
 
     return (
-        <div>
-            {/* Welcome Banner */}
-            <div className="bg-gradient-to-l from-emerald-500 to-emerald-600 text-white p-6 rounded-xl mb-6 shadow-lg">
-                <h1 className="text-2xl font-bold mb-2">
-                    {isRTL ? 'ڈیش بورڈ میں خوش آمدید' : 'Welcome to Dashboard'}
+        <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
+            {/* Digital Clock */}
+            <DigitalClock />
+
+            {/* Simple Green Banner */}
+            <div style={{
+                background: '#10b981',
+                color: '#fff',
+                padding: '24px',
+                borderRadius: '10px',
+                textAlign: 'center',
+                marginBottom: '20px',
+                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+            }}>
+                <h1 style={{ margin: 0, fontSize: isRTL ? '22px' : '24px', fontWeight: 'bold' }}>
+                    {t('dashboard.welcomeToDashboard')}
                 </h1>
-                <p className="opacity-90">
-                    {isRTL ? 'ایڈمن پینل' : 'Admin Panel'}
+                <p style={{ margin: '8px 0 0', opacity: 0.9, fontSize: '14px' }}>
+                    {t('dashboard.admin')}
                 </p>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {stats.map((stat, index) => (
-                    <div
-                        key={index}
-                        className="bg-white p-5 rounded-xl shadow-sm border-t-4"
-                        style={{ borderTopColor: stat.color }}
-                    >
-                        <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
-                        <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+            {/* Simple Stats Grid */}
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '15px'
+            }}>
+                {stats.map((s, i) => (
+                    <div key={i} style={{
+                        background: '#fff',
+                        padding: '16px',
+                        borderRadius: '8px',
+                        borderTop: `3px solid ${s.col}`,
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                    }}>
+                        <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{s.label}</div>
+                        <div style={{ fontSize: '24px', fontWeight: 700, color: '#1e293b' }}>{s.val}</div>
                     </div>
                 ))}
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                    {isRTL ? 'فوری کارروائیاں' : 'Quick Actions'}
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {[
-                        { label: isRTL ? 'نیا داخلہ' : 'New Admission', icon: '📝' },
-                        { label: isRTL ? 'حاضری لگائیں' : 'Mark Attendance', icon: '✅' },
-                        { label: isRTL ? 'فیس وصول کریں' : 'Collect Fee', icon: '💰' },
-                        { label: isRTL ? 'رپورٹ دیکھیں' : 'View Reports', icon: '📊' },
-                    ].map((action, index) => (
-                        <button
-                            key={index}
-                            className="flex flex-col items-center gap-2 p-4 rounded-lg bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-                        >
-                            <span className="text-2xl">{action.icon}</span>
-                            <span className="text-sm font-medium">{action.label}</span>
-                        </button>
-                    ))}
-                </div>
             </div>
         </div>
     );
