@@ -1,55 +1,43 @@
 import { useTranslation } from 'react-i18next';
-import i18n from '../config/i18n';
 import DigitalClock from '../components/DigitalClock';
 
 const Dashboard = () => {
     const { t } = useTranslation();
-    const isRTL = i18n.language === 'ur';
 
-    // Simplified Stats data matching the original "clear" layout
     const stats = [
         { label: t('dashboard.presentToday'), val: '15', col: '#3b82f6' },
     ];
 
     return (
-        <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-            {/* Digital Clock */}
-            <DigitalClock />
+        <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+            {/* HEADER SECTION */}
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+                {/* Page Title */}
+                <div>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
+                        {t('dashboard.welcomeToDashboard')}
+                    </h1>
+                    <p className="text-sm text-slate-500 mt-1">
+                        {t('dashboard.admin')}
+                    </p>
+                </div>
 
-            {/* Simple Green Banner */}
-            <div style={{
-                background: '#10b981',
-                color: '#fff',
-                padding: '24px',
-                borderRadius: '10px',
-                textAlign: 'center',
-                marginBottom: '20px',
-                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
-            }}>
-                <h1 style={{ margin: 0, fontSize: isRTL ? '22px' : '24px', fontWeight: 'bold' }}>
-                    {t('dashboard.welcomeToDashboard')}
-                </h1>
-                <p style={{ margin: '8px 0 0', opacity: 0.9, fontSize: '14px' }}>
-                    {t('dashboard.admin')}
-                </p>
+                {/* Clock - Right Aligned on Desktop */}
+                <div className="flex justify-end">
+                    <DigitalClock />
+                </div>
             </div>
 
-            {/* Simple Stats Grid */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: '15px'
-            }}>
+            {/* STATS GRID - Responsive */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {stats.map((s, i) => (
-                    <div key={i} style={{
-                        background: '#fff',
-                        padding: '16px',
-                        borderRadius: '8px',
-                        borderTop: `3px solid ${s.col}`,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                    }}>
-                        <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{s.label}</div>
-                        <div style={{ fontSize: '24px', fontWeight: 700, color: '#1e293b' }}>{s.val}</div>
+                    <div
+                        key={i}
+                        className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                        style={{ borderTop: `3px solid ${s.col}` }}
+                    >
+                        <div className="text-xs md:text-sm text-slate-500 mb-1">{s.label}</div>
+                        <div className="text-2xl md:text-3xl font-bold text-slate-800">{s.val}</div>
                     </div>
                 ))}
             </div>
