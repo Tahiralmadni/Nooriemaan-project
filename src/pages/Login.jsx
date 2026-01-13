@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';  // React ke hooks jo state (data) aur side effects (jaise font load karna) sambhalte hain
 import { useTranslation } from 'react-i18next'; // Urdu/English language badalne ke liye library
 import { useNavigate } from 'react-router-dom'; // Navigation ke liye
+import { Helmet } from 'react-helmet-async'; // Dynamic page titles ke liye
 import { motion, AnimatePresence } from 'framer-motion'; // Smooth animation ke liye (card ka entry effect, shake effect)
 import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
 import FontSettings, { getSavedFont } from '../components/FontSettings'; // Font change karne wala component
@@ -18,8 +19,13 @@ import appConfig from '../config/appConfig'; // App ki branding aur settings
  */
 const Login = () => {
     // Translation hook (t('key') use karke hum urdu/english text dikhayenge)
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate(); // Navigation hook
+
+    // Update title when language changes
+    useEffect(() => {
+        document.title = t('pageTitles.login');
+    }, [t, i18n.language]);
 
     // --- STATE MANAGEMENT (Data Store Karne Ki Jagah) ---
     const [grNumber, setGrNumber] = useState(''); // User jo ID/GR Number type karega wo yahan save hoga
@@ -343,6 +349,11 @@ const Login = () => {
     // 3. Main Login Form State
     return (
         <>
+            {/* Dynamic Page Title */}
+            <Helmet defer={false}>
+                <title>{t('pageTitles.login')}</title>
+            </Helmet>
+
             {/* Toaster Component (Notifications ke liye) */}
             <Toaster containerStyle={{ zIndex: 99999 }} />
 

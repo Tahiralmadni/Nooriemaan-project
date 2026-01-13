@@ -1,17 +1,17 @@
-import { Outlet, useNavigate, NavLink } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { Type } from 'lucide-react';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
-import i18n from '../config/i18n';
 import appConfig from '../config/appConfig';
 import logoMain from '../assets/logo-main.png';
 
 const DashboardLayout = () => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const isRTL = i18n.language === 'ur';
+    const { t, i18n } = useTranslation();
     const [showFontSettings, setShowFontSettings] = useState(false);
+    const [, forceUpdate] = useState(0); // Force re-render state
+
+    const isRTL = i18n.language === 'ur';
 
     // Load saved fonts on mount
     useEffect(() => {
@@ -21,19 +21,27 @@ const DashboardLayout = () => {
         document.documentElement.style.setProperty('--font-english', savedEnglish.family);
     }, []);
 
+    // Language Toggle Handler
+    const handleLanguageChange = () => {
+        const newLang = i18n.language === 'ur' ? 'en' : 'ur';
+        i18n.changeLanguage(newLang);
+        // Force re-render to update Helmet
+        forceUpdate(n => n + 1);
+    };
+
     // Logout Handler
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userGR');
-        navigate('/');
+        window.location.href = '/';
     };
 
-    // Sidebar menu items
+    // Sidebar menu items - Clean URLs
     const menuItems = [
         { labelKey: 'sidebar.dashboard', path: '/dashboard' },
-        { labelKey: 'sidebar.students', path: '/dashboard/students' },
-        { labelKey: 'sidebar.teachers', path: '/dashboard/staff' },
-        { labelKey: 'sidebar.attendance', path: '/dashboard/attendance' },
+        { labelKey: 'sidebar.students', path: '/students' },
+        { labelKey: 'sidebar.teachers', path: '/teachers' },
+        { labelKey: 'sidebar.attendance', path: '/attendance' },
     ];
 
     return (
@@ -53,8 +61,7 @@ const DashboardLayout = () => {
                 borderRight: isRTL ? 'none' : '1px solid #e2e8f0',
                 display: 'flex',
                 flexDirection: 'column',
-                flexShrink: 0,
-                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                flexShrink: 0
             }}>
                 <div style={{
                     padding: '16px',
@@ -64,11 +71,7 @@ const DashboardLayout = () => {
                     gap: '10px'
                 }}>
                     <img src={logoMain} alt="logo" style={{ height: '32px' }} />
-                    <span style={{
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
-                    }}>
+                    <span style={{ fontSize: '14px', fontWeight: 600 }}>
                         {isRTL ? appConfig.appName.ur : appConfig.appName.en}
                     </span>
                 </div>
@@ -86,7 +89,6 @@ const DashboardLayout = () => {
                                 background: isActive ? '#f0fdf4' : 'transparent',
                                 fontSize: isRTL ? '15px' : '14px',
                                 fontWeight: isActive ? 600 : 400,
-                                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
                                 borderRight: isRTL ? (isActive ? '3px solid #10b981' : '3px solid transparent') : 'none',
                                 borderLeft: isRTL ? 'none' : (isActive ? '3px solid #10b981' : '3px solid transparent'),
                                 transition: 'all 0.2s ease'
@@ -107,7 +109,6 @@ const DashboardLayout = () => {
                             border: 'none',
                             color: '#dc2626',
                             fontSize: isRTL ? '15px' : '14px',
-                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
                             cursor: 'pointer',
                             textAlign: 'center'
                         }}
@@ -129,7 +130,7 @@ const DashboardLayout = () => {
                     gap: '10px'
                 }}>
                     <button
-                        onClick={() => i18n.changeLanguage(isRTL ? 'en' : 'ur')}
+                        onClick={handleLanguageChange}
                         style={{
                             padding: '6px 12px',
                             border: '1px solid #ddd',

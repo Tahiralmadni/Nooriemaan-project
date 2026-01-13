@@ -108,5 +108,13 @@
             "November",
             "December"
         ]
+    },
+    "pageTitles": {
+        "login": "Login - Nooriemaan",
+        "dashboard": "Dashboard - Nooriemaan",
+        "students": "Students - Nooriemaan",
+        "teachers": "Teachers - Nooriemaan",
+        "attendance": "Attendance - Nooriemaan",
+        "fees": "Fees - Nooriemaan"
     }
 }
