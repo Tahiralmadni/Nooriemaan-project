@@ -70,13 +70,19 @@
         "home": "ہوم",
         "students": "طلباء",
         "teachers": "اساتذہ",
+        "teachersList": "اساتذہ کی فہرست",
+        "attendanceSchedule": "حاضری جدول",
+        "attendanceSummary": "حاضری سمری",
+        "dailyAttendance": "یومیہ حاضری",
         "staff": "عملہ",
         "attendance": "حاضری",
         "fees": "فیس",
         "results": "نتائج",
         "reports": "رپورٹس",
         "notices": "نوٹس",
-        "settings": "سیٹنگز"
+        "settings": "سیٹنگز",
+        "collapse": "بند کریں",
+        "expand": "کھولیں"
     },
     "loader": {
         "loading": "برائے مہربانی انتظار کریں",
@@ -114,7 +120,11 @@
         "dashboard": "ڈیش بورڈ - نورِ ایمان",
         "students": "طلباء - نورِ ایمان",
         "teachers": "اساتذہ - نورِ ایمان",
+        "teachersList": "اساتذہ کی فہرست - نورِ ایمان",
+        "attendanceSchedule": "حاضری جدول - نورِ ایمان",
+        "attendanceSummary": "حاضری سمری - نورِ ایمان",
+        "dailyAttendance": "یومیہ حاضری - نورِ ایمان",
         "attendance": "حاضری - نورِ ایمان",
         "fees": "فیس - نورِ ایمان"
-    }   
+    }
 }

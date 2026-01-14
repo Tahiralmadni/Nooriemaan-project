@@ -70,13 +70,19 @@
         "home": "Home",
         "students": "Students",
         "teachers": "Teachers",
+        "teachersList": "Teachers List",
+        "attendanceSchedule": "Attendance Schedule",
+        "attendanceSummary": "Attendance Summary",
+        "dailyAttendance": "Daily Attendance",
         "staff": "Staff",
         "attendance": "Attendance",
         "fees": "Fees",
         "results": "Results",
         "reports": "Reports",
         "notices": "Notices",
-        "settings": "Settings"
+        "settings": "Settings",
+        "collapse": "Collapse",
+        "expand": "Expand"
     },
     "loader": {
         "loading": "Loading, please wait",
@@ -114,6 +120,10 @@
         "dashboard": "Dashboard - Nooriemaan",
         "students": "Students - Nooriemaan",
         "teachers": "Teachers - Nooriemaan",
+        "teachersList": "Teachers List - Nooriemaan",
+        "attendanceSchedule": "Attendance Schedule - Nooriemaan",
+        "attendanceSummary": "Attendance Summary - Nooriemaan",
+        "dailyAttendance": "Daily Attendance - Nooriemaan",
         "attendance": "Attendance - Nooriemaan",
         "fees": "Fees - Nooriemaan"
     }

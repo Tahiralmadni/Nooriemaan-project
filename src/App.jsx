@@ -7,10 +7,12 @@ import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import Teachers from './pages/Teachers';
-import Attendance from './pages/Attendance';
+import AttendanceSchedule from './pages/AttendanceSchedule';
+import AttendanceSummary from './pages/AttendanceSummary';
+import DailyAttendance from './pages/DailyAttendance';
 
 /**
- * App Component - Clean URL Structure
+ * App Component - Clean URL Structure with Asataza Dropdown Routes
  */
 function App() {
   const [showIntro, setShowIntro] = useState(() => {
@@ -39,12 +41,16 @@ function App() {
           <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
           <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
 
-          {/* All pages inside DashboardLayout - Clean URLs */}
+          {/* All pages inside DashboardLayout */}
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/students" element={<Students />} />
+
+            {/* Teachers/Asataza with sub-routes */}
             <Route path="/teachers" element={<Teachers />} />
-            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
+            <Route path="/teachers/summary" element={<AttendanceSummary />} />
+            <Route path="/teachers/daily" element={<DailyAttendance />} />
           </Route>
 
           {/* Fallback */}
