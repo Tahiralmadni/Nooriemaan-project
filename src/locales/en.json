@@ -84,6 +84,11 @@
         "collapse": "Collapse",
         "expand": "Expand"
     },
+    "table": {
+        "serial": "#",
+        "name": "Name",
+        "email": "Email"
+    },
     "loader": {
         "loading": "Loading, please wait",
         "preparingDashboard": "Preparing your dashboard"

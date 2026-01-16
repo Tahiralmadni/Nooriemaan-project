@@ -84,6 +84,11 @@
         "collapse": "بند کریں",
         "expand": "کھولیں"
     },
+    "table": {
+        "serial": "نمبر",
+        "name": "نام",
+        "email": "ای میل"
+    },
     "loader": {
         "loading": "برائے مہربانی انتظار کریں",
         "preparingDashboard": "آپ کا ڈیش بورڈ تیار ہو رہا ہے"
