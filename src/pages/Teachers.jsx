@@ -4,56 +4,100 @@ import { Helmet } from 'react-helmet-async';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
-    const isRTL = i18n.language === 'ur';
 
     useEffect(() => {
         document.title = t('pageTitles.teachers');
     }, [t, i18n.language]);
 
-    // Staff Data - Basic
-    const staffData = [
-        { id: 1, name: 'Muhammad Akram Attari', email: 'ishaqakram67@gmail.com' },
-        { id: 2, name: 'Qari Syed Umair Attari', email: '-' },
-        { id: 3, name: 'Muhammad Muneeb Sabir', email: 'muneebattari527@gmail.com' },
-        { id: 4, name: 'Mudassir Raza', email: 'mudassirrazachishti@gmail.com' },
-        { id: 5, name: 'Ubaid Raza', email: 'ubaidattari0326@gmail.com' },
-        { id: 6, name: 'Muhammad Rizwan Hussain', email: '-' },
-        { id: 7, name: 'Muhammad Kashif Attari', email: '-' },
-        { id: 8, name: 'Muhammad Hashim', email: '-' },
-        { id: 9, name: 'Ahmed Shah', email: '-' },
-        { id: 10, name: 'Jawad', email: 'jawadsoomrowork@gmail.com' },
-        { id: 11, name: 'Hanzalah Tahir', email: 'hanzalahtahir93@gmail.com' },
-    ];
+    const staffIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    const emails = {
+        1: 'ishaqakram67@gmail.com',
+        2: '-',
+        3: 'muneebattari527@gmail.com',
+        4: 'mudassirrazachishti@gmail.com',
+        5: 'ubaidattari0326@gmail.com',
+        6: '-',
+        7: '-',
+        8: '-',
+        9: '-',
+        10: 'jawadsoomrowork@gmail.com',
+        11: 'hanzalahtahir93@gmail.com',
+    };
 
     return (
         <>
             <Helmet defer={false}>
                 <title>{t('pageTitles.teachers')}</title>
             </Helmet>
-            <div style={{
-                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
-                direction: isRTL ? 'rtl' : 'ltr'
-            }}>
-                <h2 style={{ marginBottom: '16px' }}>{t('sidebar.teachers')}</h2>
+            <div>
+                {/* Header */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '24px'
+                }}>
+                    <h1 style={{
+                        fontSize: '28px',
+                        fontWeight: '700',
+                        color: '#1e293b',
+                        margin: 0
+                    }}>
+                        {t('sidebar.teachersList')}
+                    </h1>
+                    <span style={{
+                        background: '#10b981',
+                        color: '#fff',
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: '600'
+                    }}>
+                        {staffIds.length} {t('table.members')}
+                    </span>
+                </div>
 
-                <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-                    <thead>
-                        <tr style={{ background: '#f0f0f0' }}>
-                            <th style={{ border: '1px solid #ccc', padding: '10px' }}>{t('table.serial')}</th>
-                            <th style={{ border: '1px solid #ccc', padding: '10px' }}>{t('table.name')}</th>
-                            <th style={{ border: '1px solid #ccc', padding: '10px' }}>{t('table.email')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {staffData.map((staff) => (
-                            <tr key={staff.id}>
-                                <td style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>{staff.id}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{staff.name}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{staff.email}</td>
+                {/* Table */}
+                <div style={{
+                    background: '#fff',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                    overflow: 'hidden'
+                }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
+                                <th style={{ padding: '16px 20px', color: '#fff', fontWeight: '600', textAlign: 'center', width: '70px' }}>
+                                    {t('table.serial')}
+                                </th>
+                                <th style={{ padding: '16px 20px', color: '#fff', fontWeight: '600' }}>
+                                    {t('table.name')}
+                                </th>
+                                <th style={{ padding: '16px 20px', color: '#fff', fontWeight: '600' }}>
+                                    {t('table.email')}
+                                </th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {staffIds.map((id, index) => (
+                                <tr
+                                    key={id}
+                                    style={{ background: index % 2 === 0 ? '#fff' : '#f8fafc' }}
+                                >
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', borderBottom: '1px solid #e5e7eb', color: '#10b981', fontWeight: '600' }}>
+                                        {id}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', borderBottom: '1px solid #e5e7eb', color: '#1e293b', fontWeight: '500' }}>
+                                        {t(`staff.${id}`)}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', borderBottom: '1px solid #e5e7eb', color: emails[id] === '-' ? '#94a3b8' : '#3b82f6' }}>
+                                        {emails[id]}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </>
     );

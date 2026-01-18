@@ -176,7 +176,6 @@ const DashboardLayout = () => {
                                 <Users size={20} />
                                 {!isCollapsed && t('sidebar.teachers')}
                             </div>
-                            {!isCollapsed && (teachersOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />)}
                         </button>
 
                         {/* Sub-menu */}

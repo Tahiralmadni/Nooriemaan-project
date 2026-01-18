@@ -69,8 +69,8 @@
         "dashboard": "Dashboard",
         "home": "Home",
         "students": "Students",
-        "teachers": "Teachers",
-        "teachersList": "Teachers List",
+        "teachers": "Staff",
+        "teachersList": "Staff List",
         "attendanceSchedule": "Attendance Schedule",
         "attendanceSummary": "Attendance Summary",
         "dailyAttendance": "Daily Attendance",
@@ -87,7 +87,21 @@
     "table": {
         "serial": "#",
         "name": "Name",
-        "email": "Email"
+        "email": "Email",
+        "members": "Members"
+    },
+    "staff": {
+        "1": "Muhammad Akram Attari",
+        "2": "Qari Syed Umair Attari",
+        "3": "Muhammad Muneeb Sabir",
+        "4": "Mudassir Raza",
+        "5": "Ubaid Raza",
+        "6": "Muhammad Rizwan Hussain",
+        "7": "Muhammad Kashif Attari",
+        "8": "Muhammad Hashim",
+        "9": "Ahmed Shah",
+        "10": "Jawad",
+        "11": "Hanzalah Tahir"
     },
     "loader": {
         "loading": "Loading, please wait",
