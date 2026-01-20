@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 
 const Teachers = () => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         document.title = t('pageTitles.teachers');
-    }, [t, i18n.language]);
+    }, [t]);
 
     const staffIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
     const emails = {
         1: 'ishaqakram67@gmail.com',
         2: '-',
