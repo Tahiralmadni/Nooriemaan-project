@@ -1,0 +1,94 @@
+{
+    "tech_stack": [
+        "JavaScript",
+        "React 19",
+        "React Router DOM",
+        "react-i18next",
+        "react-helmet-async",
+        "Lucide React Icons",
+        "Vite",
+        "CSS"
+    ],
+    "features": [
+        {
+            "name": "Authentication",
+            "description": "Login page with form validation, language switch, and protected routes",
+            "files": [
+                "src/pages/Login.jsx",
+                "src/App.jsx"
+            ]
+        },
+        {
+            "name": "Dashboard",
+            "description": "Main dashboard with welcome banner, digital clock, and stat cards",
+            "files": [
+                "src/pages/Dashboard.jsx"
+            ]
+        },
+        {
+            "name": "Dashboard Layout",
+            "description": "Sidebar navigation with Staff dropdown, language switch, collapse functionality",
+            "files": [
+                "src/layouts/DashboardLayout.jsx"
+            ]
+        },
+        {
+            "name": "Staff List (Teachers)",
+            "description": "Table displaying 22 staff members with bilingual names and emails",
+            "files": [
+                "src/pages/Teachers.jsx"
+            ]
+        },
+        {
+            "name": "Students Page",
+            "description": "Placeholder page for student management",
+            "files": [
+                "src/pages/Students.jsx"
+            ]
+        },
+        {
+            "name": "Daily Attendance",
+            "description": "Placeholder page for daily attendance tracking",
+            "files": [
+                "src/pages/DailyAttendance.jsx"
+            ]
+        },
+        {
+            "name": "Attendance Schedule",
+            "description": "Placeholder page for attendance schedule",
+            "files": [
+                "src/pages/AttendanceSchedule.jsx"
+            ]
+        },
+        {
+            "name": "Attendance Summary",
+            "description": "Placeholder page for attendance summary/reports",
+            "files": [
+                "src/pages/AttendanceSummary.jsx"
+            ]
+        },
+        {
+            "name": "Internationalization",
+            "description": "Complete Urdu and English translations with RTL support",
+            "files": [
+                "src/locales/ur.json",
+                "src/locales/en.json",
+                "src/i18n.js"
+            ]
+        },
+        {
+            "name": "Developer Intro",
+            "description": "Developer introduction animation on app load",
+            "files": [
+                "src/components/DeveloperIntro.jsx"
+            ]
+        },
+        {
+            "name": "Routing",
+            "description": "React Router setup with protected and public routes",
+            "files": [
+                "src/App.jsx"
+            ]
+        }
+    ]
+}

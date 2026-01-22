@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "project": "Noori Emaan Digital Portal",
+    "date": "2026-01-21",
+    "prepared_by": "Hanzalah Tahir"
+  },
+  "product_overview": "Noori Emaan Digital Portal is a bilingual Madrasa Management System designed to facilitate staff and attendance management with professional UI/UX and language support for Urdu and English. It includes secure authentication, a dynamic dashboard, and responsive sidebar navigation, aiming to streamline madrasa administrative tasks.",
+  "core_goals": [
+    "Provide secure and user-friendly login with multilingual support and font customization.",
+    "Offer a comprehensive dashboard featuring welcome messaging, clock with Hijri date, and key statistics.",
+    "Implement a professional and collapsible sidebar with staff navigation, language switching, and logout.",
+    "Display detailed bilingual staff lists with contact information in a visually appealing format.",
+    "Support full Urdu and English internationalization including RTL and LTR text direction.",
+    "Prepare placeholders for future features like student management and attendance tracking modules."
+  ],
+  "key_features": [
+    "Authentication system with form validation, language switch, and protected routes.",
+    "Dashboard with welcome banner, digital clock showing Hijri date, and stats cards layout.",
+    "Sidebar navigation with staff dropdown menu, language switch, and collapse functionality.",
+    "Staff list table showing 22 members with bilingual names and emails.",
+    "Internationalization support with Urdu and English translations and automatic RTL/LTR switching.",
+    "Developer intro animation on app load for engaging user experience.",
+    "Routing configured with React Router DOM for public and protected routes."
+  ],
+  "user_flow_summary": [
+    "User accesses the login page, selects preferred language, and enters credentials to authenticate.",
+    "Upon successful login, user is redirected to the dashboard displaying personalized welcome, clock, and stats.",
+    "User navigates through sidebar menu to access staff list or placeholder pages for students and attendance.",
+    "User can switch language anytime via sidebar and the UI updates accordingly with RTL/LTR support.",
+    "User can collapse or expand the sidebar for a customized view and use staff dropdown for quicker access.",
+    "User logs out via sidebar, terminating session and redirecting to login page."
+  ],
+  "validation_criteria": [
+    "Login form validates input fields and restricts unauthorized access to protected routes.",
+    "Bilingual interface seamlessly switches languages including text direction changes.",
+    "Dashboard displays real-time clock with correct Hijri date and accurate user welcome info.",
+    "Staff list renders all 22 members with correct bilingual names and email addresses in styled table.",
+    "Sidebar functions correctly allowing collapse, language switch, staff menu navigation, and logout.",
+    "App routing enforces authentication protecting dashboard and other secured pages.",
+    "Developer intro animation runs on app load without impeding performance."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "JavaScript",
+      "React 19",
+      "React Router DOM",
+      "react-i18next",
+      "react-helmet-async",
+      "Lucide React Icons",
+      "Vite",
+      "CSS"
+    ],
+    "features": [
+      {
+        "name": "Authentication",
+        "description": "Login page with form validation, language switch, and protected routes",
+        "files": [
+          "src/pages/Login.jsx",
+          "src/App.jsx"
+        ]
+      },
+      {
+        "name": "Dashboard",
+        "description": "Main dashboard with welcome banner, digital clock, and stat cards",
+        "files": [
+          "src/pages/Dashboard.jsx"
+        ]
+      },
+      {
+        "name": "Dashboard Layout",
+        "description": "Sidebar navigation with Staff dropdown, language switch, collapse functionality",
+        "files": [
+          "src/layouts/DashboardLayout.jsx"
+        ]
+      },
+      {
+        "name": "Staff List (Teachers)",
+        "description": "Table displaying 22 staff members with bilingual names and emails",
+        "files": [
+          "src/pages/Teachers.jsx"
+        ]
+      },
+      {
+        "name": "Students Page",
+        "description": "Placeholder page for student management",
+        "files": [
+          "src/pages/Students.jsx"
+        ]
+      },
+      {
+        "name": "Daily Attendance",
+        "description": "Placeholder page for daily attendance tracking",
+        "files": [
+          "src/pages/DailyAttendance.jsx"
+        ]
+      },
+      {
+        "name": "Attendance Schedule",
+        "description": "Placeholder page for attendance schedule",
+        "files": [
+          "src/pages/AttendanceSchedule.jsx"
+        ]
+      },
+      {
+        "name": "Attendance Summary",
+        "description": "Placeholder page for attendance summary/reports",
+        "files": [
+          "src/pages/AttendanceSummary.jsx"
+        ]
+      },
+      {
+        "name": "Internationalization",
+        "description": "Complete Urdu and English translations with RTL support",
+        "files": [
+          "src/locales/ur.json",
+          "src/locales/en.json",
+          "src/i18n.js"
+        ]
+      },
+      {
+        "name": "Developer Intro",
+        "description": "Developer introduction animation on app load",
+        "files": [
+          "src/components/DeveloperIntro.jsx"
+        ]
+      },
+      {
+        "name": "Routing",
+        "description": "React Router setup with protected and public routes",
+        "files": [
+          "src/App.jsx"
+        ]
+      }
+    ]
+  }
+}

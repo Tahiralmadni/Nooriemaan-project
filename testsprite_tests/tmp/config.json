@@ -1,0 +1,15 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5173/teachers",
+  "executionArgs": {
+    "projectName": "Nooriemaan project",
+    "projectPath": "c:\\Users\\tahir\\OneDrive\\Desktop\\Nooriemaan project",
+    "testIds": [],
+    "additionalInstruction": "Focus on finding bugs, errors, and issues. Check all pages and navigation.",
+    "envs": {
+      "API_KEY": "sk-user-CRUwLCtpFwKVNz93BvOOT1-YdJlTCi1PNXmBAc1dtzNCzJe_dvxnxbO9bZhYCH5kxXx8FmQB_Q1tD3P3OaNA1uz8iYvoQz8knaPXrjuPBe6QuuNNnMfuzEFtpPheeYNX6n4"
+    }
+  }
+}
