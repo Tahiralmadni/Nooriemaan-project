@@ -243,3 +243,120 @@ input[type="email"] {
 .animate-wave {
   animation: wave 2s linear infinite;
 }
+
+/* ============================================
+   RESPONSIVE DESIGN - Mobile First
+   ============================================ */
+
+/* Small devices (phones, less than 640px) */
+@media (max-width: 639px) {
+  /* Login Card - Smaller padding on mobile */
+  .login-card {
+    padding: 24px 16px !important;
+    margin: 0 12px;
+  }
+
+  /* Tables - Horizontal scroll on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Table cells - smaller padding */
+  th, td {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+  }
+
+  /* Headers - Smaller on mobile */
+  h1 {
+    font-size: 20px !important;
+  }
+
+  h2 {
+    font-size: 18px !important;
+  }
+
+  /* Buttons - Full width on mobile */
+  .btn-mobile-full {
+    width: 100% !important;
+  }
+
+  /* Hide on mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+
+  /* Font adjustments for readability */
+  body {
+    font-size: 14px;
+  }
+
+  /* Fix login page background decorations */
+  .login-blob {
+    display: none;
+  }
+}
+
+/* Medium devices (tablets, 640px to 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Table adjustments */
+  th, td {
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  /* Show on desktop only */
+  .show-desktop {
+    display: block !important;
+  }
+
+  /* Hide on desktop */
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (pointer: coarse) {
+  /* Larger touch targets */
+  button, a, input, select {
+    min-height: 44px;
+  }
+
+  /* Better spacing for touch */
+  .touch-spacing > * {
+    margin-bottom: 12px;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 639px) and (orientation: landscape) {
+  /* Reduce vertical spacing */
+  .login-card {
+    padding: 16px !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  /* Hide non-essential elements */
+  nav, .sidebar, button, .no-print {
+    display: none !important;
+  }
+
+  /* Full width content */
+  main {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}

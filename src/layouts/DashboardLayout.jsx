@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import {
     Type,
-    ChevronDown,
-    ChevronUp,
     Home,
     Users,
     GraduationCap,
@@ -13,7 +11,9 @@ import {
     PanelLeft,
     Calendar,
     ClipboardList,
-    BarChart3
+    BarChart3,
+    Menu,
+    X
 } from 'lucide-react';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import appConfig from '../config/appConfig';
@@ -25,6 +25,7 @@ const DashboardLayout = () => {
     const [showFontSettings, setShowFontSettings] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [teachersOpen, setTeachersOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const isRTL = i18n.language === 'ur';
 
@@ -33,6 +34,11 @@ const DashboardLayout = () => {
         if (location.pathname.startsWith('/teachers')) {
             setTeachersOpen(true);
         }
+    }, [location.pathname]);
+
+    // Close mobile menu on route change
+    useEffect(() => {
+        setMobileMenuOpen(false);
     }, [location.pathname]);
 
     // Load saved fonts on mount
@@ -64,63 +70,63 @@ const DashboardLayout = () => {
         { labelKey: 'sidebar.dailyAttendance', path: '/teachers/daily', icon: ClipboardList, isNew: true },
     ];
 
-    // Main menu items (simplified)
+    // Main menu items
     const mainMenuItems = [
         { labelKey: 'sidebar.dashboard', path: '/dashboard', icon: Home },
         { labelKey: 'sidebar.students', path: '/students', icon: GraduationCap },
     ];
 
-    const sidebarWidth = isCollapsed ? '70px' : '260px';
-
     return (
         <div
-            style={{
-                height: '100vh',
-                display: 'flex',
-                fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
-            }}
+            className={`h-screen flex ${isRTL ? 'font-urdu' : 'font-english'}`}
             dir={isRTL ? 'rtl' : 'ltr'}
         >
-            {/* Professional Sidebar */}
+            {/* Mobile Overlay */}
+            {mobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+            {/* Sidebar - Hidden on mobile, shown on lg+ */}
             <aside
-                style={{
-                    width: sidebarWidth,
-                    background: 'linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%)',
-                    borderLeft: isRTL ? '1px solid #e2e8f0' : 'none',
-                    borderRight: isRTL ? 'none' : '1px solid #e2e8f0',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexShrink: 0,
-                    transition: 'width 0.3s ease',
-                    overflow: 'hidden'
-                }}
+                className={`
+                    fixed lg:relative inset-y-0 z-50
+                    ${isRTL ? 'right-0' : 'left-0'}
+                    ${mobileMenuOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'}
+                    lg:translate-x-0
+                    ${isCollapsed ? 'w-[70px]' : 'w-[260px]'}
+                    bg-gradient-to-b from-white to-green-50
+                    ${isRTL ? 'border-l' : 'border-r'} border-gray-200
+                    flex flex-col flex-shrink-0
+                    transition-all duration-300 ease-in-out
+                `}
             >
                 {/* Logo Section */}
-                <div style={{
-                    padding: isCollapsed ? '16px 10px' : '16px 20px',
-                    borderBottom: '1px solid #e2e8f0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: isCollapsed ? 'center' : 'flex-start',
-                    gap: '12px',
-                    background: '#10b981',
-                    minHeight: '65px'
-                }}>
-                    <img src={logoMain} alt="logo" style={{ height: '36px', flexShrink: 0 }} />
+                <div className={`
+                    ${isCollapsed ? 'px-2.5' : 'px-5'} py-4
+                    border-b border-gray-200
+                    flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'}
+                    gap-3 bg-emerald-500 min-h-[65px]
+                `}>
+                    <img src={logoMain} alt="logo" className="h-9 flex-shrink-0" />
                     {!isCollapsed && (
-                        <span style={{
-                            fontSize: '15px',
-                            fontWeight: 700,
-                            color: '#fff',
-                            whiteSpace: 'nowrap'
-                        }}>
+                        <span className="text-[15px] font-bold text-white whitespace-nowrap">
                             {isRTL ? appConfig.appName.ur : appConfig.appName.en}
                         </span>
                     )}
+                    {/* Mobile Close Button */}
+                    <button
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="lg:hidden ml-auto text-white p-1"
+                    >
+                        <X size={24} />
+                    </button>
                 </div>
 
                 {/* Navigation */}
-                <nav style={{ flex: 1, padding: '12px 0', overflowY: 'auto' }}>
+                <nav className="flex-1 py-3 overflow-y-auto">
                     {/* Main Menu Items */}
                     {mainMenuItems.map((item, index) => {
                         const Icon = item.icon;
@@ -128,21 +134,17 @@ const DashboardLayout = () => {
                             <NavLink
                                 key={index}
                                 to={item.path}
-                                style={({ isActive }) => ({
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                    padding: isCollapsed ? '14px 0' : '14px 20px',
-                                    justifyContent: isCollapsed ? 'center' : 'flex-start',
-                                    textDecoration: 'none',
-                                    color: isActive ? '#10b981' : '#4b5563',
-                                    background: isActive ? '#ecfdf5' : 'transparent',
-                                    fontSize: '14px',
-                                    fontWeight: isActive ? 600 : 500,
-                                    borderRight: isRTL ? (isActive ? '4px solid #10b981' : '4px solid transparent') : 'none',
-                                    borderLeft: isRTL ? 'none' : (isActive ? '4px solid #10b981' : '4px solid transparent'),
-                                    transition: 'all 0.2s ease'
-                                })}
+                                className={({ isActive }) => `
+                                    flex items-center gap-3
+                                    ${isCollapsed ? 'justify-center py-3.5' : 'px-5 py-3.5'}
+                                    no-underline text-sm
+                                    ${isActive ? 'text-emerald-500 bg-emerald-50 font-semibold' : 'text-gray-600 font-medium'}
+                                    ${isRTL
+                                        ? (isActive ? 'border-r-4 border-emerald-500' : 'border-r-4 border-transparent')
+                                        : (isActive ? 'border-l-4 border-emerald-500' : 'border-l-4 border-transparent')
+                                    }
+                                    transition-all duration-200 hover:bg-emerald-50
+                                `}
                             >
                                 <Icon size={20} />
                                 {!isCollapsed && t(item.labelKey)}
@@ -154,25 +156,19 @@ const DashboardLayout = () => {
                     <div>
                         <button
                             onClick={() => setTeachersOpen(!teachersOpen)}
-                            style={{
-                                width: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '12px',
-                                padding: isCollapsed ? '14px 0' : '14px 20px',
-                                justifyContent: isCollapsed ? 'center' : 'space-between',
-                                background: location.pathname.startsWith('/teachers') ? '#ecfdf5' : 'transparent',
-                                border: 'none',
-                                cursor: 'pointer',
-                                color: location.pathname.startsWith('/teachers') ? '#10b981' : '#4b5563',
-                                fontSize: '14px',
-                                fontWeight: location.pathname.startsWith('/teachers') ? 600 : 500,
-                                borderRight: isRTL ? (location.pathname.startsWith('/teachers') ? '4px solid #10b981' : '4px solid transparent') : 'none',
-                                borderLeft: isRTL ? 'none' : (location.pathname.startsWith('/teachers') ? '4px solid #10b981' : '4px solid transparent'),
-                                transition: 'all 0.2s ease'
-                            }}
+                            className={`
+                                w-full flex items-center gap-3
+                                ${isCollapsed ? 'justify-center py-3.5' : 'px-5 py-3.5 justify-between'}
+                                ${location.pathname.startsWith('/teachers') ? 'bg-emerald-50 text-emerald-500 font-semibold' : 'text-gray-600 font-medium'}
+                                border-none cursor-pointer text-sm
+                                ${isRTL
+                                    ? (location.pathname.startsWith('/teachers') ? 'border-r-4 border-emerald-500' : 'border-r-4 border-transparent')
+                                    : (location.pathname.startsWith('/teachers') ? 'border-l-4 border-emerald-500' : 'border-l-4 border-transparent')
+                                }
+                                transition-all duration-200 hover:bg-emerald-50 bg-transparent
+                            `}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div className="flex items-center gap-3">
                                 <Users size={20} />
                                 {!isCollapsed && t('sidebar.teachers')}
                             </div>
@@ -180,11 +176,7 @@ const DashboardLayout = () => {
 
                         {/* Sub-menu */}
                         {teachersOpen && !isCollapsed && (
-                            <div style={{
-                                background: '#f9fafb',
-                                borderTop: '1px solid #e5e7eb',
-                                borderBottom: '1px solid #e5e7eb'
-                            }}>
+                            <div className="bg-gray-50 border-y border-gray-200">
                                 {teachersSubMenu.map((subItem, idx) => {
                                     const SubIcon = subItem.icon;
                                     return (
@@ -192,34 +184,22 @@ const DashboardLayout = () => {
                                             key={idx}
                                             to={subItem.path}
                                             end={subItem.path === '/teachers'}
-                                            style={({ isActive }) => ({
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '10px',
-                                                padding: '12px 20px',
-                                                paddingRight: isRTL ? '36px' : '20px',
-                                                paddingLeft: isRTL ? '20px' : '36px',
-                                                textDecoration: 'none',
-                                                color: isActive ? '#10b981' : '#6b7280',
-                                                background: isActive ? '#dcfce7' : 'transparent',
-                                                fontSize: '13px',
-                                                fontWeight: isActive ? 600 : 400,
-                                                transition: 'all 0.2s ease'
-                                            })}
+                                            className={({ isActive }) => `
+                                                flex items-center gap-2.5 py-3 px-5
+                                                ${isRTL ? 'pr-9' : 'pl-9'}
+                                                no-underline text-[13px]
+                                                ${isActive ? 'text-emerald-500 bg-green-100 font-semibold' : 'text-gray-500 font-normal'}
+                                                transition-all duration-200 hover:bg-green-100
+                                            `}
                                         >
                                             <SubIcon size={16} />
                                             {t(subItem.labelKey)}
                                             {subItem.isNew && (
-                                                <span style={{
-                                                    background: '#10b981',
-                                                    color: '#fff',
-                                                    fontSize: '10px',
-                                                    padding: '2px 6px',
-                                                    borderRadius: '10px',
-                                                    fontWeight: 600,
-                                                    marginRight: isRTL ? '0' : 'auto',
-                                                    marginLeft: isRTL ? 'auto' : '0'
-                                                }}>
+                                                <span className={`
+                                                    bg-emerald-500 text-white text-[10px] px-1.5 py-0.5 
+                                                    rounded-full font-semibold
+                                                    ${isRTL ? 'ml-auto' : 'mr-auto'}
+                                                `}>
                                                     NEW
                                                 </span>
                                             )}
@@ -232,24 +212,11 @@ const DashboardLayout = () => {
                 </nav>
 
                 {/* Bottom Section */}
-                <div style={{ borderTop: '1px solid #e2e8f0' }}>
-                    {/* Collapse Button */}
+                <div className="border-t border-gray-200">
+                    {/* Collapse Button - Hidden on mobile */}
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        style={{
-                            width: '100%',
-                            padding: '14px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                            background: '#f1f5f9',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: '#64748b',
-                            fontSize: '13px',
-                            transition: 'all 0.2s ease'
-                        }}
+                        className="hidden lg:flex w-full py-3.5 items-center justify-center gap-2.5 bg-gray-100 border-none cursor-pointer text-gray-500 text-[13px] hover:bg-gray-200 transition-all"
                     >
                         {isCollapsed ? <PanelLeft size={20} /> : <PanelLeftClose size={20} />}
                         {!isCollapsed && t(isCollapsed ? 'sidebar.expand' : 'sidebar.collapse')}
@@ -258,21 +225,7 @@ const DashboardLayout = () => {
                     {/* Logout */}
                     <button
                         onClick={handleLogout}
-                        style={{
-                            width: '100%',
-                            padding: '14px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                            background: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: '#dc2626',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            transition: 'all 0.2s ease'
-                        }}
+                        className="w-full py-3.5 flex items-center justify-center gap-2.5 bg-transparent border-none cursor-pointer text-red-600 text-sm font-medium hover:bg-red-50 transition-all"
                     >
                         <LogOut size={18} />
                         {!isCollapsed && t('dashboard.logout')}
@@ -281,54 +234,37 @@ const DashboardLayout = () => {
             </aside>
 
             {/* Main Content Area */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
-                <div style={{
-                    background: '#fff',
-                    padding: '12px 24px',
-                    borderBottom: '1px solid #e2e8f0',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    alignItems: 'center',
-                    gap: '12px'
-                }}>
+                <div className="bg-white px-4 md:px-6 py-3 border-b border-gray-200 flex justify-between items-center gap-3">
+                    {/* Mobile Menu Button */}
                     <button
-                        onClick={handleLanguageChange}
-                        style={{
-                            padding: '8px 16px',
-                            border: '1px solid #10b981',
-                            borderRadius: '8px',
-                            background: '#ecfdf5',
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            fontWeight: 600,
-                            color: '#10b981',
-                            transition: 'all 0.2s ease'
-                        }}
+                        onClick={() => setMobileMenuOpen(true)}
+                        className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                     >
-                        {isRTL ? 'English' : 'اردو'}
+                        <Menu size={24} />
                     </button>
-                    <button
-                        onClick={() => setShowFontSettings(true)}
-                        style={{
-                            padding: '8px 16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            background: '#fff',
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            color: '#4b5563'
-                        }}
-                    >
-                        <Type size={16} /> {isRTL ? 'فونٹ' : 'Font'}
-                    </button>
+
+                    {/* Right side buttons */}
+                    <div className={`flex items-center gap-2 md:gap-3 ${isRTL ? 'mr-auto' : 'ml-auto'}`}>
+                        <button
+                            onClick={handleLanguageChange}
+                            className="px-3 md:px-4 py-2 border border-emerald-500 rounded-lg bg-emerald-50 cursor-pointer text-xs md:text-[13px] font-semibold text-emerald-500 hover:bg-emerald-100 transition-all"
+                        >
+                            {isRTL ? 'English' : 'اردو'}
+                        </button>
+                        <button
+                            onClick={() => setShowFontSettings(true)}
+                            className="px-3 md:px-4 py-2 border border-gray-200 rounded-lg bg-white cursor-pointer text-xs md:text-[13px] flex items-center gap-1.5 text-gray-600 hover:bg-gray-50 transition-all"
+                        >
+                            <Type size={16} />
+                            <span className="hidden sm:inline">{isRTL ? 'فونٹ' : 'Font'}</span>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Page Content */}
-                <div style={{ flex: 1, overflow: 'auto', background: '#f8fafc', padding: '24px' }}>
+                <div className="flex-1 overflow-auto bg-gray-50 p-4 md:p-6">
                     <Outlet />
                 </div>
             </div>

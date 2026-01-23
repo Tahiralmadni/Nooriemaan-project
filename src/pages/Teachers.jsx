@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 
 const Teachers = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const isRTL = i18n.language === 'ur';
 
     useEffect(() => {
         document.title = t('pageTitles.teachers');
@@ -41,51 +42,29 @@ const Teachers = () => {
             <Helmet defer={false}>
                 <title>{t('pageTitles.teachers')}</title>
             </Helmet>
-            <div>
+            <div style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}>
                 {/* Header */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '24px'
-                }}>
-                    <h1 style={{
-                        fontSize: '28px',
-                        fontWeight: '700',
-                        color: '#1e293b',
-                        margin: 0
-                    }}>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
                         {t('sidebar.teachersList')}
                     </h1>
-                    <span style={{
-                        background: '#10b981',
-                        color: '#fff',
-                        padding: '6px 16px',
-                        borderRadius: '20px',
-                        fontSize: '14px',
-                        fontWeight: '600'
-                    }}>
+                    <span className="self-start sm:self-auto bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow-md">
                         {staffIds.length} {t('table.members')}
                     </span>
                 </div>
 
-                {/* Table */}
-                <div style={{
-                    background: '#fff',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-                    overflow: 'hidden'
-                }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                {/* Desktop Table - Hidden on Mobile */}
+                <div className="hidden md:block bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                    <table className="w-full">
                         <thead>
-                            <tr style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
-                                <th style={{ padding: '16px 20px', color: '#fff', fontWeight: '600', textAlign: 'center', width: '70px' }}>
+                            <tr className="bg-gradient-to-r from-emerald-500 to-emerald-600">
+                                <th className="px-6 py-4 text-white font-semibold text-center w-20">
                                     {t('table.serial')}
                                 </th>
-                                <th style={{ padding: '16px 20px', color: '#fff', fontWeight: '600' }}>
+                                <th className="px-6 py-4 text-white font-semibold">
                                     {t('table.name')}
                                 </th>
-                                <th style={{ padding: '16px 20px', color: '#fff', fontWeight: '600' }}>
+                                <th className="px-6 py-4 text-white font-semibold">
                                     {t('table.email')}
                                 </th>
                             </tr>
@@ -94,21 +73,46 @@ const Teachers = () => {
                             {staffIds.map((id, index) => (
                                 <tr
                                     key={id}
-                                    style={{ background: index % 2 === 0 ? '#fff' : '#f8fafc' }}
+                                    className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} hover:bg-emerald-50 transition-colors`}
                                 >
-                                    <td style={{ padding: '14px 20px', textAlign: 'center', borderBottom: '1px solid #e5e7eb', color: '#10b981', fontWeight: '600' }}>
+                                    <td className="px-6 py-4 text-center border-b border-gray-100 text-emerald-600 font-bold text-lg">
                                         {id}
                                     </td>
-                                    <td style={{ padding: '14px 20px', borderBottom: '1px solid #e5e7eb', color: '#1e293b', fontWeight: '500' }}>
+                                    <td className="px-6 py-4 border-b border-gray-100 text-slate-800 font-medium">
                                         {t(`staff.${id}`)}
                                     </td>
-                                    <td style={{ padding: '14px 20px', borderBottom: '1px solid #e5e7eb', color: emails[id] === '-' ? '#94a3b8' : '#3b82f6' }}>
+                                    <td className={`px-6 py-4 border-b border-gray-100 ${emails[id] === '-' ? 'text-gray-400' : 'text-blue-600'}`}>
                                         {emails[id]}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Cards - Professional Design */}
+                <div className="md:hidden space-y-3">
+                    {staffIds.map((id, index) => (
+                        <div
+                            key={id}
+                            className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                        >
+                            {/* Top Row - Number and Name */}
+                            <div className="flex items-center gap-3 mb-2">
+                                <span className="inline-flex items-center justify-center w-8 h-8 bg-emerald-500 text-white rounded-lg font-bold text-sm">
+                                    {id}
+                                </span>
+                                <h3 className="flex-1 text-slate-800 font-semibold text-lg leading-tight">
+                                    {t(`staff.${id}`)}
+                                </h3>
+                            </div>
+
+                            {/* Email Row */}
+                            <div className={`text-sm ${isRTL ? 'pr-11' : 'pl-11'} ${emails[id] === '-' ? 'text-gray-400' : 'text-blue-500'}`}>
+                                📧 {emails[id]}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </>
