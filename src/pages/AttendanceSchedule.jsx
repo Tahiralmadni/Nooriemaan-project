@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 
@@ -6,9 +6,19 @@ const AttendanceSchedule = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
 
+    // Active tab
+    const [activeTab, setActiveTab] = useState('hazri');
+
     useEffect(() => {
         document.title = t('pageTitles.attendanceSchedule');
     }, [t, i18n.language]);
+
+    // Test staff (1 only)
+    const testStaff = {
+        id: 1,
+        nameUr: 'محمد اکرم عطاری',
+        nameEn: 'Muhammad Akram Attari'
+    };
 
     return (
         <>
@@ -17,7 +27,7 @@ const AttendanceSchedule = () => {
             </Helmet>
 
             <div style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}>
-                {/* Page Heading with Card */}
+                {/* Page Heading */}
                 <div style={{
                     backgroundColor: '#ffffff',
                     borderRadius: '12px',
@@ -43,6 +53,113 @@ const AttendanceSchedule = () => {
                     }}>
                         {isRTL ? 'عملہ کی حاضری کا انتظام' : 'Manage Staff Attendance'}
                     </p>
+                </div>
+
+                {/* Tabs - 26 Jan */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    marginBottom: '20px',
+                    flexWrap: 'wrap'
+                }}>
+                    <button
+                        onClick={() => setActiveTab('hazri')}
+                        style={{
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            backgroundColor: activeTab === 'hazri' ? '#10b981' : '#f1f5f9',
+                            color: activeTab === 'hazri' ? '#ffffff' : '#64748b',
+                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                        }}
+                    >
+                        {isRTL ? 'حاضری' : 'Attendance'}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('hours')}
+                        style={{
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            backgroundColor: activeTab === 'hours' ? '#10b981' : '#f1f5f9',
+                            color: activeTab === 'hours' ? '#ffffff' : '#64748b',
+                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                        }}
+                    >
+                        {isRTL ? 'دوران اوقات' : 'Hours'}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('summary')}
+                        style={{
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            backgroundColor: activeTab === 'summary' ? '#10b981' : '#f1f5f9',
+                            color: activeTab === 'summary' ? '#ffffff' : '#64748b',
+                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                        }}
+                    >
+                        {isRTL ? 'مجموعی' : 'Summary'}
+                    </button>
+                </div>
+
+                {/* Tab Content */}
+                <div style={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '10px',
+                    padding: '20px',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                    minHeight: '200px'
+                }}>
+                    {activeTab === 'hazri' && (
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px',
+                            backgroundColor: '#f8fafc',
+                            borderRadius: '8px'
+                        }}>
+                            <div style={{
+                                width: '36px',
+                                height: '36px',
+                                backgroundColor: '#10b981',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#ffffff',
+                                fontWeight: '600'
+                            }}>
+                                {testStaff.id}
+                            </div>
+                            <span style={{ fontWeight: '500', color: '#1e293b' }}>
+                                {isRTL ? testStaff.nameUr : testStaff.nameEn}
+                            </span>
+                        </div>
+                    )}
+
+                    {activeTab === 'hours' && (
+                        <p style={{ textAlign: 'center', color: '#94a3b8' }}>
+                            {isRTL ? 'جلد آرہا ہے' : 'Coming Soon'}
+                        </p>
+                    )}
+
+                    {activeTab === 'summary' && (
+                        <p style={{ textAlign: 'center', color: '#94a3b8' }}>
+                            {isRTL ? 'جلد آرہا ہے' : 'Coming Soon'}
+                        </p>
+                    )}
                 </div>
             </div>
         </>
