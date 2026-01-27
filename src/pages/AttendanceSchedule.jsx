@@ -125,27 +125,75 @@ const AttendanceSchedule = () => {
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'space-between',
                             gap: '12px',
-                            padding: '12px',
+                            padding: '16px',
                             backgroundColor: '#f8fafc',
-                            borderRadius: '8px'
+                            borderRadius: '8px',
+                            flexWrap: 'wrap'
                         }}>
-                            <div style={{
-                                width: '36px',
-                                height: '36px',
-                                backgroundColor: '#10b981',
-                                borderRadius: '8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#ffffff',
-                                fontWeight: '600'
-                            }}>
-                                {testStaff.id}
+                            {/* Staff Info */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    backgroundColor: '#10b981',
+                                    borderRadius: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: '#ffffff',
+                                    fontWeight: '600'
+                                }}>
+                                    {testStaff.id}
+                                </div>
+                                <span style={{ fontWeight: '500', color: '#1e293b' }}>
+                                    {isRTL ? testStaff.nameUr : testStaff.nameEn}
+                                </span>
                             </div>
-                            <span style={{ fontWeight: '500', color: '#1e293b' }}>
-                                {isRTL ? testStaff.nameUr : testStaff.nameEn}
-                            </span>
+
+                            {/* Attendance Buttons - 27 Jan */}
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                <button style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#22c55e',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontWeight: '500',
+                                    fontSize: '13px',
+                                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                }}>
+                                    {isRTL ? 'حاضر' : 'Present'}
+                                </button>
+                                <button style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#ef4444',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontWeight: '500',
+                                    fontSize: '13px',
+                                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                }}>
+                                    {isRTL ? 'غیر حاضر' : 'Absent'}
+                                </button>
+                                <button style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#eab308',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontWeight: '500',
+                                    fontSize: '13px',
+                                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                }}>
+                                    {isRTL ? 'چھٹی' : 'Leave'}
+                                </button>
+                            </div>
                         </div>
                     )}
 
