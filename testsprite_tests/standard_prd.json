@@ -1,134 +1,162 @@
 {
   "meta": {
-    "project": "Noori Emaan Digital Portal",
+    "project": "NooriEmaan Digital Portal",
     "date": "2026-01-21",
-    "prepared_by": "Hanzalah Tahir"
+    "prepared_by": "Software Development Manager"
   },
-  "product_overview": "Noori Emaan Digital Portal is a bilingual Madrasa Management System designed to facilitate staff and attendance management with professional UI/UX and language support for Urdu and English. It includes secure authentication, a dynamic dashboard, and responsive sidebar navigation, aiming to streamline madrasa administrative tasks.",
+  "product_overview": "NooriEmaan Digital Portal is a bilingual (Urdu/English) school management system designed to streamline daily school operations including authentication, staff management, attendance scheduling, and dashboard analytics. It prioritizes responsive design, ease of use, and accessibility for school staff and administrators.",
   "core_goals": [
-    "Provide secure and user-friendly login with multilingual support and font customization.",
-    "Offer a comprehensive dashboard featuring welcome messaging, clock with Hijri date, and key statistics.",
-    "Implement a professional and collapsible sidebar with staff navigation, language switching, and logout.",
-    "Display detailed bilingual staff lists with contact information in a visually appealing format.",
-    "Support full Urdu and English internationalization including RTL and LTR text direction.",
-    "Prepare placeholders for future features like student management and attendance tracking modules."
+    "Provide secure and bilingual login authentication for staff members.",
+    "Offer a responsive and informative dashboard with real-time data and quick actions.",
+    "Manage staff information with search and responsive views across devices.",
+    "Implement an attendance scheduling system with intuitive controls for marking presence, absence, and leave.",
+    "Support customization of UI elements such as fonts and language to enhance user experience.",
+    "Ensure smooth navigation with responsive layouts including sidebar and mobile menus, and RTL language support."
   ],
   "key_features": [
-    "Authentication system with form validation, language switch, and protected routes.",
-    "Dashboard with welcome banner, digital clock showing Hijri date, and stats cards layout.",
-    "Sidebar navigation with staff dropdown menu, language switch, and collapse functionality.",
-    "Staff list table showing 22 members with bilingual names and emails.",
-    "Internationalization support with Urdu and English translations and automatic RTL/LTR switching.",
-    "Developer intro animation on app load for engaging user experience.",
-    "Routing configured with React Router DOM for public and protected routes."
+    "User login system based on GR number with bilingual Urdu/English interface and network status detection.",
+    "Dashboard home showing welcome banner with live clock, statistics cards placeholders, and quick action buttons.",
+    "Staff/Teachers list display with responsive tables on desktop and cards on mobile, along with search functionality.",
+    "Attendance Schedule module with tabs for daily attendance, attendance during hours, and overall summary; includes Present, Absent, and Leave buttons to mark attendance status.",
+    "Font Settings component allowing users to select custom Urdu and English fonts for enhanced readability.",
+    "Sidebar navigation with responsive design including a mobile hamburger menu and language toggle (UR/EN).",
+    "Internationalization using react-i18next supporting Urdu and English languages with RTL layout support.",
+    "Page Loader component for smooth visual feedback during page transitions.",
+    "Protected routing setup to manage user sessions and ensure authorized access."
   ],
   "user_flow_summary": [
-    "User accesses the login page, selects preferred language, and enters credentials to authenticate.",
-    "Upon successful login, user is redirected to the dashboard displaying personalized welcome, clock, and stats.",
-    "User navigates through sidebar menu to access staff list or placeholder pages for students and attendance.",
-    "User can switch language anytime via sidebar and the UI updates accordingly with RTL/LTR support.",
-    "User can collapse or expand the sidebar for a customized view and use staff dropdown for quicker access.",
-    "User logs out via sidebar, terminating session and redirecting to login page."
+    "User navigates to login page, enters GR number and password, and authenticates in chosen language (Urdu/English).",
+    "Upon successful login, user is directed to dashboard home displaying welcome banner and real-time clock.",
+    "User accesses the staff list to view or search among the 22 staff members with responsive layout adapted to device.",
+    "User navigates to Attendance Schedule to view attendance tabs and marks attendance status using Present/Absent/Leave buttons.",
+    "User customizes interface fonts and language preferences via font settings and language toggle in the sidebar menu.",
+    "User navigates through different modules using the sidebar navigation or mobile hamburger menu with smooth page transitions powered by animations."
   ],
   "validation_criteria": [
-    "Login form validates input fields and restricts unauthorized access to protected routes.",
-    "Bilingual interface seamlessly switches languages including text direction changes.",
-    "Dashboard displays real-time clock with correct Hijri date and accurate user welcome info.",
-    "Staff list renders all 22 members with correct bilingual names and email addresses in styled table.",
-    "Sidebar functions correctly allowing collapse, language switch, staff menu navigation, and logout.",
-    "App routing enforces authentication protecting dashboard and other secured pages.",
-    "Developer intro animation runs on app load without impeding performance."
+    "Successful GR number and password validation with appropriate error handling and bilingual messages.",
+    "Responsive design confirmed on desktop and mobile devices for all major pages particularly dashboard and staff list.",
+    "Proper functionality of language toggle with instant UI updates and correct Urdu/English translations.",
+    "Accurate attendance marking with response states when users select Present, Absent, or Leave buttons.",
+    "Font settings correctly apply chosen fonts to both Urdu and English text across the portal.",
+    "Navigation components (sidebar, hamburger menu) work correctly on all screen sizes.",
+    "Page loading animations appear during content transitions to indicate processing state.",
+    "User session persistence verified using localStorage and protected routes to restrict unauthorized access."
   ],
   "code_summary": {
     "tech_stack": [
       "JavaScript",
-      "React 19",
-      "React Router DOM",
-      "react-i18next",
-      "react-helmet-async",
-      "Lucide React Icons",
+      "React 18",
       "Vite",
-      "CSS"
+      "React Router DOM",
+      "React i18next",
+      "React Helmet Async",
+      "Framer Motion",
+      "React Hot Toast",
+      "Lucide React Icons",
+      "Tailwind CSS",
+      "PostCSS",
+      "Autoprefixer"
     ],
     "features": [
       {
-        "name": "Authentication",
-        "description": "Login page with form validation, language switch, and protected routes",
+        "name": "Login Authentication",
+        "description": "User login with GR number and password validation, network status detection, bilingual support (Urdu/English)",
         "files": [
-          "src/pages/Login.jsx",
-          "src/App.jsx"
-        ]
-      },
-      {
-        "name": "Dashboard",
-        "description": "Main dashboard with welcome banner, digital clock, and stat cards",
-        "files": [
-          "src/pages/Dashboard.jsx"
+          "src/pages/Login.jsx"
         ]
       },
       {
         "name": "Dashboard Layout",
-        "description": "Sidebar navigation with Staff dropdown, language switch, collapse functionality",
+        "description": "Main layout with responsive sidebar, mobile hamburger menu, language toggle, font settings, navigation",
         "files": [
           "src/layouts/DashboardLayout.jsx"
         ]
       },
       {
-        "name": "Staff List (Teachers)",
-        "description": "Table displaying 22 staff members with bilingual names and emails",
+        "name": "Dashboard Home",
+        "description": "Welcome banner with real-time clock, stats cards, quick action buttons",
+        "files": [
+          "src/pages/Dashboard.jsx"
+        ]
+      },
+      {
+        "name": "Staff/Teachers List",
+        "description": "Display 22 staff members with responsive table (desktop) and cards (mobile), search functionality",
         "files": [
           "src/pages/Teachers.jsx"
         ]
       },
       {
-        "name": "Students Page",
-        "description": "Placeholder page for student management",
-        "files": [
-          "src/pages/Students.jsx"
-        ]
-      },
-      {
-        "name": "Daily Attendance",
-        "description": "Placeholder page for daily attendance tracking",
-        "files": [
-          "src/pages/DailyAttendance.jsx"
-        ]
-      },
-      {
         "name": "Attendance Schedule",
-        "description": "Placeholder page for attendance schedule",
+        "description": "Staff attendance management with tabs (Hazri, Hours, Summary), Present/Absent/Leave buttons",
         "files": [
           "src/pages/AttendanceSchedule.jsx"
         ]
       },
       {
+        "name": "Daily Attendance",
+        "description": "Daily attendance marking page (placeholder)",
+        "files": [
+          "src/pages/DailyAttendance.jsx"
+        ]
+      },
+      {
         "name": "Attendance Summary",
-        "description": "Placeholder page for attendance summary/reports",
+        "description": "Attendance summary and reports page (placeholder)",
         "files": [
           "src/pages/AttendanceSummary.jsx"
         ]
       },
       {
-        "name": "Internationalization",
-        "description": "Complete Urdu and English translations with RTL support",
+        "name": "Students Module",
+        "description": "Students management page (placeholder)",
         "files": [
-          "src/locales/ur.json",
-          "src/locales/en.json",
-          "src/i18n.js"
+          "src/pages/Students.jsx"
         ]
       },
       {
-        "name": "Developer Intro",
-        "description": "Developer introduction animation on app load",
+        "name": "Font Settings",
+        "description": "Custom Urdu and English font selection component",
         "files": [
-          "src/components/DeveloperIntro.jsx"
+          "src/components/FontSettings.jsx"
+        ]
+      },
+      {
+        "name": "Page Loader",
+        "description": "Loading animation component for page transitions",
+        "files": [
+          "src/components/PageLoader.jsx"
+        ]
+      },
+      {
+        "name": "Internationalization",
+        "description": "Urdu and English language support with i18next",
+        "files": [
+          "src/i18n.js",
+          "src/locales/en.json",
+          "src/locales/ur.json"
+        ]
+      },
+      {
+        "name": "App Configuration",
+        "description": "Application settings and constants",
+        "files": [
+          "src/config/appConfig.js"
+        ]
+      },
+      {
+        "name": "Global Styles",
+        "description": "CSS styles with Tailwind directives and responsive media queries",
+        "files": [
+          "src/index.css"
         ]
       },
       {
         "name": "Routing",
-        "description": "React Router setup with protected and public routes",
+        "description": "React Router setup with protected routes",
         "files": [
-          "src/App.jsx"
+          "src/App.jsx",
+          "src/main.jsx"
         ]
       }
     ]

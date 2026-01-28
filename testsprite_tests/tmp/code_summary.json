@@ -1,93 +1,118 @@
 {
     "tech_stack": [
         "JavaScript",
-        "React 19",
-        "React Router DOM",
-        "react-i18next",
-        "react-helmet-async",
-        "Lucide React Icons",
+        "React 18",
         "Vite",
-        "CSS"
+        "React Router DOM",
+        "React i18next",
+        "React Helmet Async",
+        "Framer Motion",
+        "React Hot Toast",
+        "Lucide React Icons",
+        "Tailwind CSS",
+        "PostCSS",
+        "Autoprefixer"
     ],
     "features": [
         {
-            "name": "Authentication",
-            "description": "Login page with form validation, language switch, and protected routes",
+            "name": "Login Authentication",
+            "description": "User login with GR number and password validation, network status detection, bilingual support (Urdu/English)",
             "files": [
-                "src/pages/Login.jsx",
-                "src/App.jsx"
-            ]
-        },
-        {
-            "name": "Dashboard",
-            "description": "Main dashboard with welcome banner, digital clock, and stat cards",
-            "files": [
-                "src/pages/Dashboard.jsx"
+                "src/pages/Login.jsx"
             ]
         },
         {
             "name": "Dashboard Layout",
-            "description": "Sidebar navigation with Staff dropdown, language switch, collapse functionality",
+            "description": "Main layout with responsive sidebar, mobile hamburger menu, language toggle, font settings, navigation",
             "files": [
                 "src/layouts/DashboardLayout.jsx"
             ]
         },
         {
-            "name": "Staff List (Teachers)",
-            "description": "Table displaying 22 staff members with bilingual names and emails",
+            "name": "Dashboard Home",
+            "description": "Welcome banner with real-time clock, stats cards, quick action buttons",
+            "files": [
+                "src/pages/Dashboard.jsx"
+            ]
+        },
+        {
+            "name": "Staff/Teachers List",
+            "description": "Display 22 staff members with responsive table (desktop) and cards (mobile), search functionality",
             "files": [
                 "src/pages/Teachers.jsx"
             ]
         },
         {
-            "name": "Students Page",
-            "description": "Placeholder page for student management",
-            "files": [
-                "src/pages/Students.jsx"
-            ]
-        },
-        {
-            "name": "Daily Attendance",
-            "description": "Placeholder page for daily attendance tracking",
-            "files": [
-                "src/pages/DailyAttendance.jsx"
-            ]
-        },
-        {
             "name": "Attendance Schedule",
-            "description": "Placeholder page for attendance schedule",
+            "description": "Staff attendance management with tabs (Hazri, Hours, Summary), Present/Absent/Leave buttons",
             "files": [
                 "src/pages/AttendanceSchedule.jsx"
             ]
         },
         {
+            "name": "Daily Attendance",
+            "description": "Daily attendance marking page (placeholder)",
+            "files": [
+                "src/pages/DailyAttendance.jsx"
+            ]
+        },
+        {
             "name": "Attendance Summary",
-            "description": "Placeholder page for attendance summary/reports",
+            "description": "Attendance summary and reports page (placeholder)",
             "files": [
                 "src/pages/AttendanceSummary.jsx"
             ]
         },
         {
-            "name": "Internationalization",
-            "description": "Complete Urdu and English translations with RTL support",
+            "name": "Students Module",
+            "description": "Students management page (placeholder)",
             "files": [
-                "src/locales/ur.json",
-                "src/locales/en.json",
-                "src/i18n.js"
+                "src/pages/Students.jsx"
             ]
         },
         {
-            "name": "Developer Intro",
-            "description": "Developer introduction animation on app load",
+            "name": "Font Settings",
+            "description": "Custom Urdu and English font selection component",
             "files": [
-                "src/components/DeveloperIntro.jsx"
+                "src/components/FontSettings.jsx"
+            ]
+        },
+        {
+            "name": "Page Loader",
+            "description": "Loading animation component for page transitions",
+            "files": [
+                "src/components/PageLoader.jsx"
+            ]
+        },
+        {
+            "name": "Internationalization",
+            "description": "Urdu and English language support with i18next",
+            "files": [
+                "src/i18n.js",
+                "src/locales/en.json",
+                "src/locales/ur.json"
+            ]
+        },
+        {
+            "name": "App Configuration",
+            "description": "Application settings and constants",
+            "files": [
+                "src/config/appConfig.js"
+            ]
+        },
+        {
+            "name": "Global Styles",
+            "description": "CSS styles with Tailwind directives and responsive media queries",
+            "files": [
+                "src/index.css"
             ]
         },
         {
             "name": "Routing",
-            "description": "React Router setup with protected and public routes",
+            "description": "React Router setup with protected routes",
             "files": [
-                "src/App.jsx"
+                "src/App.jsx",
+                "src/main.jsx"
             ]
         }
     ]

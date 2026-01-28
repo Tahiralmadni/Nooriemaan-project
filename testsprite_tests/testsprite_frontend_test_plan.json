@@ -1,8 +1,8 @@
 [
   {
     "id": "TC001",
-    "title": "Login Success with Valid Credentials",
-    "description": "Verify that the user can login successfully with valid username and password and is redirected to the dashboard.",
+    "title": "Successful login with valid GR number and password",
+    "description": "Verify that user can log in successfully with valid GR number and password in both Urdu and English languages",
     "category": "functional",
     "priority": "High",
     "steps": [
@@ -12,30 +12,46 @@
       },
       {
         "type": "action",
-        "description": "Select preferred language (English or Urdu)"
+        "description": "Select language as English"
       },
       {
         "type": "action",
-        "description": "Enter valid username and password"
+        "description": "Input valid GR number"
       },
       {
         "type": "action",
-        "description": "Click the login button"
+        "description": "Input valid password"
+      },
+      {
+        "type": "action",
+        "description": "Click login button"
       },
       {
         "type": "assertion",
-        "description": "Verify login is successful and user is redirected to the dashboard page"
+        "description": "Verify user is directed to dashboard home"
       },
       {
         "type": "assertion",
-        "description": "Verify dashboard welcome message displays correct user information"
+        "description": "Verify welcome banner and real-time clock are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Logout"
+      },
+      {
+        "type": "action",
+        "description": "Repeat login selecting Urdu language"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI language switches to Urdu and login is successful"
       }
     ]
   },
   {
     "id": "TC002",
-    "title": "Login Failure with Invalid Credentials",
-    "description": "Verify that login fails when incorrect username or password is entered and appropriate error message is shown.",
+    "title": "Login failure with invalid credentials",
+    "description": "Verify that login fails with invalid GR number or password and appropriate bilingual error messages are shown",
     "category": "error handling",
     "priority": "High",
     "steps": [
@@ -45,296 +61,373 @@
       },
       {
         "type": "action",
-        "description": "Select preferred language"
+        "description": "Input invalid GR number"
       },
       {
         "type": "action",
-        "description": "Enter invalid username and/or password"
+        "description": "Input invalid password"
       },
       {
         "type": "action",
-        "description": "Click the login button"
+        "description": "Click login button"
       },
       {
         "type": "assertion",
-        "description": "Verify login fails and error message is displayed about invalid credentials"
+        "description": "Verify login fails and bilingual error message is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Switch UI to Urdu language"
+      },
+      {
+        "type": "action",
+        "description": "Input invalid credentials and click login"
       },
       {
         "type": "assertion",
-        "description": "Verify user remains on the login page"
+        "description": "Verify error message text is displayed in Urdu"
       }
     ]
   },
   {
     "id": "TC003",
-    "title": "Login Form Validation - Empty Fields",
-    "description": "Ensure the login form validates required fields and shows error messages if username or password fields are empty.",
-    "category": "error handling",
-    "priority": "High",
+    "title": "Network status detection during login",
+    "description": "Verify that login page detects network status and displays appropriate messages when offline or online",
+    "category": "functional",
+    "priority": "Medium",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to login page"
-      },
-      {
-        "type": "action",
-        "description": "Leave username and password fields empty"
-      },
-      {
-        "type": "action",
-        "description": "Attempt to submit the login form"
+        "description": "Navigate to login page with network online"
       },
       {
         "type": "assertion",
-        "description": "Verify validation error messages appear indicating required fields"
+        "description": "Verify network status indicator shows online"
+      },
+      {
+        "type": "action",
+        "description": "Disconnect network"
       },
       {
         "type": "assertion",
-        "description": "Verify login is not submitted"
+        "description": "Verify network status indicator shows offline and login is disabled or shows warning"
+      },
+      {
+        "type": "action",
+        "description": "Reconnect network"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify network status indicator shows online again"
       }
     ]
   },
   {
     "id": "TC004",
-    "title": "Language Switch on Login Page",
-    "description": "Verify that switching the language on the login page updates all text content and direction correctly for English and Urdu.",
+    "title": "Dashboard displays all core components correctly",
+    "description": "Verify the dashboard home shows welcome banner with correct user info, live clock, statistics cards placeholders, and quick action buttons",
     "category": "functional",
-    "priority": "Medium",
+    "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to login page"
-      },
-      {
-        "type": "action",
-        "description": "Switch language to Urdu"
+        "description": "Login successfully and navigate to dashboard"
       },
       {
         "type": "assertion",
-        "description": "Verify all login page textual content is displayed in Urdu"
+        "description": "Verify welcome banner contains correct user name and greeting"
       },
       {
         "type": "assertion",
-        "description": "Verify text direction changes to RTL"
-      },
-      {
-        "type": "action",
-        "description": "Switch language back to English"
+        "description": "Verify live clock displays current time and updates in real-time"
       },
       {
         "type": "assertion",
-        "description": "Verify all text is displayed in English"
+        "description": "Verify statistics cards placeholders are visible with correct labels"
       },
       {
         "type": "assertion",
-        "description": "Verify text direction changes to LTR"
+        "description": "Verify quick action buttons are visible and clickable"
       }
     ]
   },
   {
     "id": "TC005",
-    "title": "Protected Route Access Without Authentication",
-    "description": "Verify that accessing protected routes directly without authentication redirects the user to the login page.",
-    "category": "security",
+    "title": "Responsive staff list display on desktop and mobile",
+    "description": "Verify the staff list is displayed as a table on desktop and as cards on mobile devices, and search functionality works correctly",
+    "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Attempt to navigate directly to dashboard or staff list URL without logging in"
+        "description": "Navigate to staff/teachers list on desktop viewport"
       },
       {
         "type": "assertion",
-        "description": "Verify user is redirected to the login page"
+        "description": "Verify staff list is shown in table format with 22 members"
+      },
+      {
+        "type": "action",
+        "description": "Use search input to filter staff by exact match and partial match"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify search filters the table results correctly"
+      },
+      {
+        "type": "action",
+        "description": "Resize viewport to mobile resolution or use mobile device"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify staff list is displayed as individual cards"
+      },
+      {
+        "type": "action",
+        "description": "Use search input on mobile to filter staff cards"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify search updates card list accordingly"
       }
     ]
   },
   {
     "id": "TC006",
-    "title": "Dashboard Welcome Message and Stats Display",
-    "description": "Verify that upon login, the dashboard displays personalized welcome message, digital clock with current time, Hijri date, and key statistics cards.",
+    "title": "Attendance Schedule tab functionality",
+    "description": "Verify that Attendance Schedule page has tabs for daily attendance, hours attendance, and summary; each tab displays correct content and status",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Login successfully"
+        "description": "Navigate to Attendance Schedule page"
       },
       {
         "type": "assertion",
-        "description": "Verify welcome message is personalized with the correct user name"
+        "description": "Verify tabs labeled Hazri (Daily Attendance), Hours, and Summary are present"
+      },
+      {
+        "type": "action",
+        "description": "Click on Hazri tab"
       },
       {
         "type": "assertion",
-        "description": "Verify the digital clock shows current time accurately"
+        "description": "Verify daily attendance interface is visible with Present, Absent, Leave buttons"
+      },
+      {
+        "type": "action",
+        "description": "Click on Hours tab"
       },
       {
         "type": "assertion",
-        "description": "Verify Hijri date is shown and updates correctly according to current date"
+        "description": "Verify hours attendance data or placeholder is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click on Summary tab"
       },
       {
         "type": "assertion",
-        "description": "Verify key statistics are displayed in cards with correct information"
+        "description": "Verify attendance summary or reports are shown"
       }
     ]
   },
   {
     "id": "TC007",
-    "title": "Sidebar Navigation Functionality",
-    "description": "Verify sidebar functions correctly including staff dropdown menu, language switch, collapse/expand functionality, and logout.",
+    "title": "Mark attendance status using Present, Absent, and Leave buttons",
+    "description": "Verify users can mark attendance as Present, Absent, or Leave; system accurately updates status and provides visual feedback",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Login successfully and observe sidebar"
+        "description": "Navigate to Daily Attendance tab under Attendance Schedule"
       },
       {
         "type": "action",
-        "description": "Click on staff dropdown menu and verify sub-menu options appear"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify navigation to staff list page on staff menu selection"
+        "description": "Select a staff member"
       },
       {
         "type": "action",
-        "description": "Use language switch in sidebar to toggle between Urdu and English"
+        "description": "Click Present button"
       },
       {
         "type": "assertion",
-        "description": "Verify UI updates language and text direction accordingly"
+        "description": "Verify attendance status is updated to Present and UI reflects this"
       },
       {
         "type": "action",
-        "description": "Click sidebar collapse button"
+        "description": "Click Absent button"
       },
       {
         "type": "assertion",
-        "description": "Verify sidebar collapses and expands correctly"
+        "description": "Verify attendance status updates to Absent and UI changes accordingly"
       },
       {
         "type": "action",
-        "description": "Click logout button in sidebar"
+        "description": "Click Leave button"
       },
       {
         "type": "assertion",
-        "description": "Verify user session terminates and user is redirected to login page"
+        "description": "Verify attendance status updates to Leave with correct visual feedback"
       }
     ]
   },
   {
     "id": "TC008",
-    "title": "Staff List Display with Bilingual Support",
-    "description": "Verify the staff list page renders a table with all 22 staff members displaying bilingual names, emails, and contact details accurately in both languages and styles.",
-    "category": "functional",
-    "priority": "High",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Login and navigate to the staff list page via sidebar"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify exactly 22 staff members are listed in the table"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify each staff member's name and email is displayed in both Urdu and English correctly"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify table is visually styled per UI/UX design specifications"
-      },
-      {
-        "type": "action",
-        "description": "Switch language from English to Urdu"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify staff list text content updates to Urdu with proper RTL layout"
-      }
-    ]
-  },
-  {
-    "id": "TC009",
-    "title": "Internationalization and RTL/LTR Text Direction Switching",
-    "description": "Verify complete bilingual support including all UI elements switching languages between Urdu and English with text direction switching (RTL for Urdu, LTR for English).",
-    "category": "functional",
-    "priority": "High",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Login successfully"
-      },
-      {
-        "type": "action",
-        "description": "Switch application language to Urdu using sidebar language switch"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify all UI textual content is displayed in Urdu"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify all text direction styles switch to RTL layout"
-      },
-      {
-        "type": "action",
-        "description": "Switch application language back to English"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify all UI content is displayed in English"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify text direction switches back to LTR"
-      }
-    ]
-  },
-  {
-    "id": "TC010",
-    "title": "Developer Intro Animation on App Load",
-    "description": "Verify that the developer introduction animation runs once on application load without negatively impacting app performance or usability.",
+    "title": "Font Settings component applies chosen Urdu and English fonts",
+    "description": "Verify that selecting custom fonts for Urdu and English in Font Settings updates text display throughout the portal accordingly",
     "category": "functional",
     "priority": "Medium",
     "steps": [
       {
         "type": "action",
-        "description": "Load the application fresh (clear cache and visit URL)"
+        "description": "Navigate to Font Settings component"
+      },
+      {
+        "type": "action",
+        "description": "Select a custom Urdu font"
+      },
+      {
+        "type": "action",
+        "description": "Select a custom English font"
+      },
+      {
+        "type": "action",
+        "description": "Apply font settings"
       },
       {
         "type": "assertion",
-        "description": "Verify developer intro animation is displayed"
+        "description": "Verify Urdu text renders with the selected Urdu font in UI"
       },
       {
         "type": "assertion",
-        "description": "Verify animation completes and hands over control to login or dashboard screen smoothly"
+        "description": "Verify English text renders with selected English font in UI"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Sidebar navigation responsiveness including mobile hamburger menu and language toggle",
+    "description": "Verify sidebar navigation works correctly on desktop with language toggle and switches to hamburger menu on mobile; menu toggles open and close properly",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and observe sidebar on desktop viewport"
       },
       {
         "type": "assertion",
-        "description": "Verify no significant delay or freezing occurs during animation"
+        "description": "Verify sidebar is visible with language toggle switching between UR and EN"
+      },
+      {
+        "type": "action",
+        "description": "Switch language via toggle and verify UI language updates instantly"
+      },
+      {
+        "type": "action",
+        "description": "Resize viewport to mobile"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify sidebar transforms into hamburger menu icon"
+      },
+      {
+        "type": "action",
+        "description": "Click hamburger menu icon"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify sidebar navigation menu slides in and is usable"
+      },
+      {
+        "type": "action",
+        "description": "Click menu close icon or outside menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify sidebar navigation menu closes"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Internationalization with Urdu/English and RTL support",
+    "description": "Verify that switching languages updates all visible text between Urdu and English, and right-to-left (RTL) layout is applied correctly for Urdu",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and verify default language is English"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI text is in English and layout is left-to-right"
+      },
+      {
+        "type": "action",
+        "description": "Switch language to Urdu using language toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI text is translated to Urdu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify layout switches to right-to-left (RTL) format"
+      },
+      {
+        "type": "action",
+        "description": "Switch back to English"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI text and layout revert correctly"
       }
     ]
   },
   {
     "id": "TC011",
-    "title": "Routing and Navigation Enforcement",
-    "description": "Verify React Router DOM is correctly configured to protect routes, redirect unauthenticated users, and allow navigation among public and protected pages according to user authentication state.",
+    "title": "Page Loader component displays during page transitions",
+    "description": "Verify that the Page Loader component appears with loading animation on page transitions like navigation or data loading to give user visual feedback",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "From dashboard, navigate to staff list page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Page Loader is visible during page transition"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Page Loader disappears once content is loaded"
+      },
+      {
+        "type": "action",
+        "description": "Navigate back to dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Page Loader appears again during transition"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Protected route access control",
+    "description": "Verify that protected routes cannot be accessed without valid user session and unauthorized users are redirected to login page",
     "category": "security",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to public routes (login)"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify public routes are accessible when unauthenticated"
-      },
-      {
-        "type": "action",
-        "description": "Navigate to protected routes (dashboard, staff list) when unauthenticated"
+        "description": "Attempt direct navigation to dashboard URL without login"
       },
       {
         "type": "assertion",
@@ -346,65 +439,32 @@
       },
       {
         "type": "action",
-        "description": "Navigate to protected routes"
+        "description": "Navigate to dashboard and other protected pages"
       },
       {
         "type": "assertion",
-        "description": "Verify protected pages load correctly and show content"
-      }
-    ]
-  },
-  {
-    "id": "TC012",
-    "title": "Sidebar Language Switch Persists Across Pages",
-    "description": "Verify that language selection made by user via sidebar persists across different pages and remains after navigation within the app.",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Login successfully"
+        "description": "Verify pages are accessible"
       },
       {
         "type": "action",
-        "description": "Switch language to Urdu using sidebar"
+        "description": "Logout"
       },
       {
         "type": "action",
-        "description": "Navigate to dashboard page"
+        "description": "Attempt to access staff list URL directly"
       },
       {
         "type": "assertion",
-        "description": "Verify UI is still in Urdu and layout is RTL"
-      },
-      {
-        "type": "action",
-        "description": "Navigate to staff list page"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify UI remains in Urdu with RTL text direction"
-      },
-      {
-        "type": "action",
-        "description": "Switch language to English via sidebar"
-      },
-      {
-        "type": "action",
-        "description": "Navigate to placeholder pages (students, attendance)"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify UI updates to English and text direction is LTR consistently"
+        "description": "Verify user is redirected to login page again"
       }
     ]
   },
   {
     "id": "TC013",
-    "title": "Error Handling for Invalid Route Access",
-    "description": "Verify that navigation to invalid or undefined routes shows an appropriate error page or redirects to a valid page.",
-    "category": "error handling",
-    "priority": "Medium",
+    "title": "User session persistence using localStorage",
+    "description": "Verify that once logged in, user session persists on page reloads and closing/opening of browser retains authenticated session until logout",
+    "category": "functional",
+    "priority": "High",
     "steps": [
       {
         "type": "action",
@@ -412,15 +472,93 @@
       },
       {
         "type": "action",
-        "description": "Manually enter an invalid URL path in the browser"
+        "description": "Reload the browser page"
       },
       {
         "type": "assertion",
-        "description": "Verify a 404 error page or friendly error message is displayed"
+        "description": "Verify user remains logged in and dashboard is visible"
+      },
+      {
+        "type": "action",
+        "description": "Close browser and reopen and navigate to portal"
       },
       {
         "type": "assertion",
-        "description": "Verify user has option to navigate back to valid pages"
+        "description": "Verify user session persists and dashboard loads without login"
+      },
+      {
+        "type": "action",
+        "description": "Logout"
+      },
+      {
+        "type": "action",
+        "description": "Reload browser"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is logged out and redirected to login page"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Attendance marking edge cases",
+    "description": "Verify system behavior when marking attendance multiple times, switching attendance statuses, and marking attendance outside schedule times",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to Daily Attendance tab"
+      },
+      {
+        "type": "action",
+        "description": "Mark a staff member as Present"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify status updates correctly"
+      },
+      {
+        "type": "action",
+        "description": "Mark same staff member as Absent without page reload"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify status updates to Absent correctly"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to mark attendance before allowed time or after end of day (if applicable)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system restricts marking and shows appropriate message"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Search functionality with no matching staff results",
+    "description": "Verify that searching staff list with non-existing names or invalid characters shows no results gracefully",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to staff list"
+      },
+      {
+        "type": "action",
+        "description": "Input random characters or staff name that does not exist"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that no results are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a friendly message indicating zero matches is shown"
       }
     ]
   }
