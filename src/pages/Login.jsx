@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion'; // Smooth animation ke 
 import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
 import FontSettings, { getSavedFont } from '../components/FontSettings'; // Font change karne wala component
 import toast, { Toaster } from 'react-hot-toast'; // Khubsurat notifications (popups) ke liye
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Auth
+import { auth } from '../config/firebase'; // Firebase config
 import PageLoader from '../components/PageLoader'; // Professional transition loader
 
 // Import main logo & config
@@ -274,38 +276,54 @@ const Login = () => {
 
         setIsLoading(true); // Spinner ghuma do
 
-        // Network delay increased to 4.5 seconds for better UX
-        setTimeout(() => {
-            // Updated Credentials: GR = 21435, Password = User134
-            if (grNumber === '21435' && password === 'User134') {
-                console.log('✅ Login successful!');
-                showSuccessToast(t('success.loginSuccess'));
-                setIsLoading(false);
+        try {
+            // Firebase Auth - GR number ko email format mein convert karo
+            const email = `${grNumber}@nooriemaan.edu.pk`;
 
-                // Remember Me functionality
-                if (rememberMe) {
-                    // Agar checkbox checked hai to localStorage mein save karo
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userGR', grNumber);
-                } else {
-                    // Agar checked nahi to clear karo
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userGR');
-                }
+            // Firebase se login karo
+            await signInWithEmailAndPassword(auth, email, password);
 
-                // PageLoader dikhao - Professional UX ke liye smooth transition
-                setShowPageLoader(true);
+            console.log('✅ Firebase Login successful!');
+            showSuccessToast(t('success.loginSuccess'));
+            setIsLoading(false);
 
-                // 5 seconds baad dashboard par redirect (matches PageLoader duration)
-                setTimeout(() => {
-                    navigate('/dashboard');
-                }, 5000);
+            // Remember Me functionality
+            if (rememberMe) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userGR', grNumber);
+            } else {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userGR');
+            }
+
+            // PageLoader dikhao - Professional UX ke liye
+            setShowPageLoader(true);
+
+            // 3 seconds baad dashboard par redirect (faster now)
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 3000);
+
+        } catch (error) {
+            console.error('Firebase Login Error:', error.code);
+            setIsLoading(false);
+
+            // Error messages based on Firebase error codes
+            if (error.code === 'auth/user-not-found') {
+                showErrorToast(isRTL ? 'یہ GR نمبر رجسٹرڈ نہیں ہے' : 'This GR number is not registered');
+            } else if (error.code === 'auth/wrong-password') {
+                showErrorToast(t('validation.invalidCredentials'));
+            } else if (error.code === 'auth/invalid-credential') {
+                showErrorToast(t('validation.invalidCredentials'));
+            } else if (error.code === 'auth/too-many-requests') {
+                showErrorToast(isRTL ? 'بہت زیادہ کوششیں - بعد میں کوشش کریں' : 'Too many attempts - try later');
+            } else if (error.code === 'auth/network-request-failed') {
+                showErrorToast(isRTL ? 'انٹرنیٹ کنکشن چیک کریں' : 'Check internet connection');
             } else {
                 showErrorToast(t('validation.invalidCredentials'));
-                triggerShake(); // Ghalat password par shake karo
-                setIsLoading(false); // Loading band
             }
-        }, 4500);  // 4.5 seconds delay
+            triggerShake();
+        }
     };
 
     // --- ANIMATIONS CONFIGURATION ---
