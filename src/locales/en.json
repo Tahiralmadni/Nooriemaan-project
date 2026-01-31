@@ -165,5 +165,32 @@
         "timing": "Timing",
         "salary": "Salary",
         "role": "Role"
+    },
+    "hazri": {
+        "title": "Attendance Schedule",
+        "subtitle": "Staff Attendance Management",
+        "tabs": {
+            "attendance": "Attendance",
+            "timing": "Timing",
+            "verify": "Verify",
+            "summary": "Summary"
+        },
+        "timeTable": "Time Schedule",
+        "newEntry": "New Entry",
+        "number": "No.",
+        "entryTime": "Entry Time",
+        "exitTime": "Exit Time",
+        "selectStaff": "Select Staff",
+        "present": "Present",
+        "absent": "Absent",
+        "leave": "Leave",
+        "lateReason": "Absence / Late Reason",
+        "otherReason": "Other Reason",
+        "save": "Save",
+        "saved": "Saved",
+        "locked": "Locked",
+        "late": "Late",
+        "salaryDeduction": "Salary Deduction",
+        "noData": "No Data"
     }
 }

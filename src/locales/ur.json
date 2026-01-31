@@ -165,5 +165,32 @@
         "timing": "اوقات",
         "salary": "تنخواہ",
         "role": "عہدہ"
+    },
+    "hazri": {
+        "title": "حاضری جدول",
+        "subtitle": "عملہ کی حاضری کا انتظام",
+        "tabs": {
+            "attendance": "حاضری",
+            "timing": "دوران اوقات",
+            "verify": "تصدیق",
+            "summary": "مجموعی حاضری"
+        },
+        "timeTable": "نظام الاوقات",
+        "newEntry": "نیا اندراج",
+        "number": "نمبر",
+        "entryTime": "وقت آنا",
+        "exitTime": "وقت جانا",
+        "selectStaff": "عامل منتخب کریں",
+        "present": "حاضر",
+        "absent": "غیر حاضر",
+        "leave": "چھٹی",
+        "lateReason": "غیر حاضری / تاخیر کی وجہ",
+        "otherReason": "دیگر وجہ",
+        "save": "محفوظ کریں",
+        "saved": "محفوظ ہو گیا",
+        "locked": "مقفل",
+        "late": "دیر سے آئے",
+        "salaryDeduction": "تنخواہ کٹوتی",
+        "noData": "کوئی ڈیٹا نہیں"
     }
 }
