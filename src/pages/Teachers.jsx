@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
+import { Eye } from 'lucide-react';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
+    const navigate = useNavigate();
     const isRTL = i18n.language === 'ur';
 
     useEffect(() => {
@@ -37,6 +40,13 @@ const Teachers = () => {
         22: '-',
     };
 
+    // View profile handler (sirf 2 profiles ready)
+    const handleViewProfile = (id) => {
+        if (id <= 2) {
+            navigate(`/teachers/profile/${id}`);
+        }
+    };
+
     return (
         <>
             <Helmet defer={false}>
@@ -67,6 +77,9 @@ const Teachers = () => {
                                 <th className="px-6 py-4 text-white font-semibold">
                                     {t('table.email')}
                                 </th>
+                                <th className="px-6 py-4 text-white font-semibold text-center w-24">
+                                    {isRTL ? 'تفصیلات' : 'View'}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,6 +97,26 @@ const Teachers = () => {
                                     <td className={`px-6 py-4 border-b border-gray-100 ${emails[id] === '-' ? 'text-gray-400' : 'text-blue-600'}`}>
                                         {emails[id]}
                                     </td>
+                                    <td className="px-6 py-4 border-b border-gray-100 text-center">
+                                        {id <= 4 ? (
+                                            <button
+                                                onClick={() => handleViewProfile(id)}
+                                                disabled={id > 2}
+                                                style={{
+                                                    backgroundColor: id <= 2 ? '#10b981' : '#e2e8f0',
+                                                    color: id <= 2 ? '#ffffff' : '#94a3b8',
+                                                    border: 'none',
+                                                    padding: '8px 12px',
+                                                    borderRadius: '8px',
+                                                    cursor: id <= 2 ? 'pointer' : 'not-allowed',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center'
+                                                }}
+                                            >
+                                                <Eye size={16} />
+                                            </button>
+                                        ) : null}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -97,7 +130,7 @@ const Teachers = () => {
                             key={id}
                             className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                         >
-                            {/* Top Row - Number and Name */}
+                            {/* Top Row - Number, Name, Eye Icon */}
                             <div className="flex items-center gap-3 mb-2">
                                 <span className="inline-flex items-center justify-center w-8 h-8 bg-emerald-500 text-white rounded-lg font-bold text-sm">
                                     {id}
@@ -105,6 +138,22 @@ const Teachers = () => {
                                 <h3 className="flex-1 text-slate-800 font-semibold text-lg leading-tight">
                                     {t(`staff.${id}`)}
                                 </h3>
+                                {id <= 4 && (
+                                    <button
+                                        onClick={() => handleViewProfile(id)}
+                                        disabled={id > 2}
+                                        style={{
+                                            backgroundColor: id <= 2 ? '#10b981' : '#e2e8f0',
+                                            color: id <= 2 ? '#ffffff' : '#94a3b8',
+                                            border: 'none',
+                                            padding: '8px',
+                                            borderRadius: '8px',
+                                            cursor: id <= 2 ? 'pointer' : 'not-allowed'
+                                        }}
+                                    >
+                                        <Eye size={16} />
+                                    </button>
+                                )}
                             </div>
 
                             {/* Email Row */}

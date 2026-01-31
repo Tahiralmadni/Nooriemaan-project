@@ -155,5 +155,15 @@
         "dailyAttendance": "Daily Attendance - Nooriemaan",
         "attendance": "Attendance - Nooriemaan",
         "fees": "Fees - Nooriemaan"
+    },
+    "profile": {
+        "back": "Back",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "joinDate": "Join Date",
+        "timing": "Timing",
+        "salary": "Salary",
+        "role": "Role"
     }
 }

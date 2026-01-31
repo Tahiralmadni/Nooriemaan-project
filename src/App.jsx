@@ -10,6 +10,7 @@ import Teachers from './pages/Teachers';
 import AttendanceSchedule from './pages/AttendanceSchedule';
 import AttendanceSummary from './pages/AttendanceSummary';
 import DailyAttendance from './pages/DailyAttendance';
+import StaffProfile from './pages/StaffProfile';
 
 /**
  * App Component - Clean URL Structure with Asataza Dropdown Routes
@@ -51,6 +52,7 @@ function App() {
             <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
             <Route path="/teachers/summary" element={<AttendanceSummary />} />
             <Route path="/teachers/daily" element={<DailyAttendance />} />
+            <Route path="/teachers/profile/:id" element={<StaffProfile />} />
           </Route>
 
           {/* Fallback */}
