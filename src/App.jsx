@@ -49,11 +49,13 @@ function App() {
 
             {/* Teachers/Asataza with sub-routes */}
             <Route path="/teachers" element={<Teachers />} />
-            <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
             <Route path="/teachers/summary" element={<AttendanceSummary />} />
             <Route path="/teachers/daily" element={<DailyAttendance />} />
             <Route path="/teachers/profile/:id" element={<StaffProfile />} />
           </Route>
+
+          {/* Standalone Pages */}
+          <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

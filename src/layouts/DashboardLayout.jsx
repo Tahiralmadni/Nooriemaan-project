@@ -62,7 +62,6 @@ const DashboardLayout = () => {
         window.location.href = '/';
     };
 
-    // Teachers sub-menu items
     const teachersSubMenu = [
         { labelKey: 'sidebar.teachersList', path: '/teachers', icon: Users },
         { labelKey: 'sidebar.attendanceSchedule', path: '/teachers/schedule', icon: Calendar },
