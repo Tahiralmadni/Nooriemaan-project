@@ -54,10 +54,8 @@ function App() {
             <Route path="/teachers/profile/:id" element={<StaffProfile />} />
           </Route>
 
-          {/* Standalone Pages */}
+          {/* Standalone Pages (with mini-navbar) */}
           <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
-
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>

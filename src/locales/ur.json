@@ -17,19 +17,23 @@
         "passwordPlaceholder": "پاس ورڈ درج کریں",
         "submitButton": "لاگ ان",
         "loadingButton": "انتظار...",
-        "forgotPassword": "پاس ورڈ بھول گئے؟",
+        "forgotPassword": "پاس ورڈ بھولے؟",
         "rememberMe": "مجھے یاد رکھیں",
         "signInToContinue": "اپنے اکاؤنٹ میں لاگ ان کریں",
-        "support": "رابطہ"
+        "support": "رابطہ",
+        "font": "فونٹ",
+        "switchToEnglish": "English",
+        "switchToUrdu": "اردو"
     },
     "validation": {
         "grNumberRequired": "براہ کرم جی آر نمبر درج کریں",
         "passwordMinLength": "پاسورڈ کم از کم 6 حروف کا ہونا چاہیے",
         "invalidCredentials": "جی آر نمبر یا پاسورڈ غلط ہے",
-        "tooManyAttempts": "بہت زیادہ کوششیں۔ بعد میں دوبارہ کوشش کریں",
-        "networkError": "نیٹ ورک کی خرابی۔ اپنا انٹرنیٹ چیک کریں",
+        "tooManyAttempts": "بہت زیادہ کوششیں - بعد میں کوشش کریں",
+        "networkError": "انٹرنیٹ کنکشن چیک کریں",
         "accountDisabled": "یہ اکاؤنٹ غیر فعال ہے",
-        "loginFailed": "لاگ ان ناکام۔ دوبارہ کوشش کریں"
+        "loginFailed": "لاگ ان ناکام۔ دوبارہ کوشش کریں",
+        "grNotRegistered": "یہ GR نمبر رجسٹرڈ نہیں ہے"
     },
     "accessibility": {
         "showPassword": "پاسورڈ دکھائیں",
@@ -87,7 +91,8 @@
         "serial": "نمبر",
         "name": "نام",
         "email": "ای میل",
-        "members": "اراکین"
+        "members": "اراکین",
+        "view": "تفصیلات"
     },
     "staff": {
         "1": "محمد اکرم عطاری",
@@ -183,14 +188,45 @@
         "selectStaff": "عامل منتخب کریں",
         "present": "حاضر",
         "absent": "غیر حاضر",
-        "leave": "چھٹی",
+        "leave": "رخصت",
+        "holiday": "تعطیل",
+        "select": "منتخب کریں",
         "lateReason": "غیر حاضری / تاخیر کی وجہ",
         "otherReason": "دیگر وجہ",
+        "otherReasonPlaceholder": "وجہ یہاں لکھیں...",
         "save": "محفوظ کریں",
         "saved": "محفوظ ہو گیا",
         "locked": "مقفل",
         "late": "دیر سے آئے",
+        "earlyLeave": "جلدی گئے",
         "salaryDeduction": "تنخواہ کٹوتی",
-        "noData": "کوئی ڈیٹا نہیں"
+        "noData": "کوئی ڈیٹا نہیں",
+        "permission": "اجازت",
+        "yes": "ہاں",
+        "no": "نہیں",
+        "date": "تاریخ",
+        "deduction": "کٹوتی",
+        "min": "منٹ",
+        "reasons": {
+            "select": "وجہ منتخب کریں",
+            "traffic": "ٹریفک کے سبب",
+            "family": "گھریلو ذمہ داری کے سبب",
+            "weather": "موسم کی خرابی کے سبب",
+            "sick": "سردی/زکام ہونے کے سبب",
+            "lazy": "سستی ہونے کے سبب",
+            "secret": "خفیہ وجہ کے سبب",
+            "doctor": "ڈاکٹر کے پاس جانے کے سبب",
+            "accident": "ایکسیڈنٹ ہو جانے کے سبب",
+            "funeral": "جنازے کے سبب",
+            "police": "پولیس/امتحان کے سبب",
+            "other": "دیگر"
+        },
+        "validation": {
+            "entryTimeInvalid": "❌ وقت آمد غلط ہے - صرف 8 AM سے 4 PM تک",
+            "exitTimeInvalid": "❌ وقت رخصت غلط ہے - صرف 8 AM سے 4 PM تک",
+            "attendanceSaved": "✅ حاضری محفوظ ہو گئی",
+            "saveFailed": "❌ محفوظ نہیں ہوا",
+            "missingPreviousDays": "❌ پہلے ان تاریخوں کی حاضری لگائیں:"
+        }
     }
 }

@@ -310,15 +310,15 @@ const Login = () => {
 
             // Error messages based on Firebase error codes
             if (error.code === 'auth/user-not-found') {
-                showErrorToast(isRTL ? 'یہ GR نمبر رجسٹرڈ نہیں ہے' : 'This GR number is not registered');
+                showErrorToast(t('validation.grNotRegistered'));
             } else if (error.code === 'auth/wrong-password') {
                 showErrorToast(t('validation.invalidCredentials'));
             } else if (error.code === 'auth/invalid-credential') {
                 showErrorToast(t('validation.invalidCredentials'));
             } else if (error.code === 'auth/too-many-requests') {
-                showErrorToast(isRTL ? 'بہت زیادہ کوششیں - بعد میں کوشش کریں' : 'Too many attempts - try later');
+                showErrorToast(t('validation.tooManyAttempts'));
             } else if (error.code === 'auth/network-request-failed') {
-                showErrorToast(isRTL ? 'انٹرنیٹ کنکشن چیک کریں' : 'Check internet connection');
+                showErrorToast(t('validation.networkError'));
             } else {
                 showErrorToast(t('validation.invalidCredentials'));
             }
@@ -508,7 +508,7 @@ const Login = () => {
                         }}
                     >
                         <span style={{ fontSize: '16px' }}>{isRTL ? '🇬🇧' : '🇵🇰'}</span>
-                        <span>{isRTL ? 'English' : 'اردو'}</span>
+                        <span>{isRTL ? t('login.switchToEnglish') : t('login.switchToUrdu')}</span>
                     </motion.button>
 
                     {/* Font Settings Button - motion se hover effect */}
@@ -537,7 +537,7 @@ const Login = () => {
                         }}
                     >
                         <Type size={14} />
-                        <span>{isRTL ? 'فونٹ' : 'Font'}</span>
+                        <span>{t('login.font')}</span>
                     </motion.button>
                 </div>
 
@@ -632,7 +632,7 @@ const Login = () => {
                                     fontSize: '12px'
                                 }}
                             >
-                                {isRTL ? 'اپنے اکاؤنٹ میں لاگ ان کریں' : 'Sign in to continue'}
+                                {t('login.signInToContinue')}
                             </motion.p>
                         </div>
 
@@ -664,7 +664,7 @@ const Login = () => {
                                         type="text"
                                         value={grNumber}
                                         onChange={(e) => setGrNumber(e.target.value)} // State update
-                                        placeholder={isRTL ? 'جی آر نمبر' : 'GR Number / Username'}
+                                        placeholder={t('login.grNumberPlaceholder')}
                                         disabled={isLoading}
                                         style={{
                                             width: '100%',
@@ -720,7 +720,7 @@ const Login = () => {
                                         type={showPassword ? 'text' : 'password'} // Show/Hide Logic
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        placeholder={isRTL ? 'پاس ورڈ' : 'Password'}
+                                        placeholder={t('login.passwordPlaceholder')}
                                         disabled={isLoading}
                                         // Caps Lock Check
                                         onKeyDown={(e) => setCapsLockOn(e.getModifierState('CapsLock'))}
@@ -890,7 +890,7 @@ const Login = () => {
                                         fontWeight: '500'
                                     }}
                                 >
-                                    {isRTL ? 'مجھے یاد رکھیں' : 'Remember Me'}
+                                    {t('login.rememberMe')}
                                 </label>
                             </div>
 
@@ -924,13 +924,13 @@ const Login = () => {
                                     // Loading Spinner
                                     <>
                                         <Loader2 size={16} className="animate-spin" />
-                                        <span>{isRTL ? 'انتظار...' : 'Please wait...'}</span>
+                                        <span>{t('login.loadingButton')}</span>
                                     </>
                                 ) : (
                                     // Login Text
                                     <>
                                         <ArrowRight size={16} style={{ transform: isRTL ? 'rotate(180deg)' : 'none' }} />
-                                        <span>{isRTL ? 'لاگ ان' : 'LOG IN'}</span>
+                                        <span>{t('login.submitButton')}</span>
                                     </>
                                 )}
                             </motion.button>
@@ -958,7 +958,7 @@ const Login = () => {
                                     onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
                                 >
                                     <HelpCircle size={12} />
-                                    <span>{isRTL ? 'پاس ورڈ بھولے؟' : 'Forgot Password?'}</span>
+                                    <span>{t('login.forgotPassword')}</span>
                                 </button>
 
                                 <span style={{ color: '#e2e8f0' }}>|</span>
@@ -979,7 +979,7 @@ const Login = () => {
                                     onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
                                 >
                                     <Phone size={12} />
-                                    <span>{isRTL ? 'رابطہ' : 'Support'}</span>
+                                    <span>{t('login.support')}</span>
                                 </button>
                             </div>
                         </form>

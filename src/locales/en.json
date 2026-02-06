@@ -12,24 +12,28 @@
     "login": {
         "title": "Login",
         "grNumberLabel": "GR Number",
-        "grNumberPlaceholder": "Enter GR Number",
+        "grNumberPlaceholder": "GR Number / Username",
         "passwordLabel": "Password",
-        "passwordPlaceholder": "Enter Password",
-        "submitButton": "Login",
+        "passwordPlaceholder": "Password",
+        "submitButton": "LOG IN",
         "loadingButton": "Please wait...",
         "forgotPassword": "Forgot Password?",
         "rememberMe": "Remember Me",
         "signInToContinue": "Sign in to continue",
-        "support": "Support"
+        "support": "Support",
+        "font": "Font",
+        "switchToEnglish": "English",
+        "switchToUrdu": "اردو"
     },
     "validation": {
         "grNumberRequired": "Please enter GR Number",
         "passwordMinLength": "Password must be at least 6 characters",
         "invalidCredentials": "Invalid GR Number or Password",
-        "tooManyAttempts": "Too many attempts. Please try again later",
-        "networkError": "Network error. Check your internet connection",
+        "tooManyAttempts": "Too many attempts - try later",
+        "networkError": "Check internet connection",
         "accountDisabled": "This account has been disabled",
-        "loginFailed": "Login failed. Please try again"
+        "loginFailed": "Login failed. Please try again",
+        "grNotRegistered": "This GR number is not registered"
     },
     "accessibility": {
         "showPassword": "Show password",
@@ -87,7 +91,8 @@
         "serial": "#",
         "name": "Name",
         "email": "Email",
-        "members": "Members"
+        "members": "Members",
+        "view": "View"
     },
     "staff": {
         "1": "Muhammad Akram Attari",
@@ -184,13 +189,44 @@
         "present": "Present",
         "absent": "Absent",
         "leave": "Leave",
+        "holiday": "Holiday",
+        "select": "Select",
         "lateReason": "Absence / Late Reason",
         "otherReason": "Other Reason",
+        "otherReasonPlaceholder": "Write reason here...",
         "save": "Save",
         "saved": "Saved",
         "locked": "Locked",
         "late": "Late",
+        "earlyLeave": "Early Leave",
         "salaryDeduction": "Salary Deduction",
-        "noData": "No Data"
+        "noData": "No Data",
+        "permission": "Permission",
+        "yes": "Yes",
+        "no": "No",
+        "date": "Date",
+        "deduction": "Deduction",
+        "min": "min",
+        "reasons": {
+            "select": "Select Reason",
+            "traffic": "Due to Traffic",
+            "family": "Family Responsibility",
+            "weather": "Bad Weather",
+            "sick": "Cold/Flu",
+            "lazy": "Laziness",
+            "secret": "Secret Reason",
+            "doctor": "Doctor Visit",
+            "accident": "Accident",
+            "funeral": "Funeral",
+            "police": "Police/Exam",
+            "other": "Other"
+        },
+        "validation": {
+            "entryTimeInvalid": "❌ Entry time invalid - only 8 AM to 4 PM allowed",
+            "exitTimeInvalid": "❌ Exit time invalid - only 8 AM to 4 PM allowed",
+            "attendanceSaved": "✅ Attendance Saved",
+            "saveFailed": "❌ Save Failed",
+            "missingPreviousDays": "❌ Please mark attendance for these dates first:"
+        }
     }
 }

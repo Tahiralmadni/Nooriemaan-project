@@ -78,7 +78,7 @@ const Teachers = () => {
                                     {t('table.email')}
                                 </th>
                                 <th className="px-6 py-4 text-white font-semibold text-center w-24">
-                                    {isRTL ? 'تفصیلات' : 'View'}
+                                    {t('table.view')}
                                 </th>
                             </tr>
                         </thead>
