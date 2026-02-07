@@ -432,7 +432,6 @@ const Login = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)', // Dynamic Font
-                    background: '#ffffff',
                     position: 'relative',
                     overflow: 'hidden'
                 }}

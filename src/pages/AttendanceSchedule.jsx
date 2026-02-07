@@ -3,11 +3,91 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { collection, addDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { AlertTriangle, CheckCircle, XCircle, Clock, UserCheck, UserX, AlertCircle, Calendar, Type } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+import FontSettings, { getSavedFont } from '../components/FontSettings';
 
 const AttendanceSchedule = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
+
+    // Kamyabi (Success) Toast - Professional Green Style
+    const showSuccessToast = (message) => {
+        toast.custom((t) => (
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Green Gradient
+                    color: '#fff',
+                    fontWeight: '600',
+                    padding: '16px 20px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 40px rgba(16, 185, 129, 0.4)',
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                    fontSize: isRTL ? '16px' : '14px',
+                    direction: isRTL ? 'rtl' : 'ltr',
+                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
+                    opacity: t.visible ? 1 : 0,
+                    transition: 'all 0.3s ease-in-out',
+                    minWidth: '280px',
+                    zIndex: 99999
+                }}
+            >
+                <div className="bg-white/20 p-1.5 rounded-full flex items-center justify-center">
+                    <CheckCircle size={20} className="text-white" />
+                </div>
+                <span style={{ flex: 1 }}>{message}</span>
+                <button
+                    onClick={() => toast.dismiss(t.id)}
+                    className="text-white/70 hover:text-white transition-colors"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                    <XCircle size={20} />
+                </button>
+            </div>
+        ), { duration: 4000, position: 'top-center' });
+    };
+
+    // Error Toast - Red Style
+    const showErrorToast = (message) => {
+        toast.custom((t) => (
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', // Red Gradient
+                    color: '#fff',
+                    fontWeight: '600',
+                    padding: '16px 20px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)',
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                    fontSize: isRTL ? '16px' : '14px',
+                    direction: isRTL ? 'rtl' : 'ltr',
+                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
+                    opacity: t.visible ? 1 : 0,
+                    transition: 'all 0.3s ease-in-out',
+                    minWidth: '280px',
+                    zIndex: 99999
+                }}
+            >
+                <div className="bg-white/20 p-1.5 rounded-full flex items-center justify-center">
+                    <AlertCircle size={20} className="text-white" />
+                </div>
+                <span style={{ flex: 1 }}>{message}</span>
+                <button
+                    onClick={() => toast.dismiss(t.id)}
+                    className="text-white/70 hover:text-white transition-colors"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                    <XCircle size={20} />
+                </button>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+    };
 
     // Active Tab
     const [activeTab, setActiveTab] = useState('attendance');
@@ -37,6 +117,10 @@ const AttendanceSchedule = () => {
     // History State
     const [attendanceHistory, setAttendanceHistory] = useState([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+    // Font Settings Modal State
+    const [showFontSettings, setShowFontSettings] = useState(false);
+
 
     // Helper: Convert 24-hour time to 12-hour AM/PM format
     const formatTime12Hour = (time24) => {
@@ -275,16 +359,16 @@ const AttendanceSchedule = () => {
 
             if (missingDays.length > 0) {
                 setIsSaving(false);
-                alert(t('hazri.validation.missingPreviousDays') + '\n\n' + missingDays.join('\n'));
+                showErrorToast(t('hazri.validation.missingPreviousDays') + '\n\n' + missingDays.join('\n'));
                 return;
             }
         } catch (error) {
             console.error("Validation Error:", error);
             setIsSaving(false);
             if (error.code === 'failed-precondition') {
-                alert("System Error: Missing Index. Please check the Console (F12) and click the link to create the index in Firebase.");
+                showErrorToast("System Error: Missing Index. Please check the Console.");
             } else {
-                alert("Validation Failed: " + error.message);
+                showErrorToast("Validation Failed: " + error.message);
             }
             return;
         }
@@ -297,14 +381,14 @@ const AttendanceSchedule = () => {
 
             // Check entry time (8 AM to 4 PM = hours 8-16)
             if (entryHours < 8 || entryHours > 16 || (entryHours === 16 && entryMins > 0)) {
-                alert(t('hazri.validation.entryTimeInvalid'));
+                showErrorToast(t('hazri.validation.entryTimeInvalid'));
                 setIsSaving(false); // Reset loading state
                 return;
             }
 
             // Check exit time (8 AM to 4 PM = hours 8-16)
             if (exitHours < 8 || exitHours > 16 || (exitHours === 16 && exitMins > 0)) {
-                alert(t('hazri.validation.exitTimeInvalid'));
+                showErrorToast(t('hazri.validation.exitTimeInvalid'));
                 setIsSaving(false); // Reset loading state
                 return;
             }
@@ -315,18 +399,31 @@ const AttendanceSchedule = () => {
 
         // Calculate salary deduction using PER MINUTE rate
         let deduction = 0;
+
+        // Finalize Late/Early status based on attendance type
+        let finalIsLate = false;
+        let finalLateMinutes = 0;
+        let finalIsEarlyLeave = false;
+        let finalEarlyMinutes = 0;
+
         if (status === 'absent') {
             deduction = staff.perDaySalary; // Full day deduction
         } else if (status === 'leave' || status === 'holiday') {
             deduction = 0; // Approved leave/holiday - no cut
         } else if (status === 'present') {
+            // Only calculate Late/Early if Present
+            finalIsLate = isLate;
+            finalLateMinutes = lateMinutes;
+            finalIsEarlyLeave = isEarlyLeave;
+            finalEarlyMinutes = earlyMinutes;
+
             // Late arrival deduction - PER MINUTE (ONLY if no permission)
-            if (isLate && !entryPermission) {
-                deduction += Math.round(lateMinutes * staff.perMinuteSalary);
+            if (finalIsLate && !entryPermission) {
+                deduction += Math.round(finalLateMinutes * staff.perMinuteSalary);
             }
             // Early departure deduction - PER MINUTE (ONLY if no permission)
-            if (isEarlyLeave && !exitPermission) {
-                deduction += Math.round(earlyMinutes * staff.perMinuteSalary);
+            if (finalIsEarlyLeave && !exitPermission) {
+                deduction += Math.round(finalEarlyMinutes * staff.perMinuteSalary);
             }
         }
 
@@ -342,24 +439,27 @@ const AttendanceSchedule = () => {
                 reason: status !== 'present' ? reason : '',
                 reasonType: status !== 'present' ? reasonType : '',
                 date: Timestamp.fromDate(attendanceDate), // FIXED: Use selectedDate!
-                entryTime: manualEntryTime,
-                exitTime: manualExitTime,
+                entryTime: status === 'present' ? manualEntryTime : '-',
+                exitTime: status === 'present' ? manualExitTime : '-',
                 markedAt: markedTime,
                 salary: staff.salary,
-                isLate: isLate,
-                lateMinutes: lateMinutes,
+                // Use finalized values (false/0 for non-present)
+                isLate: finalIsLate,
+                lateMinutes: finalLateMinutes,
+                isEarlyLeave: finalIsEarlyLeave,
+                earlyMinutes: finalEarlyMinutes,
                 deduction: deduction
             });
 
             setSavedTime(markedTime);
-            alert(t('hazri.validation.attendanceSaved'));
+            showSuccessToast(t('hazri.validation.attendanceSaved'));
             // Reset form
             setStatus('');
             setReason('');
             setReasonType('');
         } catch (error) {
             console.error('Save Error:', error);
-            alert(t('hazri.validation.saveFailed'));
+            showErrorToast(t('hazri.validation.saveFailed'));
         }
         setIsSaving(false);
     };
@@ -403,8 +503,12 @@ const AttendanceSchedule = () => {
                 <title>{t('pageTitles.attendanceSchedule')}</title>
             </Helmet>
 
+            <div className="absolute top-0 left-0 w-full h-full z-[99999] pointer-events-none">
+                <Toaster containerStyle={{ top: 20 }} />
+            </div>
+
             <div
-                className={`min-h-screen bg-gray-100 flex flex-col items-center ${isRTL ? 'font-urdu' : 'font-english'}`}
+                className={`min-h-screen flex flex-col items-center ${isRTL ? 'font-urdu' : 'font-english'}`}
                 dir={isRTL ? 'rtl' : 'ltr'}
             >
 
@@ -428,14 +532,7 @@ const AttendanceSchedule = () => {
                             {isRTL ? 'English' : 'اردو'}
                         </button>
                         <button
-                            onClick={() => {
-                                const fonts = ['jameel', 'noto', 'mehr'];
-                                const currentFont = localStorage.getItem('urduFont') || 'jameel';
-                                const nextIndex = (fonts.indexOf(currentFont) + 1) % fonts.length;
-                                const newFont = fonts[nextIndex];
-                                localStorage.setItem('urduFont', newFont);
-                                document.documentElement.setAttribute('data-font', newFont);
-                            }}
+                            onClick={() => setShowFontSettings(true)}
                             className="px-3 md:px-4 py-2 border border-gray-200 rounded-lg bg-white cursor-pointer text-xs md:text-[13px] flex items-center gap-1.5 text-gray-600 hover:bg-gray-50 transition-all"
                         >
                             <span>T</span>
@@ -452,8 +549,8 @@ const AttendanceSchedule = () => {
                     />
                 </div>
 
-                {/* Main Content Container */}
-                <div className="w-full max-w-3xl bg-transparent p-4">
+                {/* Main Content Container - Made more compact */}
+                <div className="w-full max-w-xl bg-transparent p-3">
                     {/* Subtitle */}
                     <p className="text-gray-500 text-sm text-center mb-4">{t('hazri.subtitle')}</p>
 
@@ -476,20 +573,20 @@ const AttendanceSchedule = () => {
                     {/* ===== TAB 1: ATTENDANCE ===== */}
                     {activeTab === 'attendance' && (
                         <div className="space-y-3">
-                            {/* Date Bar with Staff Selector - TOP */}
-                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 flex items-center justify-between gap-4">
-                                <div className="flex items-center gap-3">
+                            {/* Date Bar with Staff Selector - COMPACT */}
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5 flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-2">
                                     <input
                                         type="date"
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="p-2 text-sm border rounded bg-white"
+                                        className="p-1.5 text-xs text-gray-700 font-medium border rounded bg-white focus:ring-1 focus:ring-emerald-500 outline-none"
                                     />
-                                    <span className="text-gray-400">📅</span>
+                                    <span className="text-gray-400 text-sm">📅</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm text-gray-700 font-medium">{isRTL ? staff.nameUr : staff.nameEn}</span>
-                                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white">
+                                    <span className="text-xs text-gray-700 font-bold">{isRTL ? staff.nameUr : staff.nameEn}</span>
+                                    <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs">
                                         👤
                                     </div>
                                 </div>
@@ -500,112 +597,104 @@ const AttendanceSchedule = () => {
                                 <div className="bg-emerald-600 text-white text-center py-1.5 font-bold text-sm">
                                     {t('hazri.timeTable')}
                                 </div>
-                                <table className="w-full text-sm">
+                                <table className="w-full text-xs">
                                     <thead className="bg-gray-50 border-b">
                                         <tr>
-                                            <th className="py-2 px-3 font-medium text-gray-700">{t('hazri.number')}</th>
-                                            <th className="py-2 px-3 font-medium text-gray-700">{t('hazri.entryTime')}</th>
-                                            <th className="py-2 px-3 font-medium text-gray-700">{t('hazri.exitTime')}</th>
+                                            <th className="py-1.5 px-2 font-medium text-gray-700">{t('hazri.number')}</th>
+                                            <th className="py-1.5 px-2 font-medium text-gray-700">{t('hazri.entryTime')}</th>
+                                            <th className="py-1.5 px-2 font-medium text-gray-700">{t('hazri.exitTime')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr className="text-center">
-                                            <td className="py-2 px-3 font-bold text-emerald-600">1</td>
-                                            <td className="py-2 px-3">{staff.entryTime}</td>
-                                            <td className="py-2 px-3">{staff.exitTime}</td>
+                                            <td className="py-1.5 px-2 font-bold text-emerald-600">1</td>
+                                            <td className="py-1.5 px-2">{staff.entryTime}</td>
+                                            <td className="py-1.5 px-2">{staff.exitTime}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            {/* New Entry Form */}
+                            {/* New Entry Form - COMPACT */}
                             <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-                                <div className="bg-emerald-600 text-white text-center py-1.5 font-bold text-sm">
+                                <div className="bg-emerald-600 text-white text-center py-1 font-bold text-xs">
                                     {t('hazri.newEntry')}
                                 </div>
 
-                                <div className="p-4 space-y-3">
-                                    {/* Status Dropdown - منتخب کریں inside */}
-                                    <select
-                                        value={status}
-                                        onChange={(e) => setStatus(e.target.value)}
-                                        className="w-full p-2 text-sm border rounded bg-white"
-                                    >
-                                        {statusOptions.map(opt => (
-                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                        ))}
-                                    </select>
+                                <div className="p-3 space-y-3">
+                                    {/* Status Dropdown */}
+                                    <div className="w-full">
+                                        <select
+                                            value={status}
+                                            onChange={(e) => setStatus(e.target.value)}
+                                            className="w-full p-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-emerald-500 outline-none bg-white text-gray-700"
+                                        >
+                                            {statusOptions.map(opt => (
+                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                    {/* Time Inputs with Permission Toggles - ONLY for present */}
+                                    {/* Time Inputs - COMPACT Grid */}
                                     {status === 'present' && (
                                         <>
-                                            {/* Entry Time + Permission */}
-                                            <div className="grid grid-cols-3 gap-2 items-end">
-                                                <div className="col-span-2">
-                                                    <label className="text-xs text-gray-600 font-medium block mb-1">
-                                                        {t('hazri.entryTime')}
-                                                    </label>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {/* Entry Section */}
+                                                <div className="bg-gray-50 p-2 rounded border border-gray-100">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <label className="text-[10px] text-gray-500 font-bold uppercase">{t('hazri.entryTime')}</label>
+                                                        <div className="flex gap-0.5">
+                                                            <button
+                                                                onClick={() => setEntryPermission(true)}
+                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${entryPermission ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                            >
+                                                                {t('hazri.yes')}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setEntryPermission(false)}
+                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${!entryPermission ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                            >
+                                                                {t('hazri.no')}
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                     <input
                                                         type="time"
                                                         value={manualEntryTime}
                                                         onChange={(e) => setManualEntryTime(e.target.value)}
-                                                        className="w-full p-2 text-sm border rounded bg-white text-center"
+                                                        className="w-full p-1 text-xs border rounded bg-white text-center font-mono focus:ring-1 focus:ring-emerald-500 outline-none"
                                                     />
                                                 </div>
-                                                <div>
-                                                    <label className="text-xs text-gray-600 font-medium block mb-1">
-                                                        {t('hazri.permission')}
-                                                    </label>
-                                                    <div className="flex gap-1">
-                                                        <button
-                                                            onClick={() => setEntryPermission(true)}
-                                                            className={`flex-1 py-2 text-xs rounded font-bold ${entryPermission ? 'bg-emerald-500 text-white' : 'bg-gray-100 text-gray-600'}`}
-                                                        >
-                                                            {t('hazri.yes')}
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setEntryPermission(false)}
-                                                            className={`flex-1 py-2 text-xs rounded font-bold ${!entryPermission ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600'}`}
-                                                        >
-                                                            {t('hazri.no')}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            {/* Exit Time + Permission */}
-                                            <div className="grid grid-cols-3 gap-2 items-end">
-                                                <div className="col-span-2">
-                                                    <label className="text-xs text-gray-600 font-medium block mb-1">
-                                                        {t('hazri.exitTime')}
-                                                    </label>
+                                                {/* Exit Section */}
+                                                <div className="bg-gray-50 p-2 rounded border border-gray-100">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <label className="text-[10px] text-gray-500 font-bold uppercase">{t('hazri.exitTime')}</label>
+                                                        <div className="flex gap-0.5">
+                                                            <button
+                                                                onClick={() => setExitPermission(true)}
+                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${exitPermission ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                            >
+                                                                {t('hazri.yes')}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setExitPermission(false)}
+                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${!exitPermission ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                            >
+                                                                {t('hazri.no')}
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                     <input
                                                         type="time"
                                                         value={manualExitTime}
                                                         onChange={(e) => setManualExitTime(e.target.value)}
-                                                        className="w-full p-2 text-sm border rounded bg-white text-center"
+                                                        className="w-full p-1 text-xs border rounded bg-white text-center font-mono focus:ring-1 focus:ring-emerald-500 outline-none"
                                                     />
                                                 </div>
-                                                <div>
-                                                    <label className="text-xs text-gray-600 font-medium block mb-1">
-                                                        {t('hazri.permission')}
-                                                    </label>
-                                                    <div className="flex gap-1">
-                                                        <button
-                                                            onClick={() => setExitPermission(true)}
-                                                            className={`flex-1 py-2 text-xs rounded font-bold ${exitPermission ? 'bg-emerald-500 text-white' : 'bg-gray-100 text-gray-600'}`}
-                                                        >
-                                                            {t('hazri.yes')}
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setExitPermission(false)}
-                                                            className={`flex-1 py-2 text-xs rounded font-bold ${!exitPermission ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600'}`}
-                                                        >
-                                                            {t('hazri.no')}
-                                                        </button>
-                                                    </div>
-                                                </div>
                                             </div>
+
+
 
                                             {/* Late Warning - ONLY if no permission */}
                                             {isLate && !entryPermission && (
@@ -629,166 +718,198 @@ const AttendanceSchedule = () => {
                                         </>
                                     )}
 
-                                    {/* Reason Section - ALWAYS visible */}
-                                    <div className="space-y-2">
-                                        <label className="text-xs text-gray-600 font-medium block">
-                                            {t('hazri.lateReason')}
-                                        </label>
-                                        <select
-                                            value={reasonType}
-                                            onChange={(e) => setReasonType(e.target.value)}
-                                            className="w-full p-2 border rounded text-sm bg-white"
+                                    {/* Reason Section - Compact */}
+                                    <div className="space-y-2 pt-2">
+                                        <div>
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase block mb-1">
+                                                {t('hazri.lateReason')}
+                                            </label>
+                                            <select
+                                                value={reasonType}
+                                                onChange={(e) => setReasonType(e.target.value)}
+                                                className="w-full p-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-emerald-500 outline-none bg-white text-gray-700"
+                                            >
+                                                {reasonOptions.map(opt => (
+                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {/* Other Reason Textarea */}
+                                        <div>
+                                            <label className="text-[10px] text-gray-500 font-bold uppercase block mb-1">
+                                                {t('hazri.otherReason')}
+                                            </label>
+                                            <textarea
+                                                value={reason}
+                                                onChange={(e) => setReason(e.target.value)}
+                                                placeholder={t('hazri.otherReasonPlaceholder')}
+                                                className="w-full p-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-emerald-500 outline-none resize-none"
+                                                rows={2}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Save Button - Right Aligned, Small & Professional */}
+                                    <div className="pt-3 flex justify-end">
+                                        <button
+                                            onClick={handleSave}
+                                            disabled={isSaving}
+                                            className={`
+                                                px-6 py-1.5 rounded-full text-xs font-bold shadow-md transition-transform active:scale-95
+                                                flex items-center gap-2
+                                                ${isSaving
+                                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                    : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-lg'
+                                                }
+                                            `}
                                         >
-                                            {reasonOptions.map(opt => (
-                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    {/* Other Reason Textarea - ALWAYS visible */}
-                                    <div className="space-y-2">
-                                        <label className="text-xs text-gray-600 font-medium block">
-                                            {t('hazri.otherReason')}
-                                        </label>
-                                        <textarea
-                                            value={reason}
-                                            onChange={(e) => setReason(e.target.value)}
-                                            placeholder={t('hazri.otherReasonPlaceholder')}
-                                            className="w-full p-2 border rounded text-sm bg-white resize-none"
-                                            rows={3}
-                                        />
+                                            {isSaving ? (
+                                                <>
+                                                    <span className="animate-spin">⏳</span>
+                                                    <span>Saving...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span>💾</span>
+                                                    <span>{t('hazri.save')}</span>
+                                                </>
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
-
-                                {/* Save Button */}
-                                <div className="p-4 pt-0">
-                                    <button
-                                        onClick={handleSave}
-                                        disabled={isSaving}
-                                        className={`w-full py-2.5 rounded-lg font-bold text-base transition-all ${!isSaving
-                                            ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md'
-                                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                            }`}
-                                    >
-                                        {isSaving ? '⏳...' : t('hazri.save')}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                            </div >
+                        </div >
                     )}
 
                     {/* ===== TAB 2: TIMING ===== */}
-                    {activeTab === 'timing' && (
-                        <div className="bg-white rounded-xl shadow p-6 text-center">
-                            <h3 className="text-xl font-bold text-slate-800 mb-4">{t('hazri.tabs.timing')}</h3>
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <p className="text-gray-600">{t('hazri.entryTime')}: <strong>{staff.entryTime}</strong></p>
-                                <p className="text-gray-600 mt-2">{t('hazri.exitTime')}: <strong>{staff.exitTime}</strong></p>
-                                <p className="text-gray-400 text-sm mt-4">Total: {staff.totalHours} hours</p>
+                    {
+                        activeTab === 'timing' && (
+                            <div className="bg-white rounded-xl shadow p-6 text-center">
+                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t('hazri.tabs.timing')}</h3>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-gray-600">{t('hazri.entryTime')}: <strong>{staff.entryTime}</strong></p>
+                                    <p className="text-gray-600 mt-2">{t('hazri.exitTime')}: <strong>{staff.exitTime}</strong></p>
+                                    <p className="text-gray-400 text-sm mt-4">Total: {staff.totalHours} hours</p>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                    }
 
                     {/* ===== TAB 3: VERIFY ===== */}
-                    {activeTab === 'verify' && (
-                        <div className="bg-white rounded-xl shadow p-6 text-center">
-                            <h3 className="text-xl font-bold text-slate-800 mb-4">{t('hazri.tabs.verify')}</h3>
-                            <p className="text-gray-400">{t('hazri.noData')}</p>
-                        </div>
-                    )}
-
-                    {/* ===== TAB 4: SUMMARY (Attendance History) ===== */}
-                    {activeTab === 'summary' && (
-                        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                            <div className="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                                <h3 className="font-bold text-slate-800">{t('hazri.tabs.summary')}</h3>
-                                <button
-                                    onClick={fetchHistory}
-                                    className="text-emerald-600 hover:text-emerald-700 text-sm font-medium"
-                                >
-                                    Refresh ↻
-                                </button>
+                    {
+                        activeTab === 'verify' && (
+                            <div className="bg-white rounded-xl shadow p-6 text-center">
+                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t('hazri.tabs.verify')}</h3>
+                                <p className="text-gray-400">{t('hazri.noData')}</p>
                             </div>
+                        )
+                    }
 
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm text-right">
-                                    <thead className="bg-emerald-50 text-emerald-800 font-bold">
-                                        <tr>
-                                            <th className="p-3 text-center">{t('hazri.date')}</th>
-                                            <th className="p-3 text-center">Status</th>
-                                            <th className="p-3 text-center">{t('hazri.entryTime')}</th>
-                                            <th className="p-3 text-center">{t('hazri.exitTime')}</th>
-                                            <th className="p-3 text-center">{t('hazri.salaryDeduction')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100">
-                                        {isLoadingHistory ? (
-                                            <tr>
-                                                <td colSpan="5" className="p-8 text-center text-gray-500">Loading...</td>
-                                            </tr>
-                                        ) : attendanceHistory.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="5" className="p-8 text-center text-gray-400">{t('hazri.noData')}</td>
-                                            </tr>
-                                        ) : (
-                                            attendanceHistory.map((record) => (
-                                                <tr key={record.id} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="p-3 text-center font-medium dir-ltr">{record.dateStr}</td>
-                                                    <td className="p-3 text-center">
-                                                        <span className={`px-2 py-1 rounded text-xs font-bold ${record.status === 'present' ? 'bg-emerald-100 text-emerald-700' :
-                                                            record.status === 'absent' ? 'bg-red-100 text-red-700' :
-                                                                record.status === 'leave' ? 'bg-blue-100 text-blue-700' :
-                                                                    'bg-amber-100 text-amber-700'
-                                                            }`}>
-                                                            {t(`hazri.${record.status}`) || record.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-3 text-center" dir="ltr">
-                                                        {record.status === 'present' ? formatTime12Hour(record.entryTime) : '-'}
-                                                        {record.isLate && <span className="text-amber-500 block text-[10px]">{t('hazri.late')}</span>}
-                                                    </td>
-                                                    <td className="p-3 text-center" dir="ltr">
-                                                        {record.status === 'present' ? formatTime12Hour(record.exitTime) : '-'}
-                                                        {record.earlyMinutes > 0 && <span className="text-red-500 block text-[10px]">{t('hazri.earlyLeave')}</span>}
-                                                    </td>
-                                                    <td className="p-3 text-center font-bold text-red-600" dir="ltr">
-                                                        {record.deduction > 0 ? `Rs. ${record.deduction}` : '-'}
-                                                    </td>
+                    {/* ===== TAB 4: SUMMARY (Stats + Table) ===== */}
+                    {
+                        activeTab === 'summary' && (
+                            <div className="space-y-3">
+                                {/* Summary Cards - COMPACT & PROFESSIONAL */}
+                                <div className="grid grid-cols-3 gap-2">
+                                    <div className="bg-emerald-50 border border-emerald-100 p-2 rounded-lg text-center shadow-sm flex flex-col items-center justify-center">
+                                        <div className="text-emerald-600 mb-1"><UserCheck size={16} /></div>
+                                        <p className="text-lg font-bold text-emerald-700 leading-none">--</p>
+                                        <p className="text-[10px] text-emerald-600 font-medium uppercase mt-1">{t('hazri.present')}</p>
+                                    </div>
+                                    <div className="bg-red-50 border border-red-100 p-2 rounded-lg text-center shadow-sm flex flex-col items-center justify-center">
+                                        <div className="text-red-600 mb-1"><UserX size={16} /></div>
+                                        <p className="text-lg font-bold text-red-700 leading-none">--</p>
+                                        <p className="text-[10px] text-red-600 font-medium uppercase mt-1">{t('hazri.absent')}</p>
+                                    </div>
+                                    <div className="bg-amber-50 border border-amber-100 p-2 rounded-lg text-center shadow-sm flex flex-col items-center justify-center">
+                                        <div className="text-amber-600 mb-1"><AlertCircle size={16} /></div>
+                                        <p className="text-lg font-bold text-amber-700 leading-none">--</p>
+                                        <p className="text-[10px] text-amber-600 font-medium uppercase mt-1">{t('hazri.leave')}</p>
+                                    </div>
+                                </div>
+
+                                {/* Attendance History Table - COMPACT */}
+                                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                                    <div className="p-2 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                                        <h3 className="font-bold text-slate-800 text-xs flex items-center gap-1">
+                                            <Calendar size={12} className="text-gray-500" />
+                                            {t('hazri.tabs.summary')}
+                                        </h3>
+                                        <button
+                                            onClick={fetchHistory}
+                                            className="text-emerald-600 hover:text-emerald-700 text-[10px] font-bold bg-white border border-emerald-200 px-2 py-0.5 rounded shadow-sm flex items-center gap-1 active:scale-95 transition-transform"
+                                        >
+                                            Next ↻
+                                        </button>
+                                    </div>
+
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-xs text-right">
+                                            <thead className="bg-emerald-50 text-emerald-800 font-bold border-b border-emerald-100">
+                                                <tr>
+                                                    <th className="p-1.5 text-center">{t('hazri.date')}</th>
+                                                    <th className="p-1.5 text-center">Status</th>
+                                                    <th className="p-1.5 text-center">{t('hazri.entryTime')}</th>
+                                                    <th className="p-1.5 text-center">{t('hazri.exitTime')}</th>
+                                                    <th className="p-1.5 text-center">{t('hazri.salaryDeduction')}</th>
                                                 </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                                {isLoadingHistory ? (
+                                                    <tr>
+                                                        <td colSpan="5" className="p-4 text-center text-gray-400 text-[10px]">Loading...</td>
+                                                    </tr>
+                                                ) : attendanceHistory.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan="5" className="p-4 text-center text-gray-400 text-[10px]">{t('hazri.noData')}</td>
+                                                    </tr>
+                                                ) : (
+                                                    attendanceHistory.map((record) => (
+                                                        <tr key={record.id} className="hover:bg-emerald-50/30 transition-colors">
+                                                            <td className="p-1.5 text-center font-medium text-gray-600 dir-ltr text-[10px]">{record.dateStr}</td>
+                                                            <td className="p-1.5 text-center">
+                                                                <span className={`px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold border ${record.status === 'present' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                                                                    record.status === 'absent' ? 'bg-red-50 text-red-600 border-red-200' :
+                                                                        record.status === 'leave' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                                                            'bg-amber-50 text-amber-600 border-amber-200'
+                                                                    }`}>
+                                                                    {t(`hazri.${record.status}`) || record.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="p-1.5 text-center text-gray-600 text-[10px]" dir="ltr">
+                                                                {record.status === 'present' ? formatTime12Hour(record.entryTime) : '-'}
+                                                                {record.status === 'present' && record.isLate && <span className="text-amber-500 block text-[8px]">{t('hazri.late')}</span>}
+                                                            </td>
+                                                            <td className="p-1.5 text-center text-gray-600 text-[10px]" dir="ltr">
+                                                                {record.status === 'present' ? formatTime12Hour(record.exitTime) : '-'}
+                                                                {record.status === 'present' && record.earlyMinutes > 0 && <span className="text-red-500 block text-[8px]">{t('hazri.earlyLeave')}</span>}
+                                                            </td>
+                                                            <td className="p-1.5 text-center font-bold text-red-500 text-[10px]" dir="ltr">
+                                                                {record.deduction > 0 ? `Rs. ${record.deduction}` : '-'}
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="bg-gray-50 border-t border-gray-100 p-1 text-center">
+                                        <p className="text-[9px] text-gray-400">(Feb 2026 data)</p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    {/* ===== TAB 4: SUMMARY ===== */}
-                    {activeTab === 'summary' && (
-                        <div className="bg-white rounded-xl shadow p-6">
-                            <h3 className="text-xl font-bold text-slate-800 mb-4 text-center">{t('hazri.tabs.summary')}</h3>
-                            <div className="grid grid-cols-3 gap-4 text-center">
-                                <div className="bg-emerald-50 p-4 rounded-xl">
-                                    <p className="text-3xl font-bold text-emerald-600">--</p>
-                                    <p className="text-sm text-gray-600">{t('hazri.present')}</p>
-                                </div>
-                                <div className="bg-red-50 p-4 rounded-xl">
-                                    <p className="text-3xl font-bold text-red-600">--</p>
-                                    <p className="text-sm text-gray-600">{t('hazri.absent')}</p>
-                                </div>
-                                <div className="bg-amber-50 p-4 rounded-xl">
-                                    <p className="text-3xl font-bold text-amber-600">--</p>
-                                    <p className="text-sm text-gray-600">{t('hazri.leave')}</p>
-                                </div>
-                            </div>
-                            <p className="text-center text-gray-400 mt-4 text-sm">(Feb 2026 data)</p>
-                        </div>
-                    )}
+                        )
+                    }
 
                     <div className="mt-6 text-center text-gray-500 text-sm">
                         📅 {dateStr} | 🕐 {currentTime}
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
+
+            {/* Font Settings Modal */}
+            <FontSettings isOpen={showFontSettings} onClose={() => setShowFontSettings(false)} />
         </>
     );
 };

@@ -12,7 +12,7 @@ const Dashboard = () => {
     }, [t, i18n.language]);
 
     const stats = [
-        { label: t('dashboard.presentToday'), val: '15', col: '#3b82f6' },
+        { label: t('dashboard.presentToday'), val: '22', col: '#3b82f6' },
     ];
 
     return (
