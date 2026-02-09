@@ -13,7 +13,8 @@ import {
     ClipboardList,
     BarChart3,
     Menu,
-    X
+    X,
+    FileText
 } from 'lucide-react';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import appConfig from '../config/appConfig';
@@ -66,7 +67,8 @@ const DashboardLayout = () => {
         { labelKey: 'sidebar.teachersList', path: '/teachers', icon: Users },
         { labelKey: 'sidebar.attendanceSchedule', path: '/teachers/schedule', icon: Calendar },
         { labelKey: 'sidebar.attendanceSummary', path: '/teachers/summary', icon: BarChart3 },
-        { labelKey: 'sidebar.dailyAttendance', path: '/teachers/daily', icon: ClipboardList, isNew: true },
+        { labelKey: 'sidebar.dailyAttendance', path: '/teachers/daily', icon: ClipboardList },
+        { labelKey: 'sidebar.hazriReports', path: '/teachers/reports', icon: FileText, isNew: true },
     ];
 
     // Main menu items

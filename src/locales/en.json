@@ -173,7 +173,12 @@
     },
     "hazri": {
         "title": "Attendance Schedule",
-        "subtitle": "Staff Attendance Management",
+        "subtitle": "Attendance Schedule",
+        "topTabs": {
+            "staff": "Staff",
+            "attendance": "Attendance",
+            "newSchedule": "New Schedule"
+        },
         "tabs": {
             "attendance": "Attendance",
             "timing": "Timing",

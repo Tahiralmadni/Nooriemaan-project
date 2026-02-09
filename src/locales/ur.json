@@ -173,7 +173,12 @@
     },
     "hazri": {
         "title": "حاضری جدول",
-        "subtitle": "عملہ کی حاضری کا انتظام",
+        "subtitle": "حاضری جدول",
+        "topTabs": {
+            "staff": "عملہ",
+            "attendance": "حاضری",
+            "newSchedule": "جدید جدول"
+        },
         "tabs": {
             "attendance": "حاضری",
             "timing": "دوران اوقات",

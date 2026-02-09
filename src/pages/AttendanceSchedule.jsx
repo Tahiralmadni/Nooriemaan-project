@@ -121,6 +121,9 @@ const AttendanceSchedule = () => {
     // Font Settings Modal State
     const [showFontSettings, setShowFontSettings] = useState(false);
 
+    // Top-level Tab State (عملہ / حاضری / جدید جدول)
+    const [topActiveTab, setTopActiveTab] = useState('attendance');
+
 
     // Helper: Convert 24-hour time to 12-hour AM/PM format
     const formatTime12Hour = (time24) => {
@@ -512,122 +515,204 @@ const AttendanceSchedule = () => {
                 dir={isRTL ? 'rtl' : 'ltr'}
             >
 
-                {/* ===== TOP BAR - Matching DashboardLayout ===== */}
-                <div className="w-full bg-white px-4 md:px-6 py-3 border-b border-gray-200 flex justify-between items-center gap-3 sticky top-0 z-50">
+                {/* ===== TOP BAR - Premium Glassmorphism ===== */}
+                <div className="w-full bg-white/80 backdrop-blur-md px-4 md:px-6 py-3 border-b border-white/50 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm">
                     {/* Back to Dashboard */}
                     <a
                         href="/dashboard"
-                        className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors text-sm font-medium"
+                        className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-all text-sm font-semibold group"
                     >
-                        <span className="text-lg">{isRTL ? '→' : '←'}</span>
+                        <span className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                            {isRTL ? '→' : '←'}
+                        </span>
                         <span className="hidden sm:inline">{isRTL ? 'واپس ڈیش بورڈ' : 'Dashboard'}</span>
                     </a>
 
-                    {/* Right side buttons - Same as Dashboard */}
+                    {/* Right side buttons - Premium Style */}
                     <div className={`flex items-center gap-2 md:gap-3 ${isRTL ? 'mr-auto ml-2' : 'ml-auto mr-2'}`}>
                         <button
                             onClick={() => i18n.changeLanguage(isRTL ? 'en' : 'ur')}
-                            className="px-3 md:px-4 py-2 border border-emerald-500 rounded-lg bg-emerald-50 cursor-pointer text-xs md:text-[13px] font-semibold text-emerald-500 hover:bg-emerald-100 transition-all"
+                            className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold text-xs md:text-sm shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-[1.02] transition-all"
                         >
                             {isRTL ? 'English' : 'اردو'}
                         </button>
                         <button
                             onClick={() => setShowFontSettings(true)}
-                            className="px-3 md:px-4 py-2 border border-gray-200 rounded-lg bg-white cursor-pointer text-xs md:text-[13px] flex items-center gap-1.5 text-gray-600 hover:bg-gray-50 transition-all"
+                            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 font-semibold text-xs md:text-sm shadow-sm hover:bg-gray-50 hover:shadow-md transition-all flex items-center gap-1.5"
                         >
-                            <span>T</span>
+                            <Type size={14} />
                             <span className="hidden sm:inline">{isRTL ? 'فونٹ' : 'Font'}</span>
                         </button>
                     </div>
 
-                    {/* Logo on right corner (RTL) */}
-                    <img
-                        src="/logo-main.png"
-                        alt="Logo"
-                        className="h-10 w-10 object-contain"
-                        onError={(e) => e.target.style.display = 'none'}
-                    />
+                    {/* Logo with glow effect */}
+                    <div className="h-10 w-10 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                        <img
+                            src="/logo-main.png"
+                            alt="Logo"
+                            className="h-8 w-8 object-contain"
+                            onError={(e) => e.target.style.display = 'none'}
+                        />
+                    </div>
                 </div>
 
-                {/* Main Content Container - Made more compact */}
-                <div className="w-full max-w-xl bg-transparent p-3">
-                    {/* Subtitle */}
-                    <p className="text-gray-500 text-sm text-center mb-4">{t('hazri.subtitle')}</p>
-
-                    {/* Inner Tabs */}
-                    <div className="flex justify-center gap-1 mb-4 flex-wrap">
-                        {tabs.map(tab => (
+                {/* Main Content Container - Premium Design */}
+                <div className="w-full max-w-lg mx-auto px-4 py-6">
+                    {/* Top Level Tabs - عملہ / حاضری / جدید جدول */}
+                    <div className="flex justify-center mb-4">
+                        <div className="inline-flex bg-gradient-to-r from-emerald-500 to-teal-500 p-1 rounded-xl shadow-lg">
                             <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`px-4 py-1.5 rounded-md font-medium text-sm transition-all ${activeTab === tab.id
-                                    ? 'bg-emerald-600 text-white shadow-md'
-                                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                                onClick={() => setTopActiveTab('staff')}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${topActiveTab === 'staff'
+                                        ? 'bg-white text-emerald-600 shadow-md'
+                                        : 'text-white hover:bg-white/20'
                                     }`}
+                                style={{ lineHeight: '2' }}
                             >
-                                {tab.label}
+                                {t('hazri.topTabs.staff')}
                             </button>
-                        ))}
+                            <button
+                                onClick={() => setTopActiveTab('attendance')}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${topActiveTab === 'attendance'
+                                        ? 'bg-white text-emerald-600 shadow-md'
+                                        : 'text-white hover:bg-white/20'
+                                    }`}
+                                style={{ lineHeight: '2' }}
+                            >
+                                {t('hazri.topTabs.attendance')}
+                            </button>
+                            <button
+                                onClick={() => setTopActiveTab('newSchedule')}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${topActiveTab === 'newSchedule'
+                                        ? 'bg-white text-emerald-600 shadow-md'
+                                        : 'text-white hover:bg-white/20'
+                                    }`}
+                                style={{ lineHeight: '2' }}
+                            >
+                                {t('hazri.topTabs.newSchedule')}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Page Title with Gradient */}
+                    <div className="text-center mb-6">
+                        <h1
+                            className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent mb-2"
+                            style={{ lineHeight: '2' }}
+                        >
+                            {t('hazri.subtitle')}
+                        </h1>
+                        <div className="flex items-center justify-center gap-2 text-gray-400 text-xs">
+                            <Clock size={12} />
+                            <span>{currentTime}</span>
+                            <span className="text-gray-300">•</span>
+                            <Calendar size={12} />
+                            <span>{dateStr}</span>
+                        </div>
+                    </div>
+
+                    {/* Premium Tabs - Pill Style with Glassmorphism */}
+                    <div className="flex justify-center mb-6">
+                        <div className="inline-flex bg-white/60 backdrop-blur-sm p-1.5 rounded-2xl shadow-lg shadow-emerald-500/10 border border-white/80">
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`
+                                        relative px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 ease-out
+                                        ${activeTab === tab.id
+                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 scale-[1.02]'
+                                            : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50/50'
+                                        }
+                                    `}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* ===== TAB 1: ATTENDANCE ===== */}
                     {activeTab === 'attendance' && (
-                        <div className="space-y-3">
-                            {/* Date Bar with Staff Selector - COMPACT */}
-                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2.5 flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="date"
-                                        value={selectedDate}
-                                        onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="p-1.5 text-xs text-gray-700 font-medium border rounded bg-white focus:ring-1 focus:ring-emerald-500 outline-none"
-                                    />
-                                    <span className="text-gray-400 text-sm">📅</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-700 font-bold">{isRTL ? staff.nameUr : staff.nameEn}</span>
-                                    <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs">
-                                        👤
+                        <div className="space-y-4">
+                            {/* Staff & Date Card - Premium Glassmorphism */}
+                            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 p-4">
+                                <div className="flex items-center justify-between">
+                                    {/* Staff Info */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center text-white text-lg shadow-lg shadow-emerald-500/30">
+                                            <UserCheck size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-gray-800">{isRTL ? staff.nameUr : staff.nameEn}</h3>
+                                            <p className="text-[10px] text-gray-400 font-medium">{isRTL ? staff.roleUr : staff.roleEn}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Date Picker - Styled */}
+                                    <div className="flex items-center gap-2 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100">
+                                        <Calendar size={14} className="text-emerald-500" />
+                                        <input
+                                            type="date"
+                                            value={selectedDate}
+                                            onChange={(e) => setSelectedDate(e.target.value)}
+                                            className="text-xs text-gray-700 font-semibold bg-transparent outline-none cursor-pointer"
+                                        />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Time Table - نظام الاوقات */}
-                            <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-                                <div className="bg-emerald-600 text-white text-center py-1.5 font-bold text-sm">
-                                    {t('hazri.timeTable')}
+                            {/* Time Table - Premium Design */}
+                            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 overflow-hidden">
+                                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center py-3 px-4">
+                                    <h3 className="font-bold text-sm tracking-wide flex items-center justify-center gap-2">
+                                        <Clock size={16} />
+                                        {t('hazri.timeTable')}
+                                    </h3>
                                 </div>
-                                <table className="w-full text-xs">
-                                    <thead className="bg-gray-50 border-b">
-                                        <tr>
-                                            <th className="py-1.5 px-2 font-medium text-gray-700">{t('hazri.number')}</th>
-                                            <th className="py-1.5 px-2 font-medium text-gray-700">{t('hazri.entryTime')}</th>
-                                            <th className="py-1.5 px-2 font-medium text-gray-700">{t('hazri.exitTime')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr className="text-center">
-                                            <td className="py-1.5 px-2 font-bold text-emerald-600">1</td>
-                                            <td className="py-1.5 px-2">{staff.entryTime}</td>
-                                            <td className="py-1.5 px-2">{staff.exitTime}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div className="grid grid-cols-3 divide-x divide-gray-100">
+                                    <div className="p-4 text-center">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.number')}</p>
+                                        <p className="text-lg font-bold text-emerald-600">1</p>
+                                    </div>
+                                    <div className="p-4 text-center">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.entryTime')}</p>
+                                        <p className="text-sm font-bold text-gray-700">{staff.entryTime}</p>
+                                    </div>
+                                    <div className="p-4 text-center">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.exitTime')}</p>
+                                        <p className="text-sm font-bold text-gray-700">{staff.exitTime}</p>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* New Entry Form - COMPACT */}
-                            <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-                                <div className="bg-emerald-600 text-white text-center py-1 font-bold text-xs">
-                                    {t('hazri.newEntry')}
+                            {/* New Entry Form - Premium Design */}
+                            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 overflow-hidden">
+                                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center py-3 px-4">
+                                    <h3 className="font-bold text-sm tracking-wide">{t('hazri.newEntry')}</h3>
                                 </div>
 
-                                <div className="p-3 space-y-3">
-                                    {/* Status Dropdown */}
-                                    <div className="w-full">
+                                <div className="p-4 space-y-4">
+                                    {/* Status Dropdown - Fixed for Urdu */}
+                                    <div>
+                                        <label className="text-xs text-gray-500 font-semibold block mb-2" style={{ lineHeight: '2' }}>
+                                            {t('hazri.select')}
+                                        </label>
                                         <select
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
-                                            className="w-full p-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-emerald-500 outline-none bg-white text-gray-700"
+                                            className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none bg-white text-gray-700 font-medium cursor-pointer"
+                                            style={{
+                                                lineHeight: '2.2',
+                                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                                                backgroundRepeat: 'no-repeat',
+                                                backgroundPosition: 'left 14px center',
+                                                backgroundSize: '20px',
+                                                appearance: 'none',
+                                                WebkitAppearance: 'none',
+                                                MozAppearance: 'none',
+                                                paddingLeft: '44px'
+                                            }}
                                         >
                                             {statusOptions.map(opt => (
                                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -635,24 +720,27 @@ const AttendanceSchedule = () => {
                                         </select>
                                     </div>
 
-                                    {/* Time Inputs - COMPACT Grid */}
+                                    {/* Time Inputs - Premium Grid */}
                                     {status === 'present' && (
                                         <>
-                                            <div className="grid grid-cols-2 gap-3">
+                                            <div className="grid grid-cols-2 gap-4">
                                                 {/* Entry Section */}
-                                                <div className="bg-gray-50 p-2 rounded border border-gray-100">
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <label className="text-[10px] text-gray-500 font-bold uppercase">{t('hazri.entryTime')}</label>
-                                                        <div className="flex gap-0.5">
+                                                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100">
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <label className="text-[10px] text-emerald-700 font-bold uppercase flex items-center gap-1">
+                                                            <Clock size={10} />
+                                                            {t('hazri.entryTime')}
+                                                        </label>
+                                                        <div className="flex gap-1 bg-white rounded-lg p-0.5 shadow-sm">
                                                             <button
                                                                 onClick={() => setEntryPermission(true)}
-                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${entryPermission ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                                className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${entryPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
                                                             >
                                                                 {t('hazri.yes')}
                                                             </button>
                                                             <button
                                                                 onClick={() => setEntryPermission(false)}
-                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${!entryPermission ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                                className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${!entryPermission ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-red-500'}`}
                                                             >
                                                                 {t('hazri.no')}
                                                             </button>
@@ -662,24 +750,27 @@ const AttendanceSchedule = () => {
                                                         type="time"
                                                         value={manualEntryTime}
                                                         onChange={(e) => setManualEntryTime(e.target.value)}
-                                                        className="w-full p-1 text-xs border rounded bg-white text-center font-mono focus:ring-1 focus:ring-emerald-500 outline-none"
+                                                        className="w-full p-2.5 text-sm border-2 border-emerald-200 rounded-lg bg-white text-center font-mono font-bold text-emerald-700 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
                                                     />
                                                 </div>
 
                                                 {/* Exit Section */}
-                                                <div className="bg-gray-50 p-2 rounded border border-gray-100">
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <label className="text-[10px] text-gray-500 font-bold uppercase">{t('hazri.exitTime')}</label>
-                                                        <div className="flex gap-0.5">
+                                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-xl border border-amber-100">
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <label className="text-[10px] text-amber-700 font-bold uppercase flex items-center gap-1">
+                                                            <Clock size={10} />
+                                                            {t('hazri.exitTime')}
+                                                        </label>
+                                                        <div className="flex gap-1 bg-white rounded-lg p-0.5 shadow-sm">
                                                             <button
                                                                 onClick={() => setExitPermission(true)}
-                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${exitPermission ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                                className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${exitPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
                                                             >
                                                                 {t('hazri.yes')}
                                                             </button>
                                                             <button
                                                                 onClick={() => setExitPermission(false)}
-                                                                className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${!exitPermission ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-500'}`}
+                                                                className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${!exitPermission ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-red-500'}`}
                                                             >
                                                                 {t('hazri.no')}
                                                             </button>
@@ -689,45 +780,61 @@ const AttendanceSchedule = () => {
                                                         type="time"
                                                         value={manualExitTime}
                                                         onChange={(e) => setManualExitTime(e.target.value)}
-                                                        className="w-full p-1 text-xs border rounded bg-white text-center font-mono focus:ring-1 focus:ring-emerald-500 outline-none"
+                                                        className="w-full p-2.5 text-sm border-2 border-amber-200 rounded-lg bg-white text-center font-mono font-bold text-amber-700 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all"
                                                     />
                                                 </div>
                                             </div>
 
 
-
-                                            {/* Late Warning - ONLY if no permission */}
+                                            {/* Late Warning - Premium Alert */}
                                             {isLate && !entryPermission && (
-                                                <div className="bg-amber-50 border border-amber-200 rounded p-2 flex items-center gap-2">
-                                                    <AlertTriangle size={14} className="text-amber-500" />
-                                                    <span className="text-amber-700 text-xs">
-                                                        {t('hazri.late')} - {lateMinutes} {t('hazri.min')} | {t('hazri.deduction')}: Rs. {Math.round((lateMinutes / 60) * staff.perHourSalary)}
-                                                    </span>
+                                                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                                                    <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                                                        <AlertTriangle size={16} className="text-amber-500" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-amber-800 text-xs font-bold">{t('hazri.late')} - {lateMinutes} {t('hazri.min')}</p>
+                                                        <p className="text-amber-600 text-[10px]">{t('hazri.deduction')}: Rs. {Math.round((lateMinutes / 60) * staff.perHourSalary)}</p>
+                                                    </div>
                                                 </div>
                                             )}
 
-                                            {/* Early Leave Warning - ONLY if no permission */}
+                                            {/* Early Leave Warning - Premium Alert */}
                                             {isEarlyLeave && !exitPermission && (
-                                                <div className="bg-red-50 border border-red-200 rounded p-2 flex items-center gap-2">
-                                                    <AlertTriangle size={14} className="text-red-500" />
-                                                    <span className="text-red-700 text-xs">
-                                                        {t('hazri.earlyLeave')} - {earlyMinutes} {t('hazri.min')} | {t('hazri.deduction')}: Rs. {Math.round((earlyMinutes / 60) * staff.perHourSalary)}
-                                                    </span>
+                                                <div className="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                                                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                                                        <AlertTriangle size={16} className="text-red-500" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-red-800 text-xs font-bold">{t('hazri.earlyLeave')} - {earlyMinutes} {t('hazri.min')}</p>
+                                                        <p className="text-red-600 text-[10px]">{t('hazri.deduction')}: Rs. {Math.round((earlyMinutes / 60) * staff.perHourSalary)}</p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </>
                                     )}
 
-                                    {/* Reason Section - Compact */}
-                                    <div className="space-y-2 pt-2">
+                                    {/* Reason Section - Fixed for Urdu */}
+                                    <div className="space-y-4 pt-4 border-t border-gray-100">
                                         <div>
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase block mb-1">
+                                            <label className="text-xs text-gray-500 font-semibold block mb-2" style={{ lineHeight: '2' }}>
                                                 {t('hazri.lateReason')}
                                             </label>
                                             <select
                                                 value={reasonType}
                                                 onChange={(e) => setReasonType(e.target.value)}
-                                                className="w-full p-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-emerald-500 outline-none bg-white text-gray-700"
+                                                className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none bg-white text-gray-700 font-medium cursor-pointer"
+                                                style={{
+                                                    lineHeight: '2.2',
+                                                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                                                    backgroundRepeat: 'no-repeat',
+                                                    backgroundPosition: 'left 14px center',
+                                                    backgroundSize: '20px',
+                                                    appearance: 'none',
+                                                    WebkitAppearance: 'none',
+                                                    MozAppearance: 'none',
+                                                    paddingLeft: '44px'
+                                                }}
                                             >
                                                 {reasonOptions.map(opt => (
                                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -737,41 +844,42 @@ const AttendanceSchedule = () => {
 
                                         {/* Other Reason Textarea */}
                                         <div>
-                                            <label className="text-[10px] text-gray-500 font-bold uppercase block mb-1">
+                                            <label className="text-xs text-gray-500 font-semibold block mb-2" style={{ lineHeight: '2' }}>
                                                 {t('hazri.otherReason')}
                                             </label>
                                             <textarea
                                                 value={reason}
                                                 onChange={(e) => setReason(e.target.value)}
                                                 placeholder={t('hazri.otherReasonPlaceholder')}
-                                                className="w-full p-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-emerald-500 outline-none resize-none"
+                                                className="w-full p-3 text-base border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none resize-none"
+                                                style={{ lineHeight: '2' }}
                                                 rows={2}
                                             />
                                         </div>
                                     </div>
 
-                                    {/* Save Button - Right Aligned, Small & Professional */}
-                                    <div className="pt-3 flex justify-end">
+                                    {/* Save Button - Premium Gradient */}
+                                    <div className="pt-4 flex justify-center">
                                         <button
                                             onClick={handleSave}
                                             disabled={isSaving}
                                             className={`
-                                                px-6 py-1.5 rounded-full text-xs font-bold shadow-md transition-transform active:scale-95
+                                                px-8 py-3 rounded-xl text-sm font-bold shadow-lg transition-all duration-300 ease-out
                                                 flex items-center gap-2
                                                 ${isSaving
-                                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                                    : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-lg'
+                                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                                    : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-[1.02] active:scale-95'
                                                 }
                                             `}
                                         >
                                             {isSaving ? (
                                                 <>
-                                                    <span className="animate-spin">⏳</span>
+                                                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
                                                     <span>Saving...</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <span>💾</span>
+                                                    <CheckCircle size={16} />
                                                     <span>{t('hazri.save')}</span>
                                                 </>
                                             )}
