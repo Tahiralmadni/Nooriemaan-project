@@ -650,7 +650,7 @@ const Login = () => {
                                     {/* User Icon */}
                                     <span style={{
                                         position: 'absolute',
-                                        [isRTL ? 'right' : 'left']: '12px',
+                                        left: '12px',
                                         top: '50%',
                                         transform: 'translateY(-50%)',
                                         color: '#94a3b8'
@@ -665,10 +665,10 @@ const Login = () => {
                                         onChange={(e) => setGrNumber(e.target.value)} // State update
                                         placeholder={t('login.grNumberPlaceholder')}
                                         disabled={isLoading}
+                                        dir="ltr"
                                         style={{
                                             width: '100%',
-                                            padding: '12px',
-                                            [isRTL ? 'paddingRight' : 'paddingLeft']: '38px', // Icon ke liye jagah
+                                            padding: '12px 12px 12px 38px',
                                             backgroundColor: 'transparent',
                                             border: 'none',
                                             borderRadius: '10px',
@@ -676,8 +676,9 @@ const Login = () => {
                                             color: '#1e293b',
                                             outline: 'none',
                                             boxSizing: 'border-box',
-                                            textAlign: isRTL ? 'right' : 'left',
-                                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                            textAlign: 'left',
+                                            fontFamily: 'var(--font-english)',
+                                            direction: 'ltr'
                                         }}
                                         // Focus Styles (Green Border)
                                         onFocus={(e) => {
@@ -706,7 +707,7 @@ const Login = () => {
                                     {/* Lock Icon */}
                                     <span style={{
                                         position: 'absolute',
-                                        [isRTL ? 'right' : 'left']: '12px',
+                                        left: '12px',
                                         top: '50%',
                                         transform: 'translateY(-50%)',
                                         color: '#94a3b8'
@@ -721,14 +722,13 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder={t('login.passwordPlaceholder')}
                                         disabled={isLoading}
+                                        dir="ltr"
                                         // Caps Lock Check
                                         onKeyDown={(e) => setCapsLockOn(e.getModifierState('CapsLock'))}
                                         onKeyUp={(e) => setCapsLockOn(e.getModifierState('CapsLock'))}
                                         style={{
                                             width: '100%',
-                                            padding: '12px',
-                                            [isRTL ? 'paddingRight' : 'paddingLeft']: '38px',
-                                            [isRTL ? 'paddingLeft' : 'paddingRight']: '40px', // Eye Icon ke liye jagah
+                                            padding: '12px 40px 12px 38px',
                                             backgroundColor: 'transparent',
                                             border: 'none',
                                             borderRadius: '10px',
@@ -736,8 +736,9 @@ const Login = () => {
                                             color: '#1e293b',
                                             outline: 'none',
                                             boxSizing: 'border-box',
-                                            textAlign: isRTL ? 'right' : 'left',
-                                            fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)'
+                                            textAlign: 'left',
+                                            fontFamily: 'var(--font-english)',
+                                            direction: 'ltr'
                                         }}
                                         onFocus={(e) => {
                                             e.target.parentElement.style.borderColor = '#10b981';
@@ -761,7 +762,7 @@ const Login = () => {
                                         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                                         style={{
                                             position: 'absolute',
-                                            [isRTL ? 'left' : 'right']: '12px',
+                                            right: '12px',
                                             top: '50%',
                                             transform: 'translateY(-50%)',
                                             color: '#94a3b8',

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { Eye } from 'lucide-react';
+import { Eye, ArrowRight, ArrowLeft } from 'lucide-react';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
@@ -53,6 +53,20 @@ const Teachers = () => {
                 <title>{t('pageTitles.teachers')}</title>
             </Helmet>
             <div style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}>
+                {/* Mobile Back Button */}
+                <div className="md:hidden mb-4">
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        className="flex items-center gap-2 text-slate-600 hover:text-emerald-600 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100 w-full justify-center group"
+                    >
+                        {isRTL ?
+                            <ArrowRight size={20} className="group-hover:-mr-1 transition-all" /> :
+                            <ArrowLeft size={20} className="group-hover:-ml-1 transition-all" />
+                        }
+                        <span className="font-bold">{t('common.backToDashboard')}</span>
+                    </button>
+                </div>
+
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                     <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">

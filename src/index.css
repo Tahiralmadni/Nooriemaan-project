@@ -110,13 +110,7 @@ body {
 }
 
 /* Input Base Styles */
-input[type="text"],
-input[type="password"],
-input[type="email"] {
-  font-family: var(--font-urdu);
-  direction: rtl;
-  text-align: right;
-}
+/* Input styles removed to allow component-level control */
 
 /* Placeholder Styles */
 ::placeholder {

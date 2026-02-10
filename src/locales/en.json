@@ -233,5 +233,8 @@
             "saveFailed": "❌ Save Failed",
             "missingPreviousDays": "❌ Please mark attendance for these dates first:"
         }
+    },
+    "common": {
+        "backToDashboard": "Back to Dashboard"
     }
 }

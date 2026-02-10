@@ -233,5 +233,8 @@
             "saveFailed": "❌ محفوظ نہیں ہوا",
             "missingPreviousDays": "❌ پہلے ان تاریخوں کی حاضری لگائیں:"
         }
+    },
+    "common": {
+        "backToDashboard": "ڈیش بورڈ پر واپس جائیں"
     }
 }
