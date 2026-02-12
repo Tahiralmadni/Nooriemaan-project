@@ -19,6 +19,8 @@ import {
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import appConfig from '../config/appConfig';
 import logoMain from '../assets/logo-main.png';
+import LogoutModal from '../components/LogoutModal';
+import ScrollToTop from '../components/ScrollToTop';
 
 const DashboardLayout = () => {
     const { t, i18n } = useTranslation();
@@ -27,6 +29,7 @@ const DashboardLayout = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [teachersOpen, setTeachersOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     const isRTL = i18n.language === 'ur';
 
@@ -57,7 +60,11 @@ const DashboardLayout = () => {
     };
 
     // Logout Handler
-    const handleLogout = () => {
+    const handleLogoutClick = () => {
+        setShowLogoutModal(true);
+    };
+
+    const confirmLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userGR');
         window.location.href = '/';
@@ -225,7 +232,7 @@ const DashboardLayout = () => {
 
                     {/* Logout */}
                     <button
-                        onClick={handleLogout}
+                        onClick={handleLogoutClick}
                         className="w-full py-3.5 flex items-center justify-center gap-2.5 bg-transparent border-none cursor-pointer text-red-600 text-sm font-medium hover:bg-red-50 transition-all"
                     >
                         <LogOut size={18} />
@@ -274,6 +281,14 @@ const DashboardLayout = () => {
                 isOpen={showFontSettings}
                 onClose={() => setShowFontSettings(false)}
             />
+
+            <LogoutModal
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={confirmLogout}
+            />
+
+            <ScrollToTop />
         </div>
     );
 };

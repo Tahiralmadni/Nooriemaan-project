@@ -235,6 +235,12 @@
         }
     },
     "common": {
-        "backToDashboard": "Back to Dashboard"
+        "backToDashboard": "Back to Dashboard",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+    },
+    "logoutModal": {
+        "title": "Logout Confirmation",
+        "message": "Are you sure you want to logout? You will need to sign in again to access the portal."
     }
 }

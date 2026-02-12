@@ -12,6 +12,8 @@ import AttendanceSummary from './pages/AttendanceSummary';
 import DailyAttendance from './pages/DailyAttendance';
 import StaffProfile from './pages/StaffProfile';
 import AttendanceReports from './pages/AttendanceReports';
+import NetworkStatus from './components/NetworkStatus';
+import NotFound from './pages/NotFound';
 
 /**
  * App Component - Clean URL Structure with Asataza Dropdown Routes
@@ -38,6 +40,7 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <NetworkStatus />
         <Routes>
           {/* Login */}
           <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
@@ -56,9 +59,10 @@ function App() {
             <Route path="/teachers/profile/:id" element={<StaffProfile />} />
           </Route>
 
+
           {/* Standalone Pages (with mini-navbar) */}
           <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </HelmetProvider>
