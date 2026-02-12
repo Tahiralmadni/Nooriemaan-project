@@ -212,6 +212,7 @@
         "date": "Date",
         "deduction": "Deduction",
         "min": "min",
+        "loadingAttendance": "Loading Attendance System",
         "reasons": {
             "select": "Select Reason",
             "traffic": "Due to Traffic",
@@ -242,5 +243,51 @@
     "logoutModal": {
         "title": "Logout Confirmation",
         "message": "Are you sure you want to logout? You will need to sign in again to access the portal."
+    },
+    "reports": {
+        "title": "Attendance Reports",
+        "tabs": {
+            "daily": "Daily Attendance Report",
+            "monthly": "Monthly Summary Report",
+            "schedule": "Schedule Report",
+            "summary": "Summary Details"
+        },
+        "selectStaff": "Select Staff",
+        "selectMonth": "Select Month",
+        "allStaff": "All Staff",
+        "search": "Search",
+        "noData": "No data available yet",
+        "comingSoon": "Coming Soon",
+        "tableHeaders": {
+            "serial": "No.",
+            "date": "Date",
+            "day": "Day",
+            "status": "Status",
+            "startLessMin": "Start Less Min",
+            "duringLessMin": "During Less Min",
+            "endLessMin": "End Less Min",
+            "totalLessMin": "Total Less Min",
+            "totalOvertime": "Total Overtime",
+            "advanceLessMin": "Advance Less Min",
+            "remarks": "Remarks"
+        },
+        "summaryLabels": {
+            "totalAttendance": "Total Attendance",
+            "totalAbsent": "Total Absent",
+            "totalLeave": "Total Leave",
+            "totalLateMin": "Total Late Minutes",
+            "totalEarlyMin": "Total Early Leave Minutes",
+            "totalDeduction": "Total Deduction",
+            "totalOvertime": "Total Overtime",
+            "workingDays": "Working Days"
+        },
+        "export": {
+            "excel": "Excel",
+            "copy": "Copy",
+            "print": "Print"
+        },
+        "showEntries": "Show entries",
+        "dailyDetail": "Daily Attendance Details",
+        "attendanceDetail": "Attendance Details"
     }
 }

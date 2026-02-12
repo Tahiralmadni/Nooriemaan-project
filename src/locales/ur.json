@@ -212,6 +212,7 @@
         "date": "تاریخ",
         "deduction": "کٹوتی",
         "min": "منٹ",
+        "loadingAttendance": "حاضری کا نظام لوڈ ہو رہا ہے",
         "reasons": {
             "select": "وجہ منتخب کریں",
             "traffic": "ٹریفک کے سبب",
@@ -242,5 +243,51 @@
     "logoutModal": {
         "title": "لاگ آؤٹ کی تصدیق",
         "message": "کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟ پورٹل تک رسائی کے لیے آپ کو دوبارہ لاگ ان کرنا ہوگا۔"
+    },
+    "reports": {
+        "title": "حاضری رپورٹس",
+        "tabs": {
+            "daily": "یومیہ حاضری رپورٹ",
+            "monthly": "ماہانہ سمری رپورٹ",
+            "schedule": "جدول رپورٹ",
+            "summary": "اجمالی تفصیل"
+        },
+        "selectStaff": "عملہ منتخب کریں",
+        "selectMonth": "مہینہ منتخب کریں",
+        "allStaff": "تمام عملہ",
+        "search": "تلاش",
+        "noData": "ابھی تک کوئی ڈیٹا نہیں",
+        "comingSoon": "جلد آ رہا ہے",
+        "tableHeaders": {
+            "serial": "نمبر",
+            "date": "تاریخ",
+            "day": "دن",
+            "status": "کیفیت",
+            "startLessMin": "کم منٹ ابتدا",
+            "duringLessMin": "کم منٹ دوران",
+            "endLessMin": "کم منٹ اختتام",
+            "totalLessMin": "کل کم منٹ",
+            "totalOvertime": "کل زائد وقت",
+            "advanceLessMin": "ایڈوانس کے کم منٹ",
+            "remarks": "ریمارکس"
+        },
+        "summaryLabels": {
+            "totalAttendance": "کل حاضری",
+            "totalAbsent": "کل غیر حاضری",
+            "totalLeave": "کل رخصت",
+            "totalLateMin": "کل دیر سے آنے کے منٹ",
+            "totalEarlyMin": "کل جلدی جانے کے منٹ",
+            "totalDeduction": "کل کٹوتی",
+            "totalOvertime": "کل اضافی وقت",
+            "workingDays": "کام کے دن"
+        },
+        "export": {
+            "excel": "ایکسل",
+            "copy": "کاپی",
+            "print": "پرنٹ"
+        },
+        "showEntries": "اندراجات دکھائیں",
+        "dailyDetail": "یومیہ حاضری کی تفصیل",
+        "attendanceDetail": "حاضری کی تفصیل"
     }
 }
