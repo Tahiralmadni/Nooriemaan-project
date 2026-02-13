@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collection, query, where, getDocs, Timestamp, orderBy } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { FileText, Calendar, Users, Search, Download, Copy, ChevronDown, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
@@ -20,6 +22,16 @@ const AttendanceReports = () => {
         `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`
     );
     const [showFontSettings, setShowFontSettings] = useState(false);
+    const [attendanceData, setAttendanceData] = useState({});
+    const [monthlyStats, setMonthlyStats] = useState({
+        present: 0,
+        absent: 0,
+        leave: 0,
+        lateMins: 0,
+        earlyMins: 0,
+        deduction: 0,
+        overtime: 0
+    });
 
     // Loading screen — 5s to match progress bar
     useEffect(() => {
@@ -27,11 +39,69 @@ const AttendanceReports = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    // Staff list (same as AttendanceSchedule)
-    const staffList = Array.from({ length: 22 }, (_, i) => ({
-        id: i + 1,
-        name: t(`staff.${i + 1}`)
-    }));
+    // Fetch Attendance Data when staff or month changes
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!selectedStaff || !selectedMonth) return;
+
+            try {
+                const [year, month] = selectedMonth.split('-').map(Number);
+                const startOfMonth = new Date(year, month - 1, 1);
+                const endOfMonth = new Date(year, month, 0, 23, 59, 59);
+
+                const q = query(
+                    collection(db, 'attendance'),
+                    where('staffId', '==', Number(selectedStaff)),
+                    where('date', '>=', Timestamp.fromDate(startOfMonth)),
+                    where('date', '<=', Timestamp.fromDate(endOfMonth)),
+                    orderBy('date', 'asc')
+                );
+
+                const snapshot = await getDocs(q);
+                const data = {};
+                let stats = {
+                    present: 0,
+                    absent: 0,
+                    leave: 0,
+                    lateMins: 0,
+                    earlyMins: 0,
+                    deduction: 0,
+                    overtime: 0
+                };
+
+                snapshot.forEach((doc) => {
+                    const record = doc.data();
+                    const date = record.date.toDate();
+                    const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+                    data[dateStr] = record;
+
+                    // Calculate stats
+                    if (record.status === 'present') {
+                        stats.present++;
+                        if (record.isLate) stats.lateMins += (record.lateMinutes || 0);
+                        if (record.isEarlyLeave) stats.earlyMins += (record.earlyMinutes || 0);
+                    } else if (record.status === 'absent') {
+                        stats.absent++;
+                    } else if (record.status === 'leave') {
+                        stats.leave++;
+                    }
+                    if (record.deduction) stats.deduction += (record.deduction || 0);
+                });
+
+                setAttendanceData(data);
+                setMonthlyStats(stats);
+            } catch (error) {
+                console.error("Error fetching attendance reports:", error);
+            }
+        };
+
+        fetchData();
+    }, [selectedStaff, selectedMonth]);
+
+    // Staff list (Limited to only ID 1 for now as per request)
+    const staffList = [
+        { id: 1, name: t('staff.1') }
+    ];
 
     // Tabs configuration
     const tabs = [
@@ -64,22 +134,50 @@ const AttendanceReports = () => {
             const isPast = date <= today;
             const isFriday = dayOfWeek === 5;
 
+            const record = attendanceData[dateStr];
+
+            // Determine status text/color from real record or default logic
+            let statusText = '-';
+            let statusClass = 'text-gray-500';
+
+            if (isFriday) {
+                statusText = isRTL ? 'تعطیل: جمعہ' : 'Holiday: Friday';
+                statusClass = 'text-blue-600 bg-blue-50';
+            } else if (record) {
+                // Translate status from DB ('present', 'absent', 'leave')
+                if (record.status === 'present') {
+                    statusText = isRTL ? 'حاضر' : 'Present';
+                    statusClass = 'text-emerald-600 bg-emerald-50';
+                } else if (record.status === 'absent') {
+                    statusText = isRTL ? 'غیر حاضر' : 'Absent';
+                    statusClass = 'text-red-600 bg-red-50';
+                } else if (record.status === 'leave') {
+                    statusText = isRTL ? 'رخصت' : 'Leave';
+                    statusClass = 'text-amber-600 bg-amber-50';
+                } else if (record.status === 'holiday') {
+                    statusText = isRTL ? 'تعطیل' : 'Holiday';
+                    statusClass = 'text-blue-600 bg-blue-50';
+                }
+            } else if (isPast) {
+                // If past date and no record found -> Absent (Subject to policy, but safe assumption for visual gap)
+                statusText = '-'; // Or 'Not Marked'
+            }
+
             rows.push({
                 serial: day,
                 date: dateStr,
                 day: isRTL ? dayNamesUr[dayOfWeek] : dayNamesEn[dayOfWeek],
-                status: isFriday
-                    ? (isRTL ? 'تعطیل: جمعہ' : 'Holiday: Friday')
-                    : isPast
-                        ? (isRTL ? 'حاضر' : 'Present')
-                        : '-',
-                startLessMin: 0,
+                status: statusText,
+                statusRaw: record?.status || '',
+                statusClass: statusClass,
+                startLessMin: record?.isLate ? record.lateMinutes : 0,
                 duringLessMin: 0,
-                endLessMin: 0,
-                totalLessMin: 0,
+                endLessMin: record?.isEarlyLeave ? record.earlyMinutes : 0,
+                totalLessMin: (record?.lateMinutes || 0) + (record?.earlyMinutes || 0),
                 totalOvertime: 0,
                 advanceLessMin: 0,
-                remarks: '',
+                remarks: record?.reason || record?.reasonType || '',
+                deduction: record?.deduction || 0,
                 isFriday,
                 isPast
             });
@@ -109,10 +207,7 @@ const AttendanceReports = () => {
 
     // Status color helper
     const getStatusStyle = (row) => {
-        if (row.isFriday) return 'text-blue-600 bg-blue-50';
-        if (row.status === (isRTL ? 'حاضر' : 'Present')) return 'text-emerald-600 bg-emerald-50';
-        if (row.status === (isRTL ? 'غیر حاضر' : 'Absent')) return 'text-red-600 bg-red-50';
-        return 'text-gray-500';
+        return row.statusClass || 'text-gray-500';
     };
 
     return (
@@ -170,8 +265,8 @@ const AttendanceReports = () => {
                                             key={tab.id}
                                             onClick={() => setActiveTab(tab.id)}
                                             className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-3 transition-all duration-200 ${activeTab === tab.id
-                                                    ? 'border-emerald-500 text-emerald-700 bg-emerald-50/50'
-                                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                                ? 'border-emerald-500 text-emerald-700 bg-emerald-50/50'
+                                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                                 }`}
                                         >
                                             <tab.icon size={16} />
@@ -227,14 +322,14 @@ const AttendanceReports = () => {
                             <div className="flex-1 px-4 md:px-6 py-4">
                                 <div className="max-w-6xl mx-auto">
 
-                                    {/* Report Title Bar — Blue header like dimionline */}
+                                    {/* Report Title Bar — Green/Emerald theme */}
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.1, duration: 0.4 }}
-                                        className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-xl px-4 py-3 text-center"
+                                        className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-t-xl px-4 py-3 text-center shadow-md"
                                     >
-                                        <h2 className="text-white font-bold text-sm md:text-base">
+                                        <h2 className="text-white font-bold text-sm md:text-base tracking-wide">
                                             {t('reports.dailyDetail')}
                                         </h2>
                                     </motion.div>
@@ -275,13 +370,13 @@ const AttendanceReports = () => {
                                     >
                                         <div className="overflow-x-auto">
                                             <table className="w-full min-w-[900px] text-xs">
-                                                {/* Table Header — Blue gradient like dimionline */}
+                                                {/* Table Header — Green gradient */}
                                                 <thead>
-                                                    <tr className="bg-gradient-to-r from-blue-500 to-blue-600">
+                                                    <tr className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
                                                         {tableHeaders.map((header) => (
                                                             <th
                                                                 key={header}
-                                                                className="px-2 py-3 text-white font-bold text-[11px] text-center border-r border-blue-400/30 last:border-r-0 whitespace-nowrap"
+                                                                className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 last:border-r-0 whitespace-nowrap leading-relaxed"
                                                             >
                                                                 {t(`reports.tableHeaders.${header}`)}
                                                             </th>
@@ -299,10 +394,10 @@ const AttendanceReports = () => {
                                                                 animate={{ opacity: 1, x: 0 }}
                                                                 transition={{ delay: index * 0.02, duration: 0.3 }}
                                                                 className={`border-b border-gray-100 transition-colors ${row.isFriday
-                                                                        ? 'bg-blue-50/50'
-                                                                        : index % 2 === 0
-                                                                            ? 'bg-white hover:bg-emerald-50/30'
-                                                                            : 'bg-gray-50/50 hover:bg-emerald-50/30'
+                                                                    ? 'bg-emerald-50/30'
+                                                                    : index % 2 === 0
+                                                                        ? 'bg-white hover:bg-emerald-50/50'
+                                                                        : 'bg-gray-50/50 hover:bg-emerald-50/50'
                                                                     }`}
                                                             >
                                                                 <td className="px-2 py-2.5 text-center text-gray-700 font-semibold border-r border-gray-100">{row.serial}</td>
@@ -361,22 +456,22 @@ const AttendanceReports = () => {
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalAttendance')}:</span>
-                                                        <span className="font-bold text-emerald-600">0</span>
+                                                        <span className="font-bold text-emerald-600">{monthlyStats.present}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalAbsent')}:</span>
-                                                        <span className="font-bold text-red-600">0</span>
+                                                        <span className="font-bold text-red-600">{monthlyStats.absent}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-amber-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalLeave')}:</span>
-                                                        <span className="font-bold text-amber-600">0</span>
+                                                        <span className="font-bold text-amber-600">{monthlyStats.leave}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalDeduction')}:</span>
-                                                        <span className="font-bold text-blue-600">Rs. 0</span>
+                                                        <span className="font-bold text-blue-600">Rs. {monthlyStats.deduction}</span>
                                                     </div>
                                                 </div>
                                             </motion.div>
@@ -405,8 +500,8 @@ const AttendanceReports = () => {
                             </div>
 
                             {/* ===== FOOTER ===== */}
-                            <div className="w-full bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-center">
-                                <p className="text-white/80 text-[10px]">
+                            <div className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-center text-white">
+                                <p className="text-white/90 text-[10px]">
                                     {footerTime} :{footerDate} &nbsp; | &nbsp; © {t('appName')}
                                 </p>
                             </div>
