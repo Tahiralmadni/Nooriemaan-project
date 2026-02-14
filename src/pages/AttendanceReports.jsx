@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,6 +8,7 @@ import { FileText, Calendar, Users, Search, Download, Copy, ChevronDown, ArrowLe
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
+import AttendanceSummaryChart from '../components/AttendanceSummaryChart';
 
 const AttendanceReports = () => {
     const { t, i18n } = useTranslation();
@@ -23,15 +24,7 @@ const AttendanceReports = () => {
     );
     const [showFontSettings, setShowFontSettings] = useState(false);
     const [attendanceData, setAttendanceData] = useState({});
-    const [monthlyStats, setMonthlyStats] = useState({
-        present: 0,
-        absent: 0,
-        leave: 0,
-        lateMins: 0,
-        earlyMins: 0,
-        deduction: 0,
-        overtime: 0
-    });
+
 
     // Loading screen — 5s to match progress bar
     useEffect(() => {
@@ -59,37 +52,15 @@ const AttendanceReports = () => {
 
                 const snapshot = await getDocs(q);
                 const data = {};
-                let stats = {
-                    present: 0,
-                    absent: 0,
-                    leave: 0,
-                    lateMins: 0,
-                    earlyMins: 0,
-                    deduction: 0,
-                    overtime: 0
-                };
 
                 snapshot.forEach((doc) => {
                     const record = doc.data();
                     const date = record.date.toDate();
                     const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
                     data[dateStr] = record;
-
-                    // Calculate stats
-                    if (record.status === 'present') {
-                        stats.present++;
-                        if (record.isLate) stats.lateMins += (record.lateMinutes || 0);
-                        if (record.isEarlyLeave) stats.earlyMins += (record.earlyMinutes || 0);
-                    } else if (record.status === 'absent') {
-                        stats.absent++;
-                    } else if (record.status === 'leave') {
-                        stats.leave++;
-                    }
-                    if (record.deduction) stats.deduction += (record.deduction || 0);
                 });
 
                 setAttendanceData(data);
-                setMonthlyStats(stats);
             } catch (error) {
                 console.error("Error fetching attendance reports:", error);
             }
@@ -120,47 +91,74 @@ const AttendanceReports = () => {
     const dayNamesUr = ['اتوار', 'پیر', 'منگل', 'بدھ', 'جمعرات', 'جمعہ', 'ہفتہ'];
     const dayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    // Generate placeholder rows for the selected month
-    const generateMonthDays = () => {
+    // Generate data for the selected month and calculate stats
+    const { monthDays, stats } = useMemo(() => {
         const [year, month] = selectedMonth.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
         const today = new Date();
         const rows = [];
+
+        // Stats counters
+        let present = 0;
+        let absent = 0;
+        let leave = 0;
+        let holiday = 0; // Fridays + Gazetted
+        let lateMins = 0;
+        let earlyMins = 0;
+        let deduction = 0;
 
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month - 1, day);
             const dayOfWeek = date.getDay();
             const dateStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
             const isPast = date <= today;
-            const isFriday = dayOfWeek === 5;
+            const isSunday = dayOfWeek === 0;
 
             const record = attendanceData[dateStr];
 
             // Determine status text/color from real record or default logic
             let statusText = '-';
             let statusClass = 'text-gray-500';
+            let statusRaw = 'unknown';
 
-            if (isFriday) {
-                statusText = isRTL ? 'تعطیل: جمعہ' : 'Holiday: Friday';
+            if (isSunday) {
+                statusText = isRTL ? 'تعطیل: اتوار' : 'Holiday: Sunday';
                 statusClass = 'text-blue-600 bg-blue-50';
+                statusRaw = 'holiday';
+                holiday++;
             } else if (record) {
                 // Translate status from DB ('present', 'absent', 'leave')
                 if (record.status === 'present') {
                     statusText = isRTL ? 'حاضر' : 'Present';
                     statusClass = 'text-emerald-600 bg-emerald-50';
+                    statusRaw = 'present';
+                    present++;
                 } else if (record.status === 'absent') {
                     statusText = isRTL ? 'غیر حاضر' : 'Absent';
                     statusClass = 'text-red-600 bg-red-50';
+                    statusRaw = 'absent';
+                    absent++;
                 } else if (record.status === 'leave') {
                     statusText = isRTL ? 'رخصت' : 'Leave';
                     statusClass = 'text-amber-600 bg-amber-50';
+                    statusRaw = 'leave';
+                    leave++;
                 } else if (record.status === 'holiday') {
                     statusText = isRTL ? 'تعطیل' : 'Holiday';
                     statusClass = 'text-blue-600 bg-blue-50';
+                    statusRaw = 'holiday';
+                    holiday++;
                 }
+
+                // Accumulate numeric stats
+                if (record.isLate) lateMins += (record.lateMinutes || 0);
+                if (record.isEarlyLeave) earlyMins += (record.earlyMinutes || 0);
+                if (record.deduction) deduction += (record.deduction || 0);
+
             } else if (isPast) {
                 // If past date and no record found -> Absent (Subject to policy, but safe assumption for visual gap)
                 statusText = '-'; // Or 'Not Marked'
+                // Don't count as absent yet to avoid skewing data if just not marked
             }
 
             rows.push({
@@ -168,7 +166,7 @@ const AttendanceReports = () => {
                 date: dateStr,
                 day: isRTL ? dayNamesUr[dayOfWeek] : dayNamesEn[dayOfWeek],
                 status: statusText,
-                statusRaw: record?.status || '',
+                statusRaw: record?.status || statusRaw,
                 statusClass: statusClass,
                 startLessMin: record?.isLate ? record.lateMinutes : 0,
                 duringLessMin: 0,
@@ -178,14 +176,25 @@ const AttendanceReports = () => {
                 advanceLessMin: 0,
                 remarks: record?.reason || record?.reasonType || '',
                 deduction: record?.deduction || 0,
-                isFriday,
+                isSunday,
                 isPast
             });
         }
-        return rows;
-    };
 
-    const monthDays = generateMonthDays();
+        return {
+            monthDays: rows,
+            stats: {
+                present,
+                absent,
+                leave,
+                holiday,
+                lateMins,
+                earlyMins,
+                deduction,
+                totalDays: daysInMonth
+            }
+        };
+    }, [selectedMonth, attendanceData, isRTL]);
 
     // Current date/time for footer
     const now = new Date();
@@ -393,7 +402,7 @@ const AttendanceReports = () => {
                                                                 initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
                                                                 animate={{ opacity: 1, x: 0 }}
                                                                 transition={{ delay: index * 0.02, duration: 0.3 }}
-                                                                className={`border-b border-gray-100 transition-colors ${row.isFriday
+                                                                className={`border-b border-gray-100 transition-colors ${row.isSunday
                                                                     ? 'bg-emerald-50/30'
                                                                     : index % 2 === 0
                                                                         ? 'bg-white hover:bg-emerald-50/50'
@@ -456,44 +465,83 @@ const AttendanceReports = () => {
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalAttendance')}:</span>
-                                                        <span className="font-bold text-emerald-600">{monthlyStats.present}</span>
+                                                        <span className="font-bold text-emerald-600">{stats.present}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalAbsent')}:</span>
-                                                        <span className="font-bold text-red-600">{monthlyStats.absent}</span>
+                                                        <span className="font-bold text-red-600">{stats.absent}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-amber-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalLeave')}:</span>
-                                                        <span className="font-bold text-amber-600">{monthlyStats.leave}</span>
+                                                        <span className="font-bold text-amber-600">{stats.leave}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalDeduction')}:</span>
-                                                        <span className="font-bold text-blue-600">Rs. {monthlyStats.deduction}</span>
+                                                        <span className="font-bold text-blue-600">Rs. {stats.deduction}</span>
                                                     </div>
                                                 </div>
                                             </motion.div>
                                         )}
                                     </motion.div>
 
-                                    {/* ===== MONTHLY TAB — Placeholder ===== */}
+                                    {/* ===== MONTHLY TAB — Chart & Summary ===== */}
                                     {activeTab === 'monthly' && (
                                         <motion.div
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5 }}
-                                            className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mt-4 text-center"
+                                            className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"
                                         >
-                                            <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                                <Calendar size={32} className="text-amber-500" />
+                                            {/* Left: Chart */}
+                                            <div className="h-[400px]">
+                                                <AttendanceSummaryChart
+                                                    present={stats.present}
+                                                    absent={stats.absent}
+                                                    leave={stats.leave}
+                                                    holiday={stats.holiday}
+                                                />
                                             </div>
-                                            <h3 className="text-lg font-bold text-gray-700 mb-2">{t('reports.tabs.monthly')}</h3>
-                                            <p className="text-gray-400 text-sm">{t('reports.comingSoon')}</p>
-                                            <p className="text-gray-300 text-xs mt-2">
-                                                {isRTL ? 'اگلے سیشن میں بنایا جائے گا — پائی چارٹ اور مکمل سمری' : 'Will be built in next session — Pie chart & full summary'}
-                                            </p>
+
+                                            {/* Right: Detailed Summary Box */}
+                                            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-center">
+                                                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                                                    <FileText size={20} className="text-emerald-500" />
+                                                    {t('reports.summary')}
+                                                </h3>
+
+                                                <div className="space-y-4">
+                                                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                                        <span className="text-gray-600 font-medium">{t('reports.monthlyStats.totalDays')}</span>
+                                                        <span className="text-lg font-bold text-gray-800">{stats.totalDays}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                                        <span className="text-gray-600 font-medium">{t('reports.monthlyStats.workingDays')}</span>
+                                                        <span className="text-lg font-bold text-gray-800">{stats.totalDays - stats.holiday}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
+                                                        <span className="text-emerald-700 font-medium">{t('reports.monthlyStats.totalPresent')}</span>
+                                                        <span className="text-lg font-bold text-emerald-700">{stats.present}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                                        <span className="text-gray-600 font-medium">{t('reports.summaryLabels.totalLateMin')}</span>
+                                                        <span className="text-lg font-bold text-red-500">{stats.lateMins} m</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                                        <span className="text-gray-600 font-medium">{t('reports.summaryLabels.totalDeduction')}</span>
+                                                        <span className="text-lg font-bold text-blue-600">Rs. {stats.deduction}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
+                                                    <span className="text-gray-500 font-medium text-sm">{t('reports.monthlyStats.attendancePercentage')}</span>
+                                                    <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                                                        {stats.totalDays > 0 ? Math.round(((stats.present + stats.leave) / (stats.totalDays - stats.holiday)) * 100) || 0 : 0}%
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </motion.div>
                                     )}
                                 </div>

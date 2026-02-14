@@ -288,6 +288,22 @@
         },
         "showEntries": "اندراجات دکھائیں",
         "dailyDetail": "یومیہ حاضری کی تفصیل",
-        "attendanceDetail": "حاضری کی تفصیل"
+        "attendanceDetail": "حاضری کی تفصیل",
+        "summary": "رپورٹ کا خلاصہ",
+        "chart": {
+            "title": "حاضری کا خلاصہ",
+            "present": "حاضر",
+            "absent": "غیر حاضر",
+            "leave": "رخصت",
+            "holiday": "تعطیل",
+            "days": "دن",
+            "attendance": "حاضری"
+        },
+        "monthlyStats": {
+            "totalDays": "کل دن",
+            "workingDays": "کام کے دن",
+            "totalPresent": "کل حاضریاں",
+            "attendancePercentage": "حاضری کا تناسب"
+        }
     }
 }

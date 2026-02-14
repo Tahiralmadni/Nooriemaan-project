@@ -288,6 +288,22 @@
         },
         "showEntries": "Show entries",
         "dailyDetail": "Daily Attendance Details",
-        "attendanceDetail": "Attendance Details"
+        "attendanceDetail": "Attendance Details",
+        "summary": "Report Summary",
+        "chart": {
+            "title": "Attendance Summary",
+            "present": "Present",
+            "absent": "Absent",
+            "leave": "Leave",
+            "holiday": "Holiday",
+            "days": "Days",
+            "attendance": "Attendance"
+        },
+        "monthlyStats": {
+            "totalDays": "Total Days",
+            "workingDays": "Working Days",
+            "totalPresent": "Total Present",
+            "attendancePercentage": "Attendance Percentage"
+        }
     }
 }
