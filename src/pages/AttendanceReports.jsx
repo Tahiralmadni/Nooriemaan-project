@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import AttendanceSummaryChart from '../components/AttendanceSummaryChart';
+import { exportToExcel, exportToPDF } from '../utils/exportUtils';
 
 const AttendanceReports = () => {
     const { t, i18n } = useTranslation();
@@ -214,6 +215,48 @@ const AttendanceReports = () => {
         });
     }
 
+    // Export to Excel
+    const handleExportExcel = async () => {
+        const dataToExport = monthDays.map(row => ({
+            [t('reports.tableHeaders.serial')]: row.serial,
+            [t('reports.tableHeaders.date')]: row.date,
+            [t('reports.tableHeaders.day')]: row.day,
+            [t('reports.tableHeaders.status')]: row.status,
+            [t('reports.tableHeaders.lateIn')]: row.startLessMin > 0 ? row.startLessMin : '-',
+            [t('reports.tableHeaders.earlyOut')]: row.endLessMin > 0 ? row.endLessMin : '-',
+            [t('reports.tableHeaders.deduction')]: row.deduction > 0 ? row.deduction : '-',
+            [t('reports.tableHeaders.remarks')]: row.remarks
+        }));
+
+        const fileName = `${t('reports.title')}_${selectedMonth}_${selectedStaff}`;
+        const title = `${t('reports.title')} - ${selectedMonth}`;
+        await exportToExcel(dataToExport, fileName, title, isRTL, stats);
+    };
+
+    // Export to PDF
+    const handleExportPDF = () => {
+        const columns = [
+            t('reports.tableHeaders.serial'),
+            t('reports.tableHeaders.date'),
+            t('reports.tableHeaders.day'),
+            t('reports.tableHeaders.status'),
+            t('reports.tableHeaders.lateIn'),
+            t('reports.tableHeaders.deduction'),
+        ];
+
+        const rows = monthDays.map(row => [
+            row.serial,
+            row.date,
+            row.day,
+            row.status,
+            row.startLessMin > 0 ? `${row.startLessMin}m` : '-',
+            row.deduction > 0 ? `Rs.${row.deduction}` : '-'
+        ]);
+
+        const fileName = `${t('reports.title')}_${selectedMonth}`;
+        exportToPDF(t('reports.title'), columns, rows, fileName);
+    };
+
     // Status color helper
     const getStatusStyle = (row) => {
         return row.statusClass || 'text-gray-500';
@@ -236,10 +279,7 @@ const AttendanceReports = () => {
                             <title>{t('reports.title')} - {t('appName')}</title>
                         </Helmet>
 
-                        <div
-                            className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 flex flex-col ${isRTL ? 'font-urdu' : 'font-english'}`}
-                            dir={isRTL ? 'rtl' : 'ltr'}
-                        >
+                        <div className="min-h-screen bg-gray-50/50 pb-8 relative" dir={isRTL ? 'rtl' : 'ltr'}>
                             {/* ===== TOP BAR — Premium Glassmorphism ===== */}
                             <div className="w-full bg-white/80 backdrop-blur-md px-4 md:px-6 py-3 border-b border-white/50 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm">
                                 {/* Back Button */}
@@ -351,13 +391,19 @@ const AttendanceReports = () => {
                                         className="bg-white border-x border-gray-200 px-4 py-2.5 flex justify-between items-center"
                                     >
                                         <div className="flex items-center gap-2">
-                                            <button className="px-3 py-1.5 bg-emerald-500 text-white text-xs font-semibold rounded hover:bg-emerald-600 transition-colors flex items-center gap-1">
-                                                <Download size={12} />
+                                            <button
+                                                onClick={handleExportExcel}
+                                                className="px-3 py-1.5 bg-emerald-500 text-white text-xs font-semibold rounded hover:bg-emerald-600 transition-colors flex items-center gap-1"
+                                            >
+                                                <Download size={14} />
                                                 {t('reports.export.excel')}
                                             </button>
-                                            <button className="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded hover:bg-gray-200 transition-colors flex items-center gap-1">
-                                                <Copy size={12} />
-                                                {t('reports.export.copy')}
+                                            <button
+                                                onClick={handleExportPDF}
+                                                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded hover:bg-gray-200 transition-colors flex items-center gap-1 border border-gray-200"
+                                            >
+                                                <FileText size={14} />
+                                                PDF / Print
                                             </button>
                                         </div>
                                         <div className="flex items-center gap-2 text-xs text-gray-500">
