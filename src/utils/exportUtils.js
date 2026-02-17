@@ -1,10 +1,11 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 // ─── Logo path for watermark ───
 import logoUrl from '/logo-main-removebg-preview.png?url';
+import { amiriBase64 } from './AmiriFont.js';
 
 /**
  * Fetch image and return as base64 data URL
@@ -37,9 +38,6 @@ const createWatermarkImage = async (logoDataUrl, opacity = 0.06) => {
             canvas.width = size;
             canvas.height = size;
             const ctx = canvas.getContext('2d');
-
-            // *** TRANSPARENT background — NO white fill ***
-            // ctx.clearRect is default — canvas starts transparent
 
             // Draw logo centered with very low opacity
             ctx.globalAlpha = opacity;
@@ -89,9 +87,9 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
     // ── Headers & span width ──
     const headers = data.length > 0 ? Object.keys(data[0]) : [];
     const colCount = headers.length || 1;
-    const spanCols = Math.max(colCount, FULL_SHEET_COLS); // Always span full visible width
+    const spanCols = Math.max(colCount, FULL_SHEET_COLS);
 
-    // ── ROW 1 — Organization Header (spans full width A → Q) ──
+    // ── ROW 1 — Organization Header ──
     const orgRow = worksheet.addRow(['نوری ایمان ڈیجیٹل پورٹل  |  Nooriemaan Digital Portal']);
     orgRow.height = 34;
     worksheet.mergeCells(1, 1, 1, spanCols);
@@ -99,12 +97,11 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
     orgCell.font = { name: 'Calibri', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
     orgCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF047857' } };
     orgCell.alignment = { horizontal: 'center', vertical: 'middle' };
-    // Fill remaining cells in the merged row with the same color
     for (let c = 2; c <= spanCols; c++) {
         orgRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF047857' } };
     }
 
-    // ── ROW 2 — Report Title (spans full width) ──
+    // ── ROW 2 — Report Title ──
     const titleRow = worksheet.addRow([title]);
     titleRow.height = 38;
     worksheet.mergeCells(2, 1, 2, spanCols);
@@ -116,7 +113,7 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
         titleRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF059669' } };
     }
 
-    // ── ROW 3 — Date & Time (spans full width) ──
+    // ── ROW 3 — Date & Time ──
     const now = new Date();
     const dateStr = `Generated: ${now.toLocaleDateString()} • ${now.toLocaleTimeString()}`;
     const dateRow = worksheet.addRow([dateStr]);
@@ -151,7 +148,7 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
         };
     });
 
-    // ── DATA ROWS — Zebra + Status Colors ──
+    // ── DATA ROWS ──
     const statusColIndex = headers.findIndex(h =>
         h.toLowerCase().includes('status') || h.includes('کیفیت')
     );
@@ -176,7 +173,6 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
                 right: { style: 'hair', color: { argb: 'FFE5E7EB' } }
             };
 
-            // Color-code status column
             if (colNumber === statusColIndex + 1 && cell.value) {
                 const val = String(cell.value).toLowerCase();
                 if (val.includes('present') || val.includes('حاضر')) {
@@ -196,7 +192,6 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
         });
     });
 
-    // ── Bottom border ──
     if (worksheet.lastRow) {
         worksheet.lastRow.eachCell((cell) => {
             cell.border = { ...cell.border, bottom: { style: 'medium', color: { argb: 'FF10B981' } } };
@@ -244,10 +239,9 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
         });
     }
 
-    // ── COLUMN WIDTHS — Fill full page (A to Q width) ──
-    // Distribute ~170 units across 8 columns proportionally
+    // ── COLUMN WIDTHS ──
     const colWidthMap = {
-        0: 12,   // Serial / No.
+        0: 12,   // Serial
         1: 22,   // Date
         2: 18,   // Day
         3: 26,   // Status
@@ -264,7 +258,7 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
         }
     });
 
-    // ── WATERMARK LOGO — Full page, transparent, centered ──
+    // ── WATERMARK LOGO ──
     try {
         const logoDataUrl = await fetchImageAsBase64(logoUrl);
         if (logoDataUrl) {
@@ -274,11 +268,8 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
                     base64: watermarkBase64,
                     extension: 'png',
                 });
-
-                // Span the ENTIRE visible area: A1 to Q40+
                 const totalRows = worksheet.lastRow ? worksheet.lastRow.number : 35;
                 const endRow = Math.max(totalRows + 5, 40);
-
                 worksheet.addImage(imageId, {
                     tl: { col: 0, row: 0 },
                     br: { col: spanCols, row: endRow },
@@ -290,7 +281,6 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
         console.warn('Watermark could not be added:', e);
     }
 
-    // ── Generate & Download ──
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -301,22 +291,36 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
 /**
  * Export data to PDF file with professional layout
  */
-export const exportToPDF = (title, columns, rows, fileName) => {
+export const exportToPDF = async (title, columns, rows, fileName) => {
     const doc = new jsPDF({ orientation: 'landscape' });
+
+    // ── REGISTER URDU FONT (normal + bold) ──
+    doc.addFileToVFS('Amiri-Regular.ttf', amiriBase64);
+    doc.addFont('Amiri-Regular.ttf', 'Amiri', 'normal');
+    doc.addFont('Amiri-Regular.ttf', 'Amiri', 'bold');
+    doc.setFont('Amiri', 'normal');
 
     // Header bar
     doc.setFillColor(5, 150, 105);
     doc.rect(0, 0, doc.internal.pageSize.getWidth(), 35, 'F');
+
+    // Add Logo to Header if available
+    try {
+        const logoDataUrl = await fetchImageAsBase64(logoUrl);
+        if (logoDataUrl) {
+            doc.addImage(logoDataUrl, 'PNG', 14, 8, 20, 20);
+        }
+    } catch (e) { }
 
     // Title
     doc.setFontSize(18);
     doc.setTextColor(255, 255, 255);
     doc.text(title, doc.internal.pageSize.getWidth() / 2, 16, { align: 'center' });
 
-    // Subtitle
-    doc.setFontSize(9);
+    // Subtitle (Urdu)
+    doc.setFontSize(14);
     doc.setTextColor(209, 250, 229);
-    doc.text('Nooriemaan Digital Portal', doc.internal.pageSize.getWidth() / 2, 24, { align: 'center' });
+    doc.text('نوری ایمان ڈیجیٹل پورٹل', doc.internal.pageSize.getWidth() / 2, 26, { align: 'center' });
 
     // Date
     doc.setFontSize(8);
@@ -325,50 +329,72 @@ export const exportToPDF = (title, columns, rows, fileName) => {
     const time = new Date().toLocaleTimeString();
     doc.text(`Generated: ${date} • ${time}`, doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
 
-    // Table
-    doc.autoTable({
-        startY: 42,
+    // ── TABLE ──
+    const pageWidth = doc.internal.pageSize.getWidth();
+    autoTable(doc, {
+        startY: 45,
         head: [columns],
         body: rows,
         theme: 'grid',
-        headStyles: {
-            fillColor: [16, 185, 129],
-            textColor: [255, 255, 255],
-            fontSize: 9,
-            fontStyle: 'bold',
+        styles: {
+            font: 'Amiri', // Use Urdu-supporting font for all cells
+            fontSize: 8,   // Compact font size
+            cellPadding: { top: 3, bottom: 3, left: 1, right: 1 }, // Balanced compact padding
+            valign: 'middle',
             halign: 'center',
-            cellPadding: 4
+            lineWidth: 0.1,
+            lineColor: [229, 231, 235], // Gray-200
+            textColor: [55, 65, 81], // Gray-700
+            overflow: 'linebreak', // Ensure text wraps
         },
-        bodyStyles: {
-            fontSize: 8,
-            halign: 'center',
-            cellPadding: 3
+        headStyles: {
+            fillColor: [6, 95, 70], // Emerald-800
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 9, // Compact header
+            cellPadding: { top: 4, bottom: 4, left: 2, right: 2 },
+            valign: 'middle',
+        },
+        columnStyles: {
+            0: { cellWidth: 10, fontStyle: 'bold' }, // Serial
+            1: { cellWidth: 22 }, // Date
+            2: { cellWidth: 15 }, // Day
+            3: { cellWidth: 18, fontStyle: 'bold' }, // Status
+            7: { cellWidth: 'auto', halign: 'right' } // Remarks
         },
         alternateRowStyles: {
-            fillColor: [240, 253, 244]
+            fillColor: [240, 253, 250] // Azure-50/Emerald-50 mix
         },
-        styles: {
-            lineColor: [209, 213, 219],
-            lineWidth: 0.15,
-        },
-        margin: { left: 14, right: 14 },
         didParseCell: (hookData) => {
-            if (hookData.section === 'body' && hookData.column.index === 3) {
-                const val = String(hookData.cell.raw || '').toLowerCase();
-                if (val.includes('present') || val.includes('حاضر')) {
-                    hookData.cell.styles.textColor = [5, 150, 105];
-                    hookData.cell.styles.fontStyle = 'bold';
-                } else if (val.includes('absent') || val.includes('غیر')) {
-                    hookData.cell.styles.textColor = [220, 38, 38];
-                    hookData.cell.styles.fontStyle = 'bold';
-                } else if (val.includes('holiday') || val.includes('تعطیل')) {
-                    hookData.cell.styles.textColor = [37, 99, 235];
-                    hookData.cell.styles.fontStyle = 'bold';
-                } else if (val.includes('leave') || val.includes('رخصت')) {
-                    hookData.cell.styles.textColor = [217, 119, 6];
-                    hookData.cell.styles.fontStyle = 'bold';
+            // Status styling
+            if (hookData.section === 'body') {
+                // Check logical column index for Status (usually 3)
+                // Note: jsPDF autoTable columns are 0-indexed based on input array
+                const statusIdx = columns.findIndex(c => c.includes('Status') || c.includes('کیفیت'));
+
+                if (hookData.column.index === statusIdx) {
+                    const val = String(hookData.cell.raw || '').toLowerCase();
+                    if (val.includes('present') || val.includes('حاضر')) {
+                        hookData.cell.styles.textColor = [16, 185, 129]; // Emerald-500
+                    } else if (val.includes('absent') || val.includes('غیر')) {
+                        hookData.cell.styles.textColor = [239, 68, 68]; // Red-500
+                    } else if (val.includes('holiday') || val.includes('تعطیل')) {
+                        hookData.cell.styles.textColor = [59, 130, 246]; // Blue-500
+                    } else if (val.includes('leave') || val.includes('رخصت')) {
+                        hookData.cell.styles.textColor = [245, 158, 11]; // Amber-500
+                    }
                 }
             }
+        },
+        didDrawPage: (data) => {
+            // Watermark on every page
+            /* 
+               Note: Adding image on every page redraw might be heavy. 
+               Ideally done once, but autoTable manages pages. 
+               We'll skip heavy watermark in PDF for cleaner print look, 
+               or add a very subtle simple one if requested. 
+               For "Enterprise" look, clean white background is often better.
+            */
         }
     });
 

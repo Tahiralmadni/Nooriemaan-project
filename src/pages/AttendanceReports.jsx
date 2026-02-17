@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, query, where, getDocs, Timestamp, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { FileText, Calendar, Users, Search, Download, Copy, ChevronDown, ArrowLeft } from 'lucide-react';
+import { FileText, Calendar, Users, Search, Download, Copy, ChevronDown, ArrowLeft, Type } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
@@ -234,14 +234,16 @@ const AttendanceReports = () => {
     };
 
     // Export to PDF
-    const handleExportPDF = () => {
+    const handleExportPDF = async () => {
         const columns = [
             t('reports.tableHeaders.serial'),
             t('reports.tableHeaders.date'),
             t('reports.tableHeaders.day'),
             t('reports.tableHeaders.status'),
             t('reports.tableHeaders.lateIn'),
+            t('reports.tableHeaders.earlyOut'),
             t('reports.tableHeaders.deduction'),
+            t('reports.tableHeaders.remarks')
         ];
 
         const rows = monthDays.map(row => [
@@ -250,11 +252,14 @@ const AttendanceReports = () => {
             row.day,
             row.status,
             row.startLessMin > 0 ? `${row.startLessMin}m` : '-',
-            row.deduction > 0 ? `Rs.${row.deduction}` : '-'
+            row.endLessMin > 0 ? `${row.endLessMin}m` : '-',
+            row.deduction > 0 ? `Rs.${row.deduction}` : '-',
+            row.remarks || '-'
         ]);
 
-        const fileName = `${t('reports.title')}_${selectedMonth}`;
-        exportToPDF(t('reports.title'), columns, rows, fileName);
+        const fileName = `${t('reports.title')}_${selectedMonth}_${selectedStaff}`;
+        const title = `${t('reports.title')} - ${selectedMonth}`;
+        await exportToPDF(title, columns, rows, fileName);
     };
 
     // Status color helper
@@ -281,28 +286,29 @@ const AttendanceReports = () => {
 
                         <div className="min-h-screen bg-gray-50/50 pb-8 relative" dir={isRTL ? 'rtl' : 'ltr'}>
                             {/* ===== TOP BAR — Premium Glassmorphism ===== */}
-                            <div className="w-full bg-white/80 backdrop-blur-md px-4 md:px-6 py-3 border-b border-white/50 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm">
+                            {/* ===== TOP BAR — Compact & Clean ===== */}
+                            <div className="w-full bg-white/90 backdrop-blur-md px-4 md:px-6 py-2 border-b border-gray-100 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm relative">
                                 {/* Back Button */}
                                 <button
                                     onClick={() => navigate('/teachers')}
-                                    className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors text-sm"
+                                    className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors text-sm font-medium"
                                 >
-                                    <ArrowLeft size={16} />
+                                    <ArrowLeft size={18} />
                                     <span className="hidden sm:inline">{t('common.backToDashboard')}</span>
                                 </button>
 
-                                {/* Title */}
-                                <h1 className="text-base md:text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                                {/* Title - Centered & Solid Color to prevent clipping */}
+                                <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg md:text-xl font-bold text-emerald-800 whitespace-nowrap leading-relaxed pt-1">
                                     {t('reports.title')}
                                 </h1>
 
                                 {/* Font Settings Button */}
                                 <button
                                     onClick={() => setShowFontSettings(true)}
-                                    className="text-gray-400 hover:text-emerald-500 transition-colors"
-                                    title="Font"
+                                    className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all"
+                                    title="Font Settings"
                                 >
-                                    <span className="text-lg">ف</span>
+                                    <Type size={20} />
                                 </button>
                             </div>
 
@@ -325,43 +331,43 @@ const AttendanceReports = () => {
                                 </div>
                             </div>
 
-                            {/* ===== FILTERS BAR — Staff + Month Selector ===== */}
-                            <div className="w-full bg-white/60 backdrop-blur-sm border-b border-gray-100 px-4 md:px-6 py-3">
+                            {/* ===== FILTERS BAR — Visibility Optimized ===== */}
+                            <div className="w-full bg-white border-b border-gray-100 px-4 md:px-6 py-3">
                                 <div className="max-w-6xl mx-auto flex flex-wrap items-center gap-3">
                                     {/* Staff Selector */}
                                     <div className="relative flex-1 min-w-[200px]">
-                                        <Users size={14} className="absolute top-1/2 -translate-y-1/2 text-gray-400" style={{ [isRTL ? 'right' : 'left']: '12px' }} />
+                                        <Users size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500" style={{ [isRTL ? 'right' : 'left']: '12px' }} />
                                         <select
                                             value={selectedStaff}
                                             onChange={(e) => setSelectedStaff(e.target.value)}
-                                            className={`w-full bg-white border border-gray-200 rounded-lg py-2.5 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none transition-all appearance-none ${isRTL ? 'pr-9 pl-4' : 'pl-9 pr-4'}`}
+                                            className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 text-sm font-medium text-gray-900 shadow-sm focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                                         >
                                             <option value="">{t('reports.selectStaff')}</option>
                                             {staffList.map((s) => (
                                                 <option key={s.id} value={s.id}>{s.id}. {s.name}</option>
                                             ))}
                                         </select>
-                                        <ChevronDown size={14} className="absolute top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{ [isRTL ? 'left' : 'right']: '12px' }} />
+                                        <ChevronDown size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" style={{ [isRTL ? 'left' : 'right']: '12px' }} />
                                     </div>
 
                                     {/* Month Selector */}
                                     <div className="relative min-w-[180px]">
-                                        <Calendar size={14} className="absolute top-1/2 -translate-y-1/2 text-gray-400" style={{ [isRTL ? 'right' : 'left']: '12px' }} />
+                                        <Calendar size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500" style={{ [isRTL ? 'right' : 'left']: '12px' }} />
                                         <select
                                             value={selectedMonth}
                                             onChange={(e) => setSelectedMonth(e.target.value)}
-                                            className={`w-full bg-white border border-gray-200 rounded-lg py-2.5 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none transition-all appearance-none ${isRTL ? 'pr-9 pl-4' : 'pl-9 pr-4'}`}
+                                            className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 text-sm font-medium text-gray-900 shadow-sm focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                                         >
                                             {monthOptions.map((m) => (
                                                 <option key={m.value} value={m.value}>{m.label}</option>
                                             ))}
                                         </select>
-                                        <ChevronDown size={14} className="absolute top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{ [isRTL ? 'left' : 'right']: '12px' }} />
+                                        <ChevronDown size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" style={{ [isRTL ? 'left' : 'right']: '12px' }} />
                                     </div>
 
                                     {/* Search Button */}
-                                    <button className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:shadow-lg hover:shadow-emerald-200 transition-all flex items-center gap-2">
-                                        <Search size={14} />
+                                    <button className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:shadow-lg hover:shadow-emerald-200 transition-all flex items-center gap-2 transform active:scale-95">
+                                        <Search size={16} />
                                         {t('reports.search')}
                                     </button>
                                 </div>
