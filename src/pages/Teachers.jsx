@@ -13,10 +13,11 @@ const Teachers = () => {
         document.title = t('pageTitles.teachers');
     }, [t]);
 
-    const staffIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+    const staffIds = [1, 23, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
     const emails = {
         1: 'ishaqakram67@gmail.com',
+        23: 'ishaqakram67@gmail.com',
         2: '-',
         3: 'muneebattari527@gmail.com',
         4: 'mudassirrazachishti@gmail.com',

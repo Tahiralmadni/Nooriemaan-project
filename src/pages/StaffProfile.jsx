@@ -16,7 +16,8 @@ const StaffProfile = () => {
 
     // Staff details (4 members)
     const staffDetails = {
-        1: { phone: '03128593301', address: 'Karachi, Pakistan', role: 'Naib Nazim', roleUr: 'نائب ناظم', joinDate: 'October 2020', salary: '25,000', timing: '8:00 AM - 4:00 PM', email: 'ishaqakram67@gmail.com' },
+        1: { phone: '03128593301', address: 'Karachi, Pakistan', role: 'Naib Nazim', roleUr: 'نائب ناظم', joinDate: 'October 2020', salary: '26,620', timing: '8:00 AM - 4:00 PM', email: 'ishaqakram67@gmail.com' },
+        23: { phone: '03128593301', address: 'Karachi, Pakistan', role: 'Naib Nazim', roleUr: 'نائب ناظم', joinDate: 'October 2020', salary: '8,120', timing: '8:00 AM - 4:00 PM', email: 'ishaqakram67@gmail.com' },
         2: { phone: '0322-2345678', address: 'Karachi', role: 'Qari', roleUr: 'قاری', joinDate: '01 Mar 2019', salary: '28,000', timing: '8:00 AM - 1:00 PM', email: '-' },
         3: { phone: '0333-3456789', address: 'Karachi', role: 'Teacher', roleUr: 'استاد', joinDate: '10 Aug 2021', salary: '22,000', timing: '9:00 AM - 3:00 PM', email: 'muneebattari527@gmail.com' },
         4: { phone: '0344-4567890', address: 'Karachi', role: 'Teacher', roleUr: 'استاد', joinDate: '05 Feb 2022', salary: '20,000', timing: '8:30 AM - 2:30 PM', email: 'mudassirrazachishti@gmail.com' }
