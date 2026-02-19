@@ -375,7 +375,12 @@ const AttendanceSchedule = () => {
 
             if (missingDays.length > 0) {
                 setIsSaving(false);
-                showErrorToast(t('hazri.validation.missingPreviousDays') + '\n\n' + missingDays.join('\n'));
+                const datesList = missingDays.join(' ، ');
+                showErrorToast(
+                    isRTL
+                        ? `تاریخ حد سے تجاوز ہے۔ برائے کرم سابقہ دنوں کی حاضری لگائیں: ${datesList}`
+                        : `Please mark attendance for ${missingDays.length} previous day(s): ${datesList}`
+                );
                 return;
             }
         } catch (error) {
@@ -938,97 +943,32 @@ const AttendanceSchedule = () => {
                                     )
                                 }
 
-                                {/* ===== TAB 4: SUMMARY (Stats + Table) ===== */}
+                                {/* ===== TAB 4: SUMMARY (Link to Full Page) ===== */}
                                 {
                                     activeTab === 'summary' && (
-                                        <div className="space-y-3">
-                                            {/* Summary Cards - COMPACT & PROFESSIONAL */}
-                                            <div className="grid grid-cols-3 gap-2">
-                                                <div className="bg-emerald-50 border border-emerald-100 p-2 rounded-lg text-center shadow-sm flex flex-col items-center justify-center">
-                                                    <div className="text-emerald-600 mb-1"><UserCheck size={16} /></div>
-                                                    <p className="text-lg font-bold text-emerald-700 leading-none">--</p>
-                                                    <p className="text-[10px] text-emerald-600 font-medium uppercase mt-1">{t('hazri.present')}</p>
+                                        <div className="flex flex-col items-center justify-center py-6">
+                                            {/* Professional Link Card */}
+                                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/80 p-6 w-full text-center">
+                                                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
+                                                    <Calendar size={28} className="text-white" />
                                                 </div>
-                                                <div className="bg-red-50 border border-red-100 p-2 rounded-lg text-center shadow-sm flex flex-col items-center justify-center">
-                                                    <div className="text-red-600 mb-1"><UserX size={16} /></div>
-                                                    <p className="text-lg font-bold text-red-700 leading-none">--</p>
-                                                    <p className="text-[10px] text-red-600 font-medium uppercase mt-1">{t('hazri.absent')}</p>
-                                                </div>
-                                                <div className="bg-amber-50 border border-amber-100 p-2 rounded-lg text-center shadow-sm flex flex-col items-center justify-center">
-                                                    <div className="text-amber-600 mb-1"><AlertCircle size={16} /></div>
-                                                    <p className="text-lg font-bold text-amber-700 leading-none">--</p>
-                                                    <p className="text-[10px] text-amber-600 font-medium uppercase mt-1">{t('hazri.leave')}</p>
-                                                </div>
-                                            </div>
-
-                                            {/* Attendance History Table - COMPACT */}
-                                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                                                <div className="p-2 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                                                    <h3 className="font-bold text-slate-800 text-xs flex items-center gap-1">
-                                                        <Calendar size={12} className="text-gray-500" />
-                                                        {t('hazri.tabs.summary')}
-                                                    </h3>
-                                                    <button
-                                                        onClick={fetchHistory}
-                                                        className="text-emerald-600 hover:text-emerald-700 text-[10px] font-bold bg-white border border-emerald-200 px-2 py-0.5 rounded shadow-sm flex items-center gap-1 active:scale-95 transition-transform"
-                                                    >
-                                                        Next ↻
-                                                    </button>
-                                                </div>
-
-                                                <div className="overflow-x-auto">
-                                                    <table className="w-full text-xs text-right">
-                                                        <thead className="bg-emerald-50 text-emerald-800 font-bold border-b border-emerald-100">
-                                                            <tr>
-                                                                <th className="p-1.5 text-center">{t('hazri.date')}</th>
-                                                                <th className="p-1.5 text-center">Status</th>
-                                                                <th className="p-1.5 text-center">{t('hazri.entryTime')}</th>
-                                                                <th className="p-1.5 text-center">{t('hazri.exitTime')}</th>
-                                                                <th className="p-1.5 text-center">{t('hazri.salaryDeduction')}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-gray-50">
-                                                            {isLoadingHistory ? (
-                                                                <tr>
-                                                                    <td colSpan="5" className="p-4 text-center text-gray-400 text-[10px]">Loading...</td>
-                                                                </tr>
-                                                            ) : attendanceHistory.length === 0 ? (
-                                                                <tr>
-                                                                    <td colSpan="5" className="p-4 text-center text-gray-400 text-[10px]">{t('hazri.noData')}</td>
-                                                                </tr>
-                                                            ) : (
-                                                                attendanceHistory.map((record) => (
-                                                                    <tr key={record.id} className="hover:bg-emerald-50/30 transition-colors">
-                                                                        <td className="p-1.5 text-center font-medium text-gray-600 dir-ltr text-[10px]">{record.dateStr}</td>
-                                                                        <td className="p-1.5 text-center">
-                                                                            <span className={`px-1.5 py-0.5 rounded-[3px] text-[9px] font-bold border ${record.status === 'present' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
-                                                                                record.status === 'absent' ? 'bg-red-50 text-red-600 border-red-200' :
-                                                                                    record.status === 'leave' ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                                                                                        'bg-amber-50 text-amber-600 border-amber-200'
-                                                                                }`}>
-                                                                                {t(`hazri.${record.status}`) || record.status}
-                                                                            </span>
-                                                                        </td>
-                                                                        <td className="p-1.5 text-center text-gray-600 text-[10px]" dir="ltr">
-                                                                            {record.status === 'present' ? formatTime12Hour(record.entryTime) : '-'}
-                                                                            {record.status === 'present' && record.isLate && <span className="text-amber-500 block text-[8px]">{t('hazri.late')}</span>}
-                                                                        </td>
-                                                                        <td className="p-1.5 text-center text-gray-600 text-[10px]" dir="ltr">
-                                                                            {record.status === 'present' ? formatTime12Hour(record.exitTime) : '-'}
-                                                                            {record.status === 'present' && record.earlyMinutes > 0 && <span className="text-red-500 block text-[8px]">{t('hazri.earlyLeave')}</span>}
-                                                                        </td>
-                                                                        <td className="p-1.5 text-center font-bold text-red-500 text-[10px]" dir="ltr">
-                                                                            {record.deduction > 0 ? `Rs. ${record.deduction}` : '-'}
-                                                                        </td>
-                                                                    </tr>
-                                                                ))
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div className="bg-gray-50 border-t border-gray-100 p-1 text-center">
-                                                    <p className="text-[9px] text-gray-400">(Feb 2026 data)</p>
-                                                </div>
+                                                <h3 className="text-lg font-bold text-slate-800 mb-2" style={{ lineHeight: '2' }}>
+                                                    {t('hazri.tabs.summary')}
+                                                </h3>
+                                                <p className="text-sm text-slate-500 mb-5" style={{ lineHeight: '2' }}>
+                                                    {isRTL
+                                                        ? 'تفصیلی حاضری ریکارڈ، اعداد و شمار اور کٹوتی کی مکمل رپورٹ دیکھیں'
+                                                        : 'View detailed attendance records, statistics and deduction reports'
+                                                    }
+                                                </p>
+                                                <a
+                                                    href="/teachers/summary"
+                                                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all duration-200"
+                                                >
+                                                    <UserCheck size={16} />
+                                                    <span>{isRTL ? 'مجموعی حاضری کے لیے یہاں جائیں' : 'Go to Attendance Summary'}</span>
+                                                    <span>{isRTL ? '←' : '→'}</span>
+                                                </a>
                                             </div>
                                         </div>
                                     )
