@@ -77,15 +77,21 @@
         "teachersList": "Staff List",
         "attendanceSchedule": "Attendance Schedule",
         "attendanceSummary": "Attendance Summary",
+        "majmoohiHazri": "Overall Attendance",
         "dailyAttendance": "Daily Attendance",
         "attendance": "Attendance",
         "fees": "Fees",
         "results": "Results",
         "reports": "Reports",
+        "hazriReports": "Attendance Reports",
         "notices": "Notices",
         "settings": "Settings",
         "collapse": "Collapse",
         "expand": "Expand"
+    },
+    "majmoohi": {
+        "title": "Overall Attendance Report",
+        "subtitle": "Detailed monthly overview of all staff attendance"
     },
     "table": {
         "serial": "#",

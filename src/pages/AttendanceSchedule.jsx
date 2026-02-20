@@ -962,7 +962,7 @@ const AttendanceSchedule = () => {
                                                     }
                                                 </p>
                                                 <a
-                                                    href="/teachers/summary"
+                                                    href="/teachers/majmoohi"
                                                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all duration-200"
                                                 >
                                                     <UserCheck size={16} />

@@ -77,15 +77,21 @@
         "teachersList": "عملہ کی فہرست",
         "attendanceSchedule": "حاضری جدول",
         "attendanceSummary": "حاضری سمری",
+        "majmoohiHazri": "مجموعی حاضری",
         "dailyAttendance": "یومیہ حاضری",
         "attendance": "حاضری",
         "fees": "فیس",
         "results": "نتائج",
         "reports": "رپورٹس",
+        "hazriReports": "حاضری رپورٹس",
         "notices": "نوٹس",
         "settings": "سیٹنگز",
         "collapse": "بند کریں",
         "expand": "کھولیں"
+    },
+    "majmoohi": {
+        "title": "مجموعی حاضری رپورٹ",
+        "subtitle": "تمام اساتذہ کی ماہانہ حاضری کا تفصیلی جائزہ"
     },
     "table": {
         "serial": "نمبر",

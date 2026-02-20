@@ -9,6 +9,7 @@ import Students from './pages/Students';
 import Teachers from './pages/Teachers';
 import AttendanceSchedule from './pages/AttendanceSchedule';
 import AttendanceSummary from './pages/AttendanceSummary';
+import MajmoohiHazri from './pages/MajmoohiHazri';
 import DailyAttendance from './pages/DailyAttendance';
 import StaffProfile from './pages/StaffProfile';
 import AttendanceReports from './pages/AttendanceReports';
@@ -54,6 +55,7 @@ function App() {
             {/* Teachers/Asataza with sub-routes */}
             <Route path="/teachers" element={<Teachers />} />
             <Route path="/teachers/summary" element={<AttendanceSummary />} />
+            <Route path="/teachers/majmoohi" element={<MajmoohiHazri />} />
             <Route path="/teachers/daily" element={<DailyAttendance />} />
             <Route path="/teachers/reports" element={<AttendanceReports />} />
             <Route path="/teachers/profile/:id" element={<StaffProfile />} />
