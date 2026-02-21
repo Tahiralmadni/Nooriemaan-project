@@ -11,6 +11,9 @@ const MajmoohiHazri = () => {
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
+    // Abhi sirf Akram Attari ka data hai
+    const staffIds = [1];
+
     const monthNames = isRTL
         ? ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر']
         : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -53,7 +56,7 @@ const MajmoohiHazri = () => {
                             <h1 className="text-2xl md:text-3xl font-bold text-emerald-600">
                                 {t('majmoohi.title')}
                             </h1>
-                            <p className="text-sm text-slate-400 mt-6">
+                            <p className="text-sm text-slate-400 mt-2">
                                 {t('majmoohi.subtitle')}
                             </p>
                         </div>
@@ -77,7 +80,95 @@ const MajmoohiHazri = () => {
                     </div>
                 </div>
 
-                {/* Content will be added in next phases */}
+                {/* ===== STAFF TABLE ===== */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.15 }}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+                >
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-gray-200">
+                                    <th className="px-4 py-3.5 text-slate-600 font-semibold text-center w-12">
+                                        {t('table.serial')}
+                                    </th>
+                                    <th className={`px-4 py-3.5 text-slate-600 font-semibold ${isRTL ? 'text-right' : 'text-left'}`}>
+                                        {t('majmoohi.table.staffName')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-slate-600 font-semibold text-center">
+                                        {t('majmoohi.table.totalDays')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-emerald-600 font-semibold text-center">
+                                        {t('majmoohi.table.present')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-red-500 font-semibold text-center">
+                                        {t('majmoohi.table.absent')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-amber-500 font-semibold text-center">
+                                        {t('majmoohi.table.leave')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-blue-500 font-semibold text-center">
+                                        {t('majmoohi.table.holiday')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-purple-500 font-semibold text-center">
+                                        {t('majmoohi.table.late')}
+                                    </th>
+                                    <th className="px-4 py-3.5 text-rose-600 font-semibold text-center">
+                                        {t('majmoohi.table.deduction')}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {staffIds.map((id, index) => (
+                                    <tr
+                                        key={id}
+                                        className={`border-b border-gray-50 hover:bg-emerald-50/40 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                                    >
+                                        <td className="px-4 py-3 text-center text-slate-400 font-medium">
+                                            {index + 1}
+                                        </td>
+                                        <td className={`px-4 py-3 font-medium text-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                            {t(`staff.${id}`)}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-500">
+                                            0
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className="inline-block min-w-[28px] px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-xs font-semibold">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className="inline-block min-w-[28px] px-2 py-0.5 bg-red-50 text-red-500 rounded-full text-xs font-semibold">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className="inline-block min-w-[28px] px-2 py-0.5 bg-amber-50 text-amber-500 rounded-full text-xs font-semibold">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className="inline-block min-w-[28px] px-2 py-0.5 bg-blue-50 text-blue-500 rounded-full text-xs font-semibold">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className="inline-block min-w-[28px] px-2 py-0.5 bg-purple-50 text-purple-500 rounded-full text-xs font-semibold">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-rose-600 font-medium">
+                                            Rs 0
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </motion.div>
 
             </motion.div>
         </>

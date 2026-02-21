@@ -91,7 +91,19 @@
     },
     "majmoohi": {
         "title": "Overall Attendance Report",
-        "subtitle": "Detailed monthly overview of all staff attendance"
+        "subtitle": "Detailed monthly overview of all staff attendance",
+        "table": {
+            "staffName": "Staff Name",
+            "totalDays": "Total Days",
+            "present": "Present",
+            "absent": "Absent",
+            "leave": "Leave",
+            "holiday": "Holiday",
+            "late": "Late Days",
+            "deduction": "Deduction",
+            "noData": "No data found.",
+            "loadingData": "Data is being prepared, it will be available soon."
+        }
     },
     "table": {
         "serial": "#",
