@@ -102,7 +102,14 @@
             "late": "Late Days",
             "deduction": "Deduction",
             "noData": "No data found.",
-            "loadingData": "Data is being prepared, it will be available soon."
+            "loadingData": "Data is being prepared, it will be available soon.",
+            "date": "Date",
+            "day": "Day",
+            "status": "Status",
+            "entryTime": "Entry Time",
+            "exitTime": "Exit Time",
+            "lateMin": "Late (min)",
+            "total": "Total"
         }
     },
     "table": {
