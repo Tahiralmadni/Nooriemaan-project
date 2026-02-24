@@ -178,15 +178,12 @@ const MajmoohiHazri = () => {
                             <label className="text-xs text-slate-500 font-semibold block mb-1.5">
                                 {isRTL ? 'حاضری ابتداء' : 'Start Date'}
                             </label>
-                            <div className="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-emerald-400">
-                                <Calendar size={14} className="text-emerald-500" />
-                                <input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    className="flex-1 text-sm font-medium text-slate-700 bg-transparent outline-none"
-                                />
-                            </div>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none cursor-pointer"
+                            />
                         </div>
 
                         {/* End Date */}
@@ -194,15 +191,12 @@ const MajmoohiHazri = () => {
                             <label className="text-xs text-slate-500 font-semibold block mb-1.5">
                                 {isRTL ? 'حاضری انتہا' : 'End Date'}
                             </label>
-                            <div className="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-emerald-400">
-                                <Calendar size={14} className="text-emerald-500" />
-                                <input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    className="flex-1 text-sm font-medium text-slate-700 bg-transparent outline-none"
-                                />
-                            </div>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none cursor-pointer"
+                            />
                         </div>
 
                         {/* Load Button */}

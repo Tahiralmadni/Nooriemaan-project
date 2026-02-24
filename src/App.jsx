@@ -1,20 +1,30 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import DeveloperIntro from './components/DeveloperIntro';
-import Login from './pages/Login';
-import DashboardLayout from './layouts/DashboardLayout';
-import Dashboard from './pages/Dashboard';
-import Students from './pages/Students';
-import Teachers from './pages/Teachers';
-import AttendanceSchedule from './pages/AttendanceSchedule';
-import AttendanceSummary from './pages/AttendanceSummary';
-import MajmoohiHazri from './pages/MajmoohiHazri';
-import DailyAttendance from './pages/DailyAttendance';
-import StaffProfile from './pages/StaffProfile';
-import AttendanceReports from './pages/AttendanceReports';
 import NetworkStatus from './components/NetworkStatus';
-import NotFound from './pages/NotFound';
+
+// ===== LAZY LOADING — Pages load sirf jab zaroorat ho =====
+const DeveloperIntro = lazy(() => import('./components/DeveloperIntro'));
+const Login = lazy(() => import('./pages/Login'));
+const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Students = lazy(() => import('./pages/Students'));
+const Teachers = lazy(() => import('./pages/Teachers'));
+const AttendanceSchedule = lazy(() => import('./pages/AttendanceSchedule'));
+const AttendanceSummary = lazy(() => import('./pages/AttendanceSummary'));
+const MajmoohiHazri = lazy(() => import('./pages/MajmoohiHazri'));
+const DailyAttendance = lazy(() => import('./pages/DailyAttendance'));
+const StaffProfile = lazy(() => import('./pages/StaffProfile'));
+const AttendanceReports = lazy(() => import('./pages/AttendanceReports'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+
+// Blank fallback — sirf background dikhao, gol spinner nahi
+const PageFallback = () => (
+  <div style={{
+    height: '100vh',
+    background: 'linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%)'
+  }} />
+);
 
 /**
  * App Component - Clean URL Structure with Asataza Dropdown Routes
@@ -35,37 +45,42 @@ function App() {
   }, [showIntro]);
 
   if (showIntro) {
-    return <DeveloperIntro onComplete={() => setShowIntro(false)} />;
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <DeveloperIntro onComplete={() => setShowIntro(false)} />
+      </Suspense>
+    );
   }
 
   return (
     <HelmetProvider>
       <BrowserRouter>
         <NetworkStatus />
-        <Routes>
-          {/* Login */}
-          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            {/* Login */}
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+            <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
 
-          {/* All pages inside DashboardLayout */}
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/students" element={<Students />} />
+            {/* All pages inside DashboardLayout */}
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/students" element={<Students />} />
 
-            {/* Teachers/Asataza with sub-routes */}
-            <Route path="/teachers" element={<Teachers />} />
-            <Route path="/teachers/summary" element={<AttendanceSummary />} />
-            <Route path="/teachers/majmoohi" element={<MajmoohiHazri />} />
-            <Route path="/teachers/daily" element={<DailyAttendance />} />
-            <Route path="/teachers/reports" element={<AttendanceReports />} />
-            <Route path="/teachers/profile/:id" element={<StaffProfile />} />
-          </Route>
+              {/* Teachers/Asataza with sub-routes */}
+              <Route path="/teachers" element={<Teachers />} />
+              <Route path="/teachers/summary" element={<AttendanceSummary />} />
+              <Route path="/teachers/majmoohi" element={<MajmoohiHazri />} />
+              <Route path="/teachers/daily" element={<DailyAttendance />} />
+              <Route path="/teachers/reports" element={<AttendanceReports />} />
+              <Route path="/teachers/profile/:id" element={<StaffProfile />} />
+            </Route>
 
-
-          {/* Standalone Pages (with mini-navbar) */}
-          <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* Standalone Pages (with mini-navbar) */}
+            <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </HelmetProvider>
   );

@@ -474,6 +474,53 @@ const AttendanceSchedule = () => {
 
             setSavedTime(markedTime);
             showSuccessToast(t('hazri.validation.attendanceSaved'));
+
+            // ===== AUTO-SAVE NEXT DAY SUNDAY HOLIDAY =====
+            const nextDay = new Date(selectedDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+
+            if (nextDay.getDay() === 0) { // 0 = Sunday
+                // Check if Sunday record already exists
+                const sundayStart = new Date(nextDay);
+                sundayStart.setHours(0, 0, 0, 0);
+                const sundayEnd = new Date(nextDay);
+                sundayEnd.setHours(23, 59, 59, 999);
+
+                const sundayQ = query(
+                    collection(db, 'attendance'),
+                    where('staffId', '==', staff.id),
+                    where('date', '>=', Timestamp.fromDate(sundayStart)),
+                    where('date', '<=', Timestamp.fromDate(sundayEnd))
+                );
+
+                const sundaySnap = await getDocs(sundayQ);
+
+                if (sundaySnap.empty) {
+                    const sundayDate = new Date(nextDay);
+                    sundayDate.setHours(12, 0, 0, 0);
+
+                    await addDoc(collection(db, 'attendance'), {
+                        staffId: staff.id,
+                        staffName: staff.nameEn,
+                        status: 'holiday',
+                        reason: 'اتوار - Weekly Holiday',
+                        reasonType: 'sunday',
+                        date: Timestamp.fromDate(sundayDate),
+                        entryTime: '-',
+                        exitTime: '-',
+                        markedAt: 'Auto-saved',
+                        salary: staff.salary,
+                        isLate: false,
+                        lateMinutes: 0,
+                        isEarlyLeave: false,
+                        earlyMinutes: 0,
+                        deduction: 0
+                    });
+                    console.log('✅ Sunday Holiday auto-saved for:', nextDay.toDateString());
+                    showSuccessToast(isRTL ? 'اتوار کی چھٹی خود بخود محفوظ ہو گئی ✅' : 'Sunday Holiday auto-saved ✅');
+                }
+            }
+
             // Reset form
             setStatus('');
             setReason('');
