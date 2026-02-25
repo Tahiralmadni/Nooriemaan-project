@@ -12,7 +12,8 @@ const MajmoohiHazri = () => {
 
     // Abhi sirf Akram Attari
     const staffOptions = [
-        { id: 1, nameKey: 'staff.1' }
+        { id: 1, nameKey: 'staff.1' },
+        { id: 2, nameKey: 'staff.2' }
     ];
 
     const [selectedStaff, setSelectedStaff] = useState(1);
@@ -247,7 +248,6 @@ const MajmoohiHazri = () => {
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.entryTime')}</th>
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.exitTime')}</th>
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.lateMin')}</th>
-                                            <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.deduction')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -279,13 +279,6 @@ const MajmoohiHazri = () => {
                                                             <span className="text-slate-300">0</span>
                                                         )}
                                                     </td>
-                                                    <td className="px-3 py-2.5 text-center">
-                                                        {r.deduction > 0 ? (
-                                                            <span className="text-rose-600 font-semibold">Rs {r.deduction}</span>
-                                                        ) : (
-                                                            <span className="text-slate-300">0</span>
-                                                        )}
-                                                    </td>
                                                 </tr>
                                             );
                                         })}
@@ -305,7 +298,6 @@ const MajmoohiHazri = () => {
                                             </td>
                                             <td className="px-3 py-3 text-center text-slate-400" colSpan={2}>—</td>
                                             <td className="px-3 py-3 text-center text-purple-600">{totals.lateMin}</td>
-                                            <td className="px-3 py-3 text-center text-rose-600">Rs {totals.deduction}</td>
                                         </tr>
                                     </tbody>
                                 </table>

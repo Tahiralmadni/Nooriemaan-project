@@ -152,29 +152,57 @@ const AttendanceSchedule = () => {
     const dateStr = today.toLocaleDateString('en-GB');
     const currentTime = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-    // Staff 1 - Muhammad Akram Attari
-    const staff = {
-        id: 1,
-        nameUr: 'محمد اکرم عطاری',
-        nameEn: 'Muhammad Akram Attari',
-        roleUr: 'نائب ناظم',
-        roleEn: 'Naib Nazim',
-        entryTime: '8:00 AM',
-        exitTime: '4:00 PM',
-        entryHour: 8,
-        exitHour: 16,
-        totalHours: 8,
-        salary: 25000,
-        // Correct Formula: 26 working days per month (law standard)
-        perDaySalary: Math.round(25000 / 26),       // Rs. 961
-        perHourSalary: Math.round(25000 / 26 / 8),  // Rs. 120
-        perMinuteSalary: 25000 / 26 / 8 / 60,       // Rs. 2 (approx)
-        phone: '03128593301',
-        email: 'ishaqakram67@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'October 2020'
+    // ===== STAFF DATA — Yahan naye staff add karo =====
+    const staffData = {
+        1: {
+            id: 1,
+            nameUr: 'محمد اکرم عطاری',
+            nameEn: 'Muhammad Akram Attari',
+            roleUr: 'نائب ناظم',
+            roleEn: 'Naib Nazim',
+            entryTime: '8:00 AM',
+            exitTime: '4:00 PM',
+            entryHour: 8,
+            exitHour: 16,
+            totalHours: 8,
+            salary: 26620,
+            perDaySalary: Math.round(26620 / 26),
+            perHourSalary: Math.round(26620 / 26 / 8),
+            perMinuteSalary: 26620 / 26 / 8 / 60,
+            phone: '03128593301',
+            email: 'ishaqakram67@gmail.com',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'October 2020',
+            setupDate: '2025-01-01' // For Akram Attari, from January
+        },
+        2: {
+            id: 2,
+            nameUr: 'قاری سید عمیر عطاری',
+            nameEn: 'Qari Syed Umair Attari',
+            roleUr: 'مدرسہ ناظم حسین آباد',
+            roleEn: 'Madrasa Nazim Hussainabad',
+            entryTime: '8:00 AM',
+            exitTime: '4:00 PM',
+            entryHour: 8,
+            exitHour: 16,
+            totalHours: 8,
+            salary: 13000,
+            perDaySalary: Math.round(13000 / 26),
+            perHourSalary: Math.round(13000 / 26 / 8),
+            perMinuteSalary: 13000 / 26 / 8 / 60,
+            phone: '03138657703',
+            email: '-',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'June 2025',
+            setupDate: '2026-02-25' // For Umair Attari, starts today (25 Feb)
+        }
     };
+
+    // Selected staff — dropdown se change hoga
+    const [selectedStaffId, setSelectedStaffId] = useState(1);
+    const staff = staffData[selectedStaffId];
 
     // Check if late based on manual entry time (NO grace period - 1 min late = deduction)
     useEffect(() => {
@@ -333,13 +361,22 @@ const AttendanceSchedule = () => {
         const selectedDateObj = new Date(selectedDate);
         const missingDays = [];
 
+        // Skip if before staff setup date
+        const setupDateStr = staff.setupDate || '2020-01-01'; // Default purane staff ke liye
+        const setupDateObj = new Date(setupDateStr);
+        setupDateObj.setHours(0, 0, 0, 0);
+
         // Check previous days in current month
         for (let i = 1; i <= 7; i++) {
             const checkDate = new Date(selectedDateObj);
             checkDate.setDate(selectedDateObj.getDate() - i);
+            checkDate.setHours(0, 0, 0, 0);
 
-            // Skip if before month start
+            // 1. Skip if before month start
             if (checkDate.getMonth() !== selectedDateObj.getMonth()) break;
+
+            // 2. Skip if before staff setup date (naye staff ki hazri pichhle dino ki nahi mangega)
+            if (checkDate < setupDateObj) break;
 
             // Query Firebase for this date (Including Sundays now)
             const startOfDay = new Date(checkDate);
@@ -418,7 +455,7 @@ const AttendanceSchedule = () => {
         setIsSaving(true);
         const markedTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-        // Calculate salary deduction using PER MINUTE rate
+        // Katooti abhi nahi hogi — sirf late/early minutes count
         let deduction = 0;
 
         // Finalize Late/Early status based on attendance type
@@ -427,25 +464,12 @@ const AttendanceSchedule = () => {
         let finalIsEarlyLeave = false;
         let finalEarlyMinutes = 0;
 
-        if (status === 'absent') {
-            deduction = staff.perDaySalary; // Full day deduction
-        } else if (status === 'leave' || status === 'holiday') {
-            deduction = 0; // Approved leave/holiday - no cut
-        } else if (status === 'present') {
+        if (status === 'present') {
             // Only calculate Late/Early if Present
             finalIsLate = isLate;
             finalLateMinutes = lateMinutes;
             finalIsEarlyLeave = isEarlyLeave;
             finalEarlyMinutes = earlyMinutes;
-
-            // Late arrival deduction - PER MINUTE (ONLY if no permission)
-            if (finalIsLate && !entryPermission) {
-                deduction += Math.round(finalLateMinutes * staff.perMinuteSalary);
-            }
-            // Early departure deduction - PER MINUTE (ONLY if no permission)
-            if (finalIsEarlyLeave && !exitPermission) {
-                deduction += Math.round(finalEarlyMinutes * staff.perMinuteSalary);
-            }
         }
 
         try {
@@ -711,6 +735,30 @@ const AttendanceSchedule = () => {
                                 {/* ===== TAB 1: ATTENDANCE ===== */}
                                 {activeTab === 'attendance' && (
                                     <div className="space-y-4">
+                                        {/* ===== STAFF SELECTOR ===== */}
+                                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-md border border-white/80 p-3">
+                                            <label className="text-[10px] text-slate-500 font-bold uppercase block mb-1.5">
+                                                {t('hazri.selectStaff') || (isRTL ? 'عملہ منتخب کریں' : 'Select Staff')}
+                                            </label>
+                                            <select
+                                                value={selectedStaffId}
+                                                onChange={(e) => {
+                                                    setSelectedStaffId(Number(e.target.value));
+                                                    setStatus('');
+                                                    setReason('');
+                                                    setReasonType('');
+                                                    setSavedTime('');
+                                                }}
+                                                className="w-full px-3 py-2.5 border-2 border-emerald-200 rounded-xl text-sm font-bold text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none cursor-pointer"
+                                                style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}
+                                            >
+                                                {Object.values(staffData).map(s => (
+                                                    <option key={s.id} value={s.id}>
+                                                        {isRTL ? s.nameUr : s.nameEn} — {isRTL ? s.roleUr : s.roleEn}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         {/* Staff & Date Card - Premium Glassmorphism */}
                                         <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 p-4">
                                             <div className="flex items-center justify-between">
@@ -870,7 +918,6 @@ const AttendanceSchedule = () => {
                                                                 </div>
                                                                 <div className="flex-1">
                                                                     <p className="text-amber-800 text-xs font-bold">{t('hazri.late')} - {lateMinutes} {t('hazri.min')}</p>
-                                                                    <p className="text-amber-600 text-[10px]">{t('hazri.deduction')}: Rs. {Math.round((lateMinutes / 60) * staff.perHourSalary)}</p>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -883,7 +930,6 @@ const AttendanceSchedule = () => {
                                                                 </div>
                                                                 <div className="flex-1">
                                                                     <p className="text-red-800 text-xs font-bold">{t('hazri.earlyLeave')} - {earlyMinutes} {t('hazri.min')}</p>
-                                                                    <p className="text-red-600 text-[10px]">{t('hazri.deduction')}: Rs. {Math.round((earlyMinutes / 60) * staff.perHourSalary)}</p>
                                                                 </div>
                                                             </div>
                                                         )}
