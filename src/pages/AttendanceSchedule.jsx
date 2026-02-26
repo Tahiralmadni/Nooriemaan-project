@@ -196,7 +196,29 @@ const AttendanceSchedule = () => {
             city: 'Karachi',
             country: 'Pakistan',
             joinDate: 'June 2025',
-            setupDate: '2026-02-25' // For Umair Attari, starts today (25 Feb)
+            setupDate: '2026-02-25'
+        },
+        3: {
+            id: 3,
+            nameUr: 'محمد منیب صابر',
+            nameEn: 'Muhammad Muneeb Sabir',
+            roleUr: 'مدرس - بلال مسجد',
+            roleEn: 'Mudarris - Bilal Masjid',
+            entryTime: '8:00 AM',
+            exitTime: '11:00 AM',
+            entryHour: 8,
+            exitHour: 11,
+            totalHours: 3,
+            salary: 7500,
+            perDaySalary: Math.round(7500 / 26),
+            perHourSalary: Math.round(7500 / 26 / 3),
+            perMinuteSalary: 7500 / 26 / 3 / 60,
+            phone: '03152643153',
+            email: 'muneebattari527@gmail.com',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'October 2025',
+            setupDate: '2026-02-26'
         }
     };
 

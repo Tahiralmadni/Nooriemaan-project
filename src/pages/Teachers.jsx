@@ -13,7 +13,7 @@ const Teachers = () => {
         document.title = t('pageTitles.teachers');
     }, [t]);
 
-    const staffIds = [1, 23, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+    const staffIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
     const emails = {
         1: 'ishaqakram67@gmail.com',
@@ -41,9 +41,12 @@ const Teachers = () => {
         22: '-',
     };
 
-    // View profile handler (sirf 2 profiles ready)
+    // Setup complete staff IDs — sirf inke eye icon green honge
+    const setupStaffIds = [1, 2, 3];
+
+    // View profile handler
     const handleViewProfile = (id) => {
-        if (id <= 2) {
+        if (setupStaffIds.includes(id)) {
             navigate(`/teachers/profile/${id}`);
         }
     };
@@ -113,24 +116,22 @@ const Teachers = () => {
                                         {emails[id]}
                                     </td>
                                     <td className="px-6 py-4 border-b border-gray-100 text-center">
-                                        {id <= 4 ? (
-                                            <button
-                                                onClick={() => handleViewProfile(id)}
-                                                disabled={id > 2}
-                                                style={{
-                                                    backgroundColor: id <= 2 ? '#10b981' : '#e2e8f0',
-                                                    color: id <= 2 ? '#ffffff' : '#94a3b8',
-                                                    border: 'none',
-                                                    padding: '8px 12px',
-                                                    borderRadius: '8px',
-                                                    cursor: id <= 2 ? 'pointer' : 'not-allowed',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center'
-                                                }}
-                                            >
-                                                <Eye size={16} />
-                                            </button>
-                                        ) : null}
+                                        <button
+                                            onClick={() => handleViewProfile(id)}
+                                            disabled={!setupStaffIds.includes(id)}
+                                            style={{
+                                                backgroundColor: setupStaffIds.includes(id) ? '#10b981' : '#e2e8f0',
+                                                color: setupStaffIds.includes(id) ? '#ffffff' : '#94a3b8',
+                                                border: 'none',
+                                                padding: '8px 12px',
+                                                borderRadius: '8px',
+                                                cursor: setupStaffIds.includes(id) ? 'pointer' : 'not-allowed',
+                                                display: 'inline-flex',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <Eye size={16} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -153,22 +154,20 @@ const Teachers = () => {
                                 <h3 className="flex-1 text-slate-800 font-semibold text-lg leading-tight">
                                     {t(`staff.${id}`)}
                                 </h3>
-                                {id <= 4 && (
-                                    <button
-                                        onClick={() => handleViewProfile(id)}
-                                        disabled={id > 2}
-                                        style={{
-                                            backgroundColor: id <= 2 ? '#10b981' : '#e2e8f0',
-                                            color: id <= 2 ? '#ffffff' : '#94a3b8',
-                                            border: 'none',
-                                            padding: '8px',
-                                            borderRadius: '8px',
-                                            cursor: id <= 2 ? 'pointer' : 'not-allowed'
-                                        }}
-                                    >
-                                        <Eye size={16} />
-                                    </button>
-                                )}
+                                <button
+                                    onClick={() => handleViewProfile(id)}
+                                    disabled={!setupStaffIds.includes(id)}
+                                    style={{
+                                        backgroundColor: setupStaffIds.includes(id) ? '#10b981' : '#e2e8f0',
+                                        color: setupStaffIds.includes(id) ? '#ffffff' : '#94a3b8',
+                                        border: 'none',
+                                        padding: '8px',
+                                        borderRadius: '8px',
+                                        cursor: setupStaffIds.includes(id) ? 'pointer' : 'not-allowed'
+                                    }}
+                                >
+                                    <Eye size={16} />
+                                </button>
                             </div>
 
                             {/* Email Row */}

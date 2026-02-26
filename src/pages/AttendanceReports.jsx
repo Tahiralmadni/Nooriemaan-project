@@ -70,9 +70,11 @@ const AttendanceReports = () => {
         fetchData();
     }, [selectedStaff, selectedMonth]);
 
-    // Staff list (Limited to only ID 1 for now as per request)
+    // Staff list
     const staffList = [
-        { id: 1, name: t('staff.1') }
+        { id: 1, name: t('staff.1') },
+        { id: 2, name: t('staff.2') },
+        { id: 3, name: t('staff.3') }
     ];
 
     // Tabs configuration
