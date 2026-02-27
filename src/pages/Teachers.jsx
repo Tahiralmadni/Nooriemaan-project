@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { Eye, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Eye, ArrowRight, ArrowLeft, Search, X } from 'lucide-react';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
@@ -44,6 +44,18 @@ const Teachers = () => {
     // Setup complete staff IDs — sirf inke eye icon green honge
     const setupStaffIds = [1, 2, 3];
 
+    // Search
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredStaffIds = staffIds.filter(id => {
+        if (!searchQuery.trim()) return true;
+        const query = searchQuery.toLowerCase().trim();
+        const nameEn = t(`staff.${id}`).toLowerCase();
+        const idStr = String(id);
+        const email = (emails[id] || '').toLowerCase();
+        return nameEn.includes(query) || idStr.includes(query) || email.includes(query);
+    });
+
     // View profile handler
     const handleViewProfile = (id) => {
         if (setupStaffIds.includes(id)) {
@@ -81,6 +93,35 @@ const Teachers = () => {
                     </span>
                 </div>
 
+                {/* Search Bar */}
+                <div className="mb-4 relative">
+                    <div className="relative">
+                        <Search size={18} className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" />
+                        <input
+                            type="text"
+                            dir="auto"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={isRTL ? 'نام، نمبر یا ای میل سے تلاش کریں...' : 'Search by name, number or email...'}
+                            className="w-full bg-white border-2 border-gray-100 rounded-xl py-3 pl-12 pr-12 text-sm text-slate-700 shadow-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none transition-all"
+                            style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)', textAlign: 'start' }}
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute top-1/2 -translate-y-1/2 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                            >
+                                <X size={18} />
+                            </button>
+                        )}
+                    </div>
+                    {searchQuery && (
+                        <p className="text-xs text-gray-400 mt-1.5 px-1">
+                            {filteredStaffIds.length} {isRTL ? 'نتائج ملے' : 'results found'}
+                        </p>
+                    )}
+                </div>
+
                 {/* Desktop Table - Hidden on Mobile */}
                 <div className="hidden md:block bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                     <table className="w-full">
@@ -101,7 +142,7 @@ const Teachers = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {staffIds.map((id, index) => (
+                            {filteredStaffIds.map((id, index) => (
                                 <tr
                                     key={id}
                                     className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} hover:bg-emerald-50 transition-colors`}
@@ -141,7 +182,7 @@ const Teachers = () => {
 
                 {/* Mobile Cards - Professional Design */}
                 <div className="md:hidden space-y-3">
-                    {staffIds.map((id, index) => (
+                    {filteredStaffIds.map((id, index) => (
                         <div
                             key={id}
                             className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
