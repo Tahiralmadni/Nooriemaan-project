@@ -14,7 +14,8 @@ import {
     BarChart3,
     Menu,
     X,
-    FileText
+    FileText,
+    Settings
 } from 'lucide-react';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import appConfig from '../config/appConfig';
@@ -32,6 +33,13 @@ const DashboardLayout = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     const isRTL = i18n.language === 'ur';
+
+    // Load dark mode on mount
+    useEffect(() => {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+    }, []);
 
     // Auto-open dropdown if on teachers sub-page
     useEffect(() => {
@@ -105,8 +113,8 @@ const DashboardLayout = () => {
                     ${mobileMenuOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'}
                     lg:translate-x-0
                     ${isCollapsed ? 'w-[70px]' : 'w-[260px]'}
-                    bg-gradient-to-b from-white to-green-50
-                    ${isRTL ? 'border-l' : 'border-r'} border-gray-200
+                    bg-gradient-to-b from-white to-green-50 dark:from-slate-900 dark:to-slate-800
+                    ${isRTL ? 'border-l' : 'border-r'} border-gray-200 dark:border-slate-700
                     flex flex-col flex-shrink-0
                     transition-all duration-300 ease-in-out
                 `}
@@ -116,7 +124,7 @@ const DashboardLayout = () => {
                     ${isCollapsed ? 'px-2.5' : 'px-5'} py-4
                     border-b border-gray-200
                     flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'}
-                    gap-3 bg-emerald-500 min-h-[65px]
+                    gap-3 bg-emerald-500 dark:bg-emerald-700 min-h-[65px]
                 `}>
                     <img src={logoMain} alt="logo" className="h-9 flex-shrink-0" />
                     {!isCollapsed && (
@@ -146,12 +154,12 @@ const DashboardLayout = () => {
                                     flex items-center gap-3
                                     ${isCollapsed ? 'justify-center py-3.5' : 'px-5 py-3.5'}
                                     no-underline text-sm
-                                    ${isActive ? 'text-emerald-500 bg-emerald-50 font-semibold' : 'text-gray-600 font-medium'}
+                                    ${isActive ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 font-semibold' : 'text-gray-600 dark:text-gray-400 font-medium'}
                                     ${isRTL
                                         ? (isActive ? 'border-r-4 border-emerald-500' : 'border-r-4 border-transparent')
                                         : (isActive ? 'border-l-4 border-emerald-500' : 'border-l-4 border-transparent')
                                     }
-                                    transition-all duration-200 hover:bg-emerald-50
+                                    transition-all duration-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20
                                 `}
                             >
                                 <Icon size={20} />
@@ -167,7 +175,7 @@ const DashboardLayout = () => {
                             className={`
                                 w-full flex items-center gap-3
                                 ${isCollapsed ? 'justify-center py-3.5' : 'px-5 py-3.5 justify-between'}
-                                ${location.pathname.startsWith('/teachers') ? 'bg-emerald-50 text-emerald-500 font-semibold' : 'text-gray-600 font-medium'}
+                                ${location.pathname.startsWith('/teachers') ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 font-semibold' : 'text-gray-600 dark:text-gray-400 font-medium'}
                                 border-none cursor-pointer text-sm
                                 ${isRTL
                                     ? (location.pathname.startsWith('/teachers') ? 'border-r-4 border-emerald-500' : 'border-r-4 border-transparent')
@@ -184,7 +192,7 @@ const DashboardLayout = () => {
 
                         {/* Sub-menu */}
                         {teachersOpen && !isCollapsed && (
-                            <div className="bg-gray-50 border-y border-gray-200">
+                            <div className="bg-gray-50 dark:bg-slate-800 border-y border-gray-200 dark:border-slate-700">
                                 {teachersSubMenu.map((subItem, idx) => {
                                     const SubIcon = subItem.icon;
                                     return (
@@ -196,8 +204,8 @@ const DashboardLayout = () => {
                                                 flex items-center gap-2.5 py-3 px-5
                                                 ${isRTL ? 'pr-9' : 'pl-9'}
                                                 no-underline text-[13px]
-                                                ${isActive ? 'text-emerald-500 bg-green-100 font-semibold' : 'text-gray-500 font-normal'}
-                                                transition-all duration-200 hover:bg-green-100
+                                                ${isActive ? 'text-emerald-500 bg-green-100 dark:bg-emerald-900/30 font-semibold' : 'text-gray-500 dark:text-gray-400 font-normal'}
+                                                transition-all duration-200 hover:bg-green-100 dark:hover:bg-emerald-900/20
                                             `}
                                         >
                                             <SubIcon size={16} />
@@ -224,11 +232,26 @@ const DashboardLayout = () => {
                     {/* Collapse Button - Hidden on mobile */}
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="hidden lg:flex w-full py-3.5 items-center justify-center gap-2.5 bg-gray-100 border-none cursor-pointer text-gray-500 text-[13px] hover:bg-gray-200 transition-all"
+                        className="hidden lg:flex w-full py-3.5 items-center justify-center gap-2.5 bg-gray-100 dark:bg-slate-800 border-none cursor-pointer text-gray-500 dark:text-gray-400 text-[13px] hover:bg-gray-200 dark:hover:bg-slate-700 transition-all"
                     >
                         {isCollapsed ? <PanelLeft size={20} /> : <PanelLeftClose size={20} />}
                         {!isCollapsed && t(isCollapsed ? 'sidebar.expand' : 'sidebar.collapse')}
                     </button>
+
+                    {/* Settings Link */}
+                    <NavLink
+                        to="/settings"
+                        className={({ isActive }) => `
+                            flex items-center gap-2.5 w-full py-3.5
+                            ${isCollapsed ? 'justify-center' : 'px-5'}
+                            no-underline text-sm font-medium
+                            ${isActive ? 'text-emerald-500 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50'}
+                            transition-all duration-200
+                        `}
+                    >
+                        <Settings size={18} />
+                        {!isCollapsed && (isRTL ? 'پسند کریں' : 'Settings')}
+                    </NavLink>
 
                     {/* Logout */}
                     <button
@@ -244,7 +267,7 @@ const DashboardLayout = () => {
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
-                <div className="bg-white px-4 md:px-6 py-3 border-b border-gray-200 flex justify-between items-center gap-3">
+                <div className="bg-white dark:bg-slate-900 px-4 md:px-6 py-3 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center gap-3">
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setMobileMenuOpen(true)}
@@ -252,27 +275,10 @@ const DashboardLayout = () => {
                     >
                         <Menu size={24} />
                     </button>
-
-                    {/* Right side buttons */}
-                    <div className={`flex items-center gap-2 md:gap-3 ${isRTL ? 'mr-auto' : 'ml-auto'}`}>
-                        <button
-                            onClick={handleLanguageChange}
-                            className="px-3 md:px-4 py-2 border border-emerald-500 rounded-lg bg-emerald-50 cursor-pointer text-xs md:text-[13px] font-semibold text-emerald-500 hover:bg-emerald-100 transition-all"
-                        >
-                            {isRTL ? 'English' : 'اردو'}
-                        </button>
-                        <button
-                            onClick={() => setShowFontSettings(true)}
-                            className="px-3 md:px-4 py-2 border border-gray-200 rounded-lg bg-white cursor-pointer text-xs md:text-[13px] flex items-center gap-1.5 text-gray-600 hover:bg-gray-50 transition-all"
-                        >
-                            <Type size={16} />
-                            <span className="hidden sm:inline">{isRTL ? 'فونٹ' : 'Font'}</span>
-                        </button>
-                    </div>
                 </div>
 
                 {/* Page Content */}
-                <div className="flex-1 overflow-auto p-4 md:p-6">
+                <div className="flex-1 overflow-auto p-4 md:p-6 bg-gray-50 dark:bg-slate-950">
                     <Outlet />
                 </div>
             </div>

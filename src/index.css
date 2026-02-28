@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================
    JAMIA NOOR-UL-EMAAN CLOUD ERP
    Enterprise Design System
@@ -85,6 +87,122 @@ body {
   line-height: 1.8;
   min-height: 100vh;
   direction: rtl;
+}
+
+/* ============================================
+   DARK MODE — Global Overrides (Sab pages cover)
+   ============================================ */
+.dark body {
+  background-color: #0f172a;
+  background-image: none;
+  color: #e2e8f0;
+}
+
+/* Backgrounds */
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: #0f172a !important;
+}
+
+.dark .hover\:bg-emerald-50:hover {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Text Colors */
+.dark .text-slate-800,
+.dark .text-slate-700,
+.dark .text-slate-900 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-gray-700 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-800 {
+  color: #e2e8f0 !important;
+}
+
+.dark h1,
+.dark h2,
+.dark h3 {
+  color: #f1f5f9 !important;
+}
+
+/* Borders */
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: #334155 !important;
+}
+
+/* Tables */
+.dark table th {
+  color: #ffffff !important;
+}
+
+.dark table td {
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
+}
+
+.dark table tr:nth-child(odd) td {
+  background-color: #1e293b !important;
+}
+
+.dark table tr:nth-child(even) td {
+  background-color: #172033 !important;
+}
+
+.dark table tr:hover td {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Cards & Shadows */
+.dark .shadow-lg,
+.dark .shadow-xl,
+.dark .shadow-md,
+.dark .shadow-sm {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark .rounded-2xl,
+.dark .rounded-xl {
+  border-color: #334155;
+}
+
+/* Inputs & Selects */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-color: #475569 !important;
+}
+
+.dark input::placeholder {
+  color: #64748b !important;
+}
+
+/* Blue links */
+.dark .text-blue-600,
+.dark .text-blue-500 {
+  color: #60a5fa !important;
+}
+
+/* Scrollbar dark */
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 
 /* English Text Class */

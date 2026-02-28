@@ -16,6 +16,7 @@ const MajmoohiHazri = lazy(() => import('./pages/MajmoohiHazri'));
 const DailyAttendance = lazy(() => import('./pages/DailyAttendance'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
 const AttendanceReports = lazy(() => import('./pages/AttendanceReports'));
+const Settings = lazy(() => import('./pages/Settings'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Blank fallback — sirf background dikhao, gol spinner nahi
@@ -74,6 +75,7 @@ function App() {
               <Route path="/teachers/daily" element={<DailyAttendance />} />
               <Route path="/teachers/reports" element={<AttendanceReports />} />
               <Route path="/teachers/profile/:id" element={<StaffProfile />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
 
             {/* Standalone Pages (with mini-navbar) */}
