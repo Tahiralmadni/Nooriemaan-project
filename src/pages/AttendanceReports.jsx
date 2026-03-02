@@ -74,7 +74,8 @@ const AttendanceReports = () => {
     const staffList = [
         { id: 1, name: t('staff.1') },
         { id: 2, name: t('staff.2') },
-        { id: 3, name: t('staff.3') }
+        { id: 3, name: t('staff.3') },
+        { id: 4, name: t('staff.4') }
     ];
 
     // Tabs configuration

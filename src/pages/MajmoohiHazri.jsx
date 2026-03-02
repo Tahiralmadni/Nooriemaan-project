@@ -14,7 +14,8 @@ const MajmoohiHazri = () => {
     const staffOptions = [
         { id: 1, nameKey: 'staff.1' },
         { id: 2, nameKey: 'staff.2' },
-        { id: 3, nameKey: 'staff.3' }
+        { id: 3, nameKey: 'staff.3' },
+        { id: 4, nameKey: 'staff.4' }
     ];
 
     const [selectedStaff, setSelectedStaff] = useState(1);

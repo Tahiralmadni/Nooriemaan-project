@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { collection, addDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db, auth } from '../config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { AlertTriangle, CheckCircle, XCircle, Clock, UserCheck, UserX, AlertCircle, Calendar, Type } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -114,7 +115,7 @@ const AttendanceSchedule = () => {
 
     // Manual time inputs
     const [manualEntryTime, setManualEntryTime] = useState('08:00');
-    const [manualExitTime, setManualExitTime] = useState('04:00');
+    const [manualExitTime, setManualExitTime] = useState('16:00');
 
     // History State
     const [attendanceHistory, setAttendanceHistory] = useState([]);
@@ -219,12 +220,43 @@ const AttendanceSchedule = () => {
             country: 'Pakistan',
             joinDate: 'October 2025',
             setupDate: '2026-02-26'
+        },
+        4: {
+            id: 4,
+            nameUr: 'مدثر رضا',
+            nameEn: 'Mudassir Raza',
+            roleUr: 'مدرس — نیا آباد صبح',
+            roleEn: 'Mudaris — Nayabad Subha',
+            entryTime: '8:00 AM',
+            exitTime: '11:00 AM',
+            entryHour: 8,
+            exitHour: 11,
+            totalHours: 3,
+            salary: 8500,
+            perDaySalary: Math.round(8500 / 26),
+            perHourSalary: Math.round(8500 / 26 / 3),
+            perMinuteSalary: 8500 / 26 / 3 / 60,
+            phone: '03243499859',
+            email: 'mudassirrazachishti@gmail.com',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'March 2026',
+            setupDate: '2026-03-01'
         }
     };
 
     // Selected staff — dropdown se change hoga
     const [selectedStaffId, setSelectedStaffId] = useState(1);
     const staff = staffData[selectedStaffId];
+
+    // Auto-update entry/exit times when staff changes
+    useEffect(() => {
+        const s = staffData[selectedStaffId];
+        if (s) {
+            setManualEntryTime(String(s.entryHour).padStart(2, '0') + ':00');
+            setManualExitTime(String(s.exitHour).padStart(2, '0') + ':00');
+        }
+    }, [selectedStaffId]);
 
     // Check if late based on manual entry time (NO grace period - 1 min late = deduction)
     useEffect(() => {
@@ -453,23 +485,23 @@ const AttendanceSchedule = () => {
             return;
         }
 
-        // Validate time is within working hours (8 AM - 4 PM) for present status
-        // Note: HTML time input uses 24-hour internally (8-16), display is based on browser locale
+        // Validate time is within working hours for present status
+        // Uses staff-specific entry/exit hours instead of hardcoded 8-16
         if (status === 'present') {
             const [entryHours, entryMins] = manualEntryTime.split(':').map(Number);
             const [exitHours, exitMins] = manualExitTime.split(':').map(Number);
 
-            // Check entry time (8 AM to 4 PM = hours 8-16)
-            if (entryHours < 8 || entryHours > 16 || (entryHours === 16 && entryMins > 0)) {
+            // Check entry time (staff.entryHour to staff.exitHour)
+            if (entryHours < staff.entryHour || entryHours > staff.exitHour || (entryHours === staff.exitHour && entryMins > 0)) {
                 showErrorToast(t('hazri.validation.entryTimeInvalid'));
-                setIsSaving(false); // Reset loading state
+                setIsSaving(false);
                 return;
             }
 
-            // Check exit time (8 AM to 4 PM = hours 8-16)
-            if (exitHours < 8 || exitHours > 16 || (exitHours === 16 && exitMins > 0)) {
+            // Check exit time (staff.entryHour to staff.exitHour)
+            if (exitHours < staff.entryHour || exitHours > staff.exitHour || (exitHours === staff.exitHour && exitMins > 0)) {
                 showErrorToast(t('hazri.validation.exitTimeInvalid'));
-                setIsSaving(false); // Reset loading state
+                setIsSaving(false);
                 return;
             }
         }

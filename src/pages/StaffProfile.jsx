@@ -20,7 +20,7 @@ const StaffProfile = () => {
         23: { phone: '03128593301', address: 'Karachi, Pakistan', role: 'Naib Nazim', roleUr: 'نائب ناظم', joinDate: 'October 2020', salary: '8,120', timing: '8:00 AM - 4:00 PM', email: 'ishaqakram67@gmail.com' },
         2: { phone: '03138657703', address: 'Karachi, Pakistan', role: 'Madrasa Nazim Hussainabad', roleUr: 'مدرسہ ناظم حسین آباد', joinDate: 'June 2025', salary: '13,000', timing: '8:00 AM - 4:00 PM', email: '-' },
         3: { phone: '03152643153', address: 'Karachi, Pakistan', role: 'Mudarris - Bilal Masjid', roleUr: 'مدرس - بلال مسجد', joinDate: 'October 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'muneebattari527@gmail.com' },
-        4: { phone: '0344-4567890', address: 'Karachi', role: 'Teacher', roleUr: 'استاد', joinDate: '05 Feb 2022', salary: '20,000', timing: '8:30 AM - 2:30 PM', email: 'mudassirrazachishti@gmail.com' }
+        4: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Subha', roleUr: 'مدرس — نیا آباد صبح', joinDate: 'March 2026', salary: '8,500', timing: '8:00 AM - 11:00 AM', email: 'mudassirrazachishti@gmail.com' }
     };
 
     const staff = staffDetails[id] || staffDetails[1];
