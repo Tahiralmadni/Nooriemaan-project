@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { collection, addDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { db, auth } from '../config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { db } from '../config/firebase';
 import { AlertTriangle, CheckCircle, XCircle, Clock, UserCheck, UserX, AlertCircle, Calendar, Type } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -262,7 +261,7 @@ const AttendanceSchedule = () => {
     useEffect(() => {
         const [hours, minutes] = manualEntryTime.split(':').map(Number);
         const entryInMinutes = hours * 60 + minutes;
-        const expectedEntry = staff.entryHour * 60; // 8:00 = 480 minutes
+        const expectedEntry = staff.entryHour * 60;
 
         if (entryInMinutes > expectedEntry) {
             setIsLate(true);
@@ -271,20 +270,22 @@ const AttendanceSchedule = () => {
             setIsLate(false);
             setLateMinutes(0);
         }
-    }, [manualEntryTime]);
+    }, [manualEntryTime, selectedStaffId]);
 
     // Check if leaving early based on manual exit time
     useEffect(() => {
         const [hours, minutes] = manualExitTime.split(':').map(Number);
-        if (hours < staff.exitHour || (hours === staff.exitHour && minutes === 0 && hours < staff.exitHour)) {
+        const exitInMinutes = hours * 60 + minutes;
+        const expectedExit = staff.exitHour * 60;
+
+        if (exitInMinutes < expectedExit) {
             setIsEarlyLeave(true);
-            const earlyTime = (staff.exitHour - hours) * 60 - minutes;
-            setEarlyMinutes(earlyTime > 0 ? earlyTime : 0);
+            setEarlyMinutes(expectedExit - exitInMinutes);
         } else {
             setIsEarlyLeave(false);
             setEarlyMinutes(0);
         }
-    }, [manualExitTime]);
+    }, [manualExitTime, selectedStaffId]);
 
     useEffect(() => {
         document.title = t('pageTitles.attendanceSchedule');
@@ -302,7 +303,7 @@ const AttendanceSchedule = () => {
         }
     }, [selectedDate]);
 
-    // AUTO-SAVE Sunday Holiday - Only on that Sunday, not in advance
+    // AUTO-SAVE Sunday Holiday for ALL staff - Only on that Sunday, not in advance
     useEffect(() => {
         const autoSaveSundayHoliday = async () => {
             const today = new Date();
@@ -311,46 +312,48 @@ const AttendanceSchedule = () => {
             // Only proceed if TODAY is Sunday
             if (dayOfWeek !== 0) return;
 
-            // Check if record already exists for today
             const startOfDay = new Date(today);
             startOfDay.setHours(0, 0, 0, 0);
             const endOfDay = new Date(today);
             endOfDay.setHours(23, 59, 59, 999);
 
-            try {
-                const q = query(
-                    collection(db, 'attendance'),
-                    where('staffId', '==', staff.id),
-                    where('date', '>=', Timestamp.fromDate(startOfDay)),
-                    where('date', '<=', Timestamp.fromDate(endOfDay))
-                );
+            // Loop through ALL staff members
+            for (const s of Object.values(staffData)) {
+                try {
+                    const q = query(
+                        collection(db, 'attendance'),
+                        where('staffId', '==', s.id),
+                        where('date', '>=', Timestamp.fromDate(startOfDay)),
+                        where('date', '<=', Timestamp.fromDate(endOfDay))
+                    );
 
-                const snapshot = await getDocs(q);
+                    const snapshot = await getDocs(q);
 
-                // If NO record exists for today (Sunday), auto-save holiday
-                if (snapshot.empty) {
-                    const holidayDate = new Date(today);
-                    holidayDate.setHours(12, 0, 0, 0);
+                    // If NO record exists for this staff today (Sunday), auto-save holiday
+                    if (snapshot.empty) {
+                        const holidayDate = new Date(today);
+                        holidayDate.setHours(12, 0, 0, 0);
 
-                    await addDoc(collection(db, 'attendance'), {
-                        staffId: staff.id,
-                        staffName: staff.nameEn,
-                        status: 'holiday',
-                        reason: 'اتوار - Weekly Holiday',
-                        reasonType: 'sunday',
-                        date: Timestamp.fromDate(holidayDate),
-                        entryTime: '-',
-                        exitTime: '-',
-                        markedAt: 'Auto-saved',
-                        salary: staff.salary,
-                        isLate: false,
-                        lateMinutes: 0,
-                        deduction: 0
-                    });
-                    console.log('✅ Sunday Holiday auto-saved for:', today.toDateString());
+                        await addDoc(collection(db, 'attendance'), {
+                            staffId: s.id,
+                            staffName: s.nameEn,
+                            status: 'holiday',
+                            reason: 'اتوار - Weekly Holiday',
+                            reasonType: 'sunday',
+                            date: Timestamp.fromDate(holidayDate),
+                            entryTime: '-',
+                            exitTime: '-',
+                            markedAt: 'Auto-saved',
+                            salary: s.salary,
+                            isLate: false,
+                            lateMinutes: 0,
+                            deduction: 0
+                        });
+                        console.log('✅ Sunday Holiday auto-saved for:', s.nameEn);
+                    }
+                } catch (error) {
+                    console.error('Auto-save Sunday error for', s.nameEn, ':', error);
                 }
-            } catch (error) {
-                console.error('Auto-save Sunday error:', error);
             }
         };
 

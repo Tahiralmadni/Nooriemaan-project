@@ -1,18 +1,49 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
+import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
+
+    // Dynamic stats from Firestore
+    const [presentToday, setPresentToday] = useState('-');
 
     // Update title when language changes
     useEffect(() => {
         document.title = t('pageTitles.dashboard');
     }, [t, i18n.language]);
 
+    // Fetch today's attendance count
+    useEffect(() => {
+        const fetchTodayStats = async () => {
+            try {
+                const today = new Date();
+                const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+                const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+                const q = query(
+                    collection(db, 'attendance'),
+                    where('status', '==', 'present'),
+                    where('date', '>=', Timestamp.fromDate(startOfDay)),
+                    where('date', '<=', Timestamp.fromDate(endOfDay))
+                );
+
+                const snapshot = await getDocs(q);
+                setPresentToday(String(snapshot.size));
+            } catch (error) {
+                console.error('Dashboard stats error:', error);
+                setPresentToday('0');
+            }
+        };
+
+        fetchTodayStats();
+    }, []);
+
     const stats = [
-        { label: t('dashboard.presentToday'), val: '22', col: '#3b82f6' },
+        { label: t('dashboard.presentToday'), val: presentToday, col: '#3b82f6' },
     ];
 
     return (

@@ -72,7 +72,14 @@ const DashboardLayout = () => {
         setShowLogoutModal(true);
     };
 
-    const confirmLogout = () => {
+    const confirmLogout = async () => {
+        try {
+            const { signOut } = await import('firebase/auth');
+            const { auth } = await import('../config/firebase');
+            await signOut(auth);
+        } catch (e) {
+            console.error('Sign out error:', e);
+        }
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userGR');
         window.location.href = '/';

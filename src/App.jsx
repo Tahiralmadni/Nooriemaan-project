@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import NetworkStatus from './components/NetworkStatus';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './config/firebase';
 
 // ===== LAZY LOADING — Pages load sirf jab zaroorat ho =====
 const DeveloperIntro = lazy(() => import('./components/DeveloperIntro'));
@@ -35,9 +37,27 @@ function App() {
     return !sessionStorage.getItem('introShown');
   });
 
+  // Auth state — Firebase onAuthStateChanged + localStorage fallback
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isLoggedIn') === 'true';
   });
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Listen to Firebase Auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+        localStorage.setItem('isLoggedIn', 'true');
+      } else {
+        setIsAuthenticated(false);
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userGR');
+      }
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (showIntro) {

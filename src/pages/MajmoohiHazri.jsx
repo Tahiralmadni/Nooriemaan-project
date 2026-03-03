@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Users, Loader2, Search } from 'lucide-react';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import toast, { Toaster } from 'react-hot-toast';
 
 const MajmoohiHazri = () => {
     const { t, i18n } = useTranslation();
@@ -29,6 +30,7 @@ const MajmoohiHazri = () => {
     const [loading, setLoading] = useState(false);
     const [records, setRecords] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
+    const [loadError, setLoadError] = useState('');
 
     // Day names for table
     const dayNames = isRTL
@@ -63,6 +65,7 @@ const MajmoohiHazri = () => {
     const handleLoad = async () => {
         setLoading(true);
         setHasSearched(true);
+        setLoadError('');
         try {
             const start = new Date(startDate);
             start.setHours(0, 0, 0, 0);
@@ -103,8 +106,14 @@ const MajmoohiHazri = () => {
             }
 
             setRecords(unique);
+            if (unique.length === 0) {
+                setLoadError(isRTL ? 'اس مدت میں کوئی ریکارڈ نہیں ملا' : 'No records found for this period');
+            }
         } catch (error) {
             console.error('Load error:', error);
+            const errMsg = error.message || 'Unknown error';
+            setLoadError(errMsg);
+            toast.error(isRTL ? `ڈیٹا لوڈ نہیں ہوا: ${errMsg}` : `Failed to load: ${errMsg}`);
         } finally {
             setLoading(false);
         }
@@ -128,6 +137,7 @@ const MajmoohiHazri = () => {
             <Helmet defer={false}>
                 <title>{t('majmoohi.title')}</title>
             </Helmet>
+            <Toaster position="top-center" />
 
             <motion.div
                 initial={{ opacity: 0, y: 15 }}
