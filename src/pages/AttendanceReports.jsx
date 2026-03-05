@@ -75,7 +75,8 @@ const AttendanceReports = () => {
         { id: 1, name: t('staff.1') },
         { id: 2, name: t('staff.2') },
         { id: 3, name: t('staff.3') },
-        { id: 4, name: t('staff.4') }
+        { id: 4, name: t('staff.4') },
+        { id: 5, name: t('staff.5') }
     ];
 
     // Tabs configuration
@@ -290,7 +291,7 @@ const AttendanceReports = () => {
                         <div className="min-h-screen bg-gray-50/50 pb-8 relative" dir={isRTL ? 'rtl' : 'ltr'}>
                             {/* ===== TOP BAR — Premium Glassmorphism ===== */}
                             {/* ===== TOP BAR — Compact & Clean ===== */}
-                            <div className="w-full bg-white/90 backdrop-blur-md px-4 md:px-6 py-2 border-b border-gray-100 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm relative">
+                            <div className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 md:px-6 py-2 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm relative">
                                 {/* Back Button */}
                                 <button
                                     onClick={() => navigate('/teachers')}
@@ -301,7 +302,10 @@ const AttendanceReports = () => {
                                 </button>
 
                                 {/* Title - Centered & Solid Color to prevent clipping */}
-                                <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg md:text-xl font-bold text-emerald-800 whitespace-nowrap leading-relaxed pt-1">
+                                <h1 className="hidden sm:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg md:text-xl font-bold text-emerald-800 dark:text-emerald-400 whitespace-nowrap leading-relaxed pt-1">
+                                    {t('reports.title')}
+                                </h1>
+                                <h1 className="sm:hidden text-base font-bold text-emerald-800 dark:text-emerald-400 leading-relaxed">
                                     {t('reports.title')}
                                 </h1>
 
@@ -316,8 +320,8 @@ const AttendanceReports = () => {
                             </div>
 
                             {/* ===== INNER TABS — dimionline style ===== */}
-                            <div className="w-full bg-white border-b border-gray-100">
-                                <div className="max-w-6xl mx-auto flex">
+                            <div className="w-full bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-700">
+                                <div className="max-w-6xl mx-auto flex overflow-x-auto">
                                     {tabs.map((tab) => (
                                         <button
                                             key={tab.id}
@@ -335,15 +339,15 @@ const AttendanceReports = () => {
                             </div>
 
                             {/* ===== FILTERS BAR — Visibility Optimized ===== */}
-                            <div className="w-full bg-white border-b border-gray-100 px-4 md:px-6 py-3">
-                                <div className="max-w-6xl mx-auto flex flex-wrap items-center gap-3">
+                            <div className="w-full bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-700 px-4 md:px-6 py-3">
+                                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
                                     {/* Staff Selector */}
-                                    <div className="relative flex-1 min-w-[200px]">
+                                    <div className="relative flex-1 min-w-0">
                                         <Users size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500" style={{ [isRTL ? 'right' : 'left']: '12px' }} />
                                         <select
                                             value={selectedStaff}
                                             onChange={(e) => setSelectedStaff(e.target.value)}
-                                            className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 text-sm font-medium text-gray-900 shadow-sm focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
+                                            className={`w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg py-2.5 text-sm font-medium text-gray-900 dark:text-slate-200 shadow-sm focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                                         >
                                             <option value="">{t('reports.selectStaff')}</option>
                                             {staffList.map((s) => (
@@ -354,12 +358,12 @@ const AttendanceReports = () => {
                                     </div>
 
                                     {/* Month Selector */}
-                                    <div className="relative min-w-[180px]">
+                                    <div className="relative flex-1 min-w-0">
                                         <Calendar size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500" style={{ [isRTL ? 'right' : 'left']: '12px' }} />
                                         <select
                                             value={selectedMonth}
                                             onChange={(e) => setSelectedMonth(e.target.value)}
-                                            className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 text-sm font-medium text-gray-900 shadow-sm focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
+                                            className={`w-full bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg py-2.5 text-sm font-medium text-gray-900 dark:text-slate-200 shadow-sm focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                                         >
                                             {monthOptions.map((m) => (
                                                 <option key={m.value} value={m.value}>{m.label}</option>
@@ -369,7 +373,7 @@ const AttendanceReports = () => {
                                     </div>
 
                                     {/* Search Button */}
-                                    <button className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:shadow-lg hover:shadow-emerald-200 transition-all flex items-center gap-2 transform active:scale-95">
+                                    <button className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:shadow-lg hover:shadow-emerald-200 transition-all flex items-center justify-center gap-2 transform active:scale-95">
                                         <Search size={16} />
                                         {t('reports.search')}
                                     </button>
@@ -397,7 +401,7 @@ const AttendanceReports = () => {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.2, duration: 0.4 }}
-                                        className="bg-white border-x border-gray-200 px-4 py-2.5 flex justify-between items-center"
+                                        className="bg-white dark:bg-slate-800 border-x border-gray-200 dark:border-slate-700 px-4 py-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
                                     >
                                         <div className="flex items-center gap-2">
                                             <button
@@ -430,7 +434,7 @@ const AttendanceReports = () => {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.3, duration: 0.5 }}
-                                        className="bg-white rounded-b-xl border border-gray-200 shadow-sm overflow-hidden"
+                                        className="bg-white dark:bg-slate-800 rounded-b-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden"
                                     >
                                         <div className="overflow-x-auto">
                                             <table className="w-full min-w-[900px] text-xs">

@@ -231,16 +231,38 @@ const AttendanceSchedule = () => {
             entryHour: 8,
             exitHour: 11,
             totalHours: 3,
-            salary: 8500,
-            perDaySalary: Math.round(8500 / 26),
-            perHourSalary: Math.round(8500 / 26 / 3),
-            perMinuteSalary: 8500 / 26 / 3 / 60,
+            salary: 7500,
+            perDaySalary: Math.round(7500 / 26),
+            perHourSalary: Math.round(7500 / 26 / 3),
+            perMinuteSalary: 7500 / 26 / 3 / 60,
             phone: '03243499859',
             email: 'mudassirrazachishti@gmail.com',
             city: 'Karachi',
             country: 'Pakistan',
-            joinDate: 'March 2026',
-            setupDate: '2026-03-01'
+            joinDate: 'August 2025',
+            setupDate: '2025-08-01'
+        },
+        5: {
+            id: 5,
+            nameUr: 'مدثر رضا',
+            nameEn: 'Mudassir Raza',
+            roleUr: 'مدرس — نیا آباد دوپہر',
+            roleEn: 'Mudaris — Nayabad Dopher',
+            entryTime: '2:00 PM',
+            exitTime: '4:00 PM',
+            entryHour: 14,
+            exitHour: 16,
+            totalHours: 2,
+            salary: 6000,
+            perDaySalary: Math.round(6000 / 26),
+            perHourSalary: Math.round(6000 / 26 / 2),
+            perMinuteSalary: 6000 / 26 / 2 / 60,
+            phone: '03243499859',
+            email: 'mudassirrazachishti@gmail.com',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'August 2025',
+            setupDate: '2026-03-05'
         }
     };
 
@@ -668,18 +690,18 @@ const AttendanceSchedule = () => {
                         </div>
 
                         <div
-                            className={`min-h-screen flex flex-col items-center ${isRTL ? 'font-urdu' : 'font-english'}`}
+                            className={`min-h-screen flex flex-col items-center dark:bg-slate-950 ${isRTL ? 'font-urdu' : 'font-english'}`}
                             dir={isRTL ? 'rtl' : 'ltr'}
                         >
 
                             {/* ===== TOP BAR - Premium Glassmorphism ===== */}
-                            <div className="w-full bg-white/80 backdrop-blur-md px-4 md:px-6 py-3 border-b border-white/50 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm">
+                            <div className="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 md:px-6 py-3 border-b border-white/50 dark:border-slate-700/50 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm">
                                 {/* Back to Dashboard */}
                                 <a
                                     href="/dashboard"
                                     className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-all text-sm font-semibold group"
                                 >
-                                    <span className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                                    <span className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
                                         {isRTL ? '→' : '←'}
                                     </span>
                                     <span className="hidden sm:inline">{isRTL ? 'واپس ڈیش بورڈ' : 'Dashboard'}</span>
@@ -695,7 +717,7 @@ const AttendanceSchedule = () => {
                                     </button>
                                     <button
                                         onClick={() => setShowFontSettings(true)}
-                                        className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 font-semibold text-xs md:text-sm shadow-sm hover:bg-gray-50 hover:shadow-md transition-all flex items-center gap-1.5"
+                                        className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl text-gray-600 dark:text-slate-300 font-semibold text-xs md:text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 hover:shadow-md transition-all flex items-center gap-1.5"
                                     >
                                         <Type size={14} />
                                         <span className="hidden sm:inline">{isRTL ? 'فونٹ' : 'Font'}</span>
@@ -770,7 +792,7 @@ const AttendanceSchedule = () => {
 
                                 {/* Premium Tabs - Pill Style with Glassmorphism */}
                                 <div className="flex justify-center mb-6">
-                                    <div className="inline-flex bg-white/60 backdrop-blur-sm p-1.5 rounded-2xl shadow-lg shadow-emerald-500/10 border border-white/80">
+                                    <div className="inline-flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm p-1.5 rounded-2xl shadow-lg shadow-emerald-500/10 border border-white/80 dark:border-slate-700/80">
                                         {tabs.map(tab => (
                                             <button
                                                 key={tab.id}
@@ -779,7 +801,7 @@ const AttendanceSchedule = () => {
                                         relative px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 ease-out
                                         ${activeTab === tab.id
                                                         ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 scale-[1.02]'
-                                                        : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50/50'
+                                                        : 'text-gray-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/30'
                                                     }
                                     `}
                                             >
@@ -793,7 +815,7 @@ const AttendanceSchedule = () => {
                                 {activeTab === 'attendance' && (
                                     <div className="space-y-4">
                                         {/* ===== STAFF SELECTOR ===== */}
-                                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-md border border-white/80 p-3">
+                                        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-md border border-white/80 dark:border-slate-700 p-3">
                                             <label className="text-[10px] text-slate-500 font-bold uppercase block mb-1.5">
                                                 {t('hazri.selectStaff') || (isRTL ? 'عملہ منتخب کریں' : 'Select Staff')}
                                             </label>
@@ -806,7 +828,7 @@ const AttendanceSchedule = () => {
                                                     setReasonType('');
                                                     setSavedTime('');
                                                 }}
-                                                className="w-full px-3 py-2.5 border-2 border-emerald-200 rounded-xl text-sm font-bold text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none cursor-pointer"
+                                                className="w-full px-3 py-2.5 border-2 border-emerald-200 dark:border-emerald-800 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none cursor-pointer"
                                                 style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}
                                             >
                                                 {Object.values(staffData).map(s => (
@@ -817,7 +839,7 @@ const AttendanceSchedule = () => {
                                             </select>
                                         </div>
                                         {/* Staff & Date Card - Premium Glassmorphism */}
-                                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 p-4">
+                                        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 dark:shadow-slate-900/50 border border-white/80 dark:border-slate-700 p-4">
                                             <div className="flex items-center justify-between">
                                                 {/* Staff Info */}
                                                 <div className="flex items-center gap-3">
@@ -825,7 +847,7 @@ const AttendanceSchedule = () => {
                                                         <UserCheck size={24} />
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-sm font-bold text-gray-800">{isRTL ? staff.nameUr : staff.nameEn}</h3>
+                                                        <h3 className="text-sm font-bold text-gray-800 dark:text-white">{isRTL ? staff.nameUr : staff.nameEn}</h3>
                                                         <p className="text-[10px] text-gray-400 font-medium">{isRTL ? staff.roleUr : staff.roleEn}</p>
                                                     </div>
                                                 </div>
@@ -844,31 +866,31 @@ const AttendanceSchedule = () => {
                                         </div>
 
                                         {/* Time Table - Premium Design */}
-                                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 overflow-hidden">
+                                        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 dark:shadow-slate-900/50 border border-white/80 dark:border-slate-700 overflow-hidden">
                                             <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center py-3 px-4">
                                                 <h3 className="font-bold text-sm tracking-wide flex items-center justify-center gap-2">
                                                     <Clock size={16} />
                                                     {t('hazri.timeTable')}
                                                 </h3>
                                             </div>
-                                            <div className="grid grid-cols-3 divide-x divide-gray-100">
+                                            <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-slate-700">
                                                 <div className="p-4 text-center">
                                                     <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.number')}</p>
                                                     <p className="text-lg font-bold text-emerald-600">1</p>
                                                 </div>
                                                 <div className="p-4 text-center">
                                                     <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.entryTime')}</p>
-                                                    <p className="text-sm font-bold text-gray-700">{staff.entryTime}</p>
+                                                    <p className="text-sm font-bold text-gray-700 dark:text-slate-200">{staff.entryTime}</p>
                                                 </div>
                                                 <div className="p-4 text-center">
                                                     <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.exitTime')}</p>
-                                                    <p className="text-sm font-bold text-gray-700">{staff.exitTime}</p>
+                                                    <p className="text-sm font-bold text-gray-700 dark:text-slate-200">{staff.exitTime}</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* New Entry Form - Premium Design */}
-                                        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 border border-white/80 overflow-hidden">
+                                        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-200/50 dark:shadow-slate-900/50 border border-white/80 dark:border-slate-700 overflow-hidden">
                                             <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center py-3 px-4">
                                                 <h3 className="font-bold text-sm tracking-wide">{t('hazri.newEntry')}</h3>
                                             </div>
@@ -882,7 +904,7 @@ const AttendanceSchedule = () => {
                                                     <select
                                                         value={status}
                                                         onChange={(e) => setStatus(e.target.value)}
-                                                        className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none bg-white text-gray-700 font-medium cursor-pointer"
+                                                        className="w-full px-4 py-3 text-base border-2 border-gray-200 dark:border-slate-600 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-200 font-medium cursor-pointer"
                                                         style={{
                                                             lineHeight: '2.2',
                                                             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
@@ -912,7 +934,7 @@ const AttendanceSchedule = () => {
                                                                         <Clock size={10} />
                                                                         {t('hazri.entryTime')}
                                                                     </label>
-                                                                    <div className="flex gap-1 bg-white rounded-lg p-0.5 shadow-sm">
+                                                                    <div className="flex gap-1 bg-white dark:bg-slate-700 rounded-lg p-0.5 shadow-sm">
                                                                         <button
                                                                             onClick={() => setEntryPermission(true)}
                                                                             className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${entryPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
@@ -931,7 +953,7 @@ const AttendanceSchedule = () => {
                                                                     type="time"
                                                                     value={manualEntryTime}
                                                                     onChange={(e) => setManualEntryTime(e.target.value)}
-                                                                    className="w-full p-2.5 text-sm border-2 border-emerald-200 rounded-lg bg-white text-center font-mono font-bold text-emerald-700 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
+                                                                    className="w-full p-2.5 text-sm border-2 border-emerald-200 dark:border-emerald-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all"
                                                                 />
                                                             </div>
 
@@ -942,7 +964,7 @@ const AttendanceSchedule = () => {
                                                                         <Clock size={10} />
                                                                         {t('hazri.exitTime')}
                                                                     </label>
-                                                                    <div className="flex gap-1 bg-white rounded-lg p-0.5 shadow-sm">
+                                                                    <div className="flex gap-1 bg-white dark:bg-slate-700 rounded-lg p-0.5 shadow-sm">
                                                                         <button
                                                                             onClick={() => setExitPermission(true)}
                                                                             className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${exitPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
@@ -961,7 +983,7 @@ const AttendanceSchedule = () => {
                                                                     type="time"
                                                                     value={manualExitTime}
                                                                     onChange={(e) => setManualExitTime(e.target.value)}
-                                                                    className="w-full p-2.5 text-sm border-2 border-amber-200 rounded-lg bg-white text-center font-mono font-bold text-amber-700 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all"
+                                                                    className="w-full p-2.5 text-sm border-2 border-amber-200 dark:border-amber-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-amber-700 dark:text-amber-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all"
                                                                 />
                                                             </div>
                                                         </div>
@@ -1002,7 +1024,7 @@ const AttendanceSchedule = () => {
                                                         <select
                                                             value={reasonType}
                                                             onChange={(e) => setReasonType(e.target.value)}
-                                                            className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none bg-white text-gray-700 font-medium cursor-pointer"
+                                                            className="w-full px-4 py-3 text-base border-2 border-gray-200 dark:border-slate-600 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-200 font-medium cursor-pointer"
                                                             style={{
                                                                 lineHeight: '2.2',
                                                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
@@ -1072,7 +1094,7 @@ const AttendanceSchedule = () => {
                                 {/* ===== TAB 2: TIMING ===== */}
                                 {
                                     activeTab === 'timing' && (
-                                        <div className="bg-white rounded-xl shadow p-6 text-center">
+                                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 text-center">
                                             <h3 className="text-xl font-bold text-slate-800 mb-4">{t('hazri.tabs.timing')}</h3>
                                             <div className="bg-gray-50 rounded-lg p-4">
                                                 <p className="text-gray-600">{t('hazri.entryTime')}: <strong>{staff.entryTime}</strong></p>
@@ -1086,7 +1108,7 @@ const AttendanceSchedule = () => {
                                 {/* ===== TAB 3: VERIFY ===== */}
                                 {
                                     activeTab === 'verify' && (
-                                        <div className="bg-white rounded-xl shadow p-6 text-center">
+                                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 text-center">
                                             <h3 className="text-xl font-bold text-slate-800 mb-4">{t('hazri.tabs.verify')}</h3>
                                             <p className="text-gray-400">{t('hazri.noData')}</p>
                                         </div>

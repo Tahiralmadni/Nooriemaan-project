@@ -19,7 +19,8 @@ const StaffProfile = () => {
         1: { phone: '03128593301', address: 'Karachi, Pakistan', role: 'Naib Nazim', roleUr: 'نائب ناظم', joinDate: 'October 2020', salary: '26,620', timing: '8:00 AM - 4:00 PM', email: 'ishaqakram67@gmail.com' },
         2: { phone: '03138657703', address: 'Karachi, Pakistan', role: 'Madrasa Nazim Hussainabad', roleUr: 'مدرسہ ناظم حسین آباد', joinDate: 'June 2025', salary: '13,000', timing: '8:00 AM - 4:00 PM', email: '-' },
         3: { phone: '03152643153', address: 'Karachi, Pakistan', role: 'Mudarris - Bilal Masjid', roleUr: 'مدرس - بلال مسجد', joinDate: 'October 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'muneebattari527@gmail.com' },
-        4: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Subha', roleUr: 'مدرس — نیا آباد صبح', joinDate: 'March 2026', salary: '8,500', timing: '8:00 AM - 11:00 AM', email: 'mudassirrazachishti@gmail.com' }
+        4: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Subha', roleUr: 'مدرس — نیا آباد صبح', joinDate: 'August 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'mudassirrazachishti@gmail.com' },
+        5: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Dopher', roleUr: 'مدرس — نیا آباد دوپہر', joinDate: 'August 2025', salary: '6,000', timing: '2:00 PM - 4:00 PM', email: 'mudassirrazachishti@gmail.com' }
     };
 
     const staff = staffDetails[id] || staffDetails[1];
@@ -105,7 +106,7 @@ const StaffProfile = () => {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="relative -mt-32 mx-4 mb-6"
                 >
-                    <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-gray-100 p-6">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-slate-200/60 dark:shadow-slate-900/60 border border-gray-100 dark:border-slate-700 p-6">
                         {/* Avatar with Photo Upload */}
                         <div className="flex flex-col items-center -mt-16 mb-4">
                             <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
@@ -143,7 +144,7 @@ const StaffProfile = () => {
 
                         {/* Name */}
                         <h1
-                            className="text-center text-xl font-extrabold text-slate-800 mb-1"
+                            className="text-center text-xl font-extrabold text-slate-800 dark:text-white mb-1"
                             style={{ lineHeight: '2.2' }}
                         >
                             {t('staff.' + id)}
@@ -165,23 +166,23 @@ const StaffProfile = () => {
                         </div>
 
                         {/* Quick Stats */}
-                        <div className="flex justify-center gap-6 pt-3 border-t border-gray-100">
+                        <div className="flex justify-center gap-6 pt-3 border-t border-gray-100 dark:border-slate-700">
                             <div className="text-center">
                                 <p className="text-lg font-black text-teal-600">Rs {staff.salary}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {isRTL ? 'تنخواہ' : 'Salary'}
                                 </p>
                             </div>
-                            <div className="w-px bg-gray-200" />
+                            <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
-                                <p className="text-lg font-black text-slate-700">{staff.timing.split(' - ')[0]}</p>
+                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.timing.split(' - ')[0]}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {isRTL ? 'آمد' : 'Entry'}
                                 </p>
                             </div>
-                            <div className="w-px bg-gray-200" />
+                            <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
-                                <p className="text-lg font-black text-slate-700">{staff.timing.split(' - ')[1]}</p>
+                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.timing.split(' - ')[1]}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {isRTL ? 'روانگی' : 'Exit'}
                                 </p>
@@ -204,7 +205,7 @@ const StaffProfile = () => {
                             initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.35, delay: 0.4 + index * 0.07 }}
-                            className="bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3"
+                            className="bg-white dark:bg-slate-800 rounded-xl p-3.5 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3"
                         >
                             <div
                                 className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -214,7 +215,7 @@ const StaffProfile = () => {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{item.label}</p>
-                                <p className={`text-sm font-semibold truncate ${item.dim ? 'text-gray-300' : 'text-slate-700'}`}>
+                                <p className={`text-sm font-semibold truncate ${item.dim ? 'text-gray-300' : 'text-slate-700 dark:text-slate-200'}`}>
                                     {item.value}
                                 </p>
                             </div>

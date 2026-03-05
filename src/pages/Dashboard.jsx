@@ -16,7 +16,7 @@ const Dashboard = () => {
         document.title = t('pageTitles.dashboard');
     }, [t, i18n.language]);
 
-    // Fetch today's attendance count
+    // Fetch today's attendance count (no composite index needed)
     useEffect(() => {
         const fetchTodayStats = async () => {
             try {
@@ -24,15 +24,17 @@ const Dashboard = () => {
                 const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
                 const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
+                // Query only by date range (avoids composite index requirement)
                 const q = query(
                     collection(db, 'attendance'),
-                    where('status', '==', 'present'),
                     where('date', '>=', Timestamp.fromDate(startOfDay)),
                     where('date', '<=', Timestamp.fromDate(endOfDay))
                 );
 
                 const snapshot = await getDocs(q);
-                setPresentToday(String(snapshot.size));
+                // Filter present status in code
+                const presentCount = snapshot.docs.filter(doc => doc.data().status === 'present').length;
+                setPresentToday(String(presentCount));
             } catch (error) {
                 console.error('Dashboard stats error:', error);
                 setPresentToday('0');
@@ -55,10 +57,10 @@ const Dashboard = () => {
             <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
+                        <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white">
                             {t('dashboard.welcomeToDashboard')}
                         </h1>
-                        <p className="text-sm text-slate-500 mt-1">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                             {t('dashboard.admin')}
                         </p>
                     </div>
@@ -71,11 +73,11 @@ const Dashboard = () => {
                     {stats.map((s, i) => (
                         <div
                             key={i}
-                            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                            className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
                             style={{ borderTop: `3px solid ${s.col}` }}
                         >
-                            <div className="text-xs md:text-sm text-slate-500 mb-1">{s.label}</div>
-                            <div className="text-2xl md:text-3xl font-bold text-slate-800">{s.val}</div>
+                            <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-1">{s.label}</div>
+                            <div className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white">{s.val}</div>
                         </div>
                     ))}
                 </div>

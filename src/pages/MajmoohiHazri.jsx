@@ -16,7 +16,8 @@ const MajmoohiHazri = () => {
         { id: 1, nameKey: 'staff.1' },
         { id: 2, nameKey: 'staff.2' },
         { id: 3, nameKey: 'staff.3' },
-        { id: 4, nameKey: 'staff.4' }
+        { id: 4, nameKey: 'staff.4' },
+        { id: 5, nameKey: 'staff.5' }
     ];
 
     const [selectedStaff, setSelectedStaff] = useState(1);
@@ -167,18 +168,18 @@ const MajmoohiHazri = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: 0.1 }}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 mb-6"
+                    className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 p-5 mb-6"
                 >
                     <div className="flex flex-col md:flex-row md:items-end gap-4">
                         {/* Staff Selector */}
                         <div className="flex-1">
-                            <label className="text-xs text-slate-500 font-semibold block mb-1.5">
+                            <label className="text-xs text-slate-500 dark:text-slate-400 font-semibold block mb-1.5">
                                 {t('majmoohi.table.staffName')}
                             </label>
                             <select
                                 value={selectedStaff}
                                 onChange={(e) => setSelectedStaff(Number(e.target.value))}
-                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none"
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none"
                             >
                                 {staffOptions.map(s => (
                                     <option key={s.id} value={s.id}>{t(s.nameKey)}</option>
@@ -188,27 +189,27 @@ const MajmoohiHazri = () => {
 
                         {/* Start Date */}
                         <div className="flex-1">
-                            <label className="text-xs text-slate-500 font-semibold block mb-1.5">
+                            <label className="text-xs text-slate-500 dark:text-slate-400 font-semibold block mb-1.5">
                                 {isRTL ? 'حاضری ابتداء' : 'Start Date'}
                             </label>
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none cursor-pointer"
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none cursor-pointer"
                             />
                         </div>
 
                         {/* End Date */}
                         <div className="flex-1">
-                            <label className="text-xs text-slate-500 font-semibold block mb-1.5">
+                            <label className="text-xs text-slate-500 dark:text-slate-400 font-semibold block mb-1.5">
                                 {isRTL ? 'حاضری انتہا' : 'End Date'}
                             </label>
                             <input
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-slate-700 bg-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none cursor-pointer"
+                                className="w-full px-3 py-2.5 border-2 border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none cursor-pointer"
                             />
                         </div>
 
@@ -236,7 +237,7 @@ const MajmoohiHazri = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: 0.15 }}
-                        className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+                        className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 overflow-hidden"
                     >
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-16">
@@ -268,20 +269,20 @@ const MajmoohiHazri = () => {
                                             return (
                                                 <tr
                                                     key={r.id}
-                                                    className={`border-b border-gray-50 hover:bg-emerald-50/30 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                                                    className={`border-b border-gray-50 dark:border-slate-700 hover:bg-emerald-50/30 dark:hover:bg-emerald-900/20 transition-colors ${index % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-slate-50/50 dark:bg-slate-800/50'}`}
                                                 >
                                                     <td className="px-3 py-2.5 text-center text-slate-400 font-medium">{index + 1}</td>
-                                                    <td className="px-3 py-2.5 text-center text-slate-700 font-medium">{r.dateStr}</td>
-                                                    <td className="px-3 py-2.5 text-center text-slate-500">{r.dayName}</td>
+                                                    <td className="px-3 py-2.5 text-center text-slate-700 dark:text-slate-300 font-medium">{r.dateStr}</td>
+                                                    <td className="px-3 py-2.5 text-center text-slate-500 dark:text-slate-400">{r.dayName}</td>
                                                     <td className="px-3 py-2.5 text-center">
                                                         <span className={`inline-block px-3 py-0.5 ${style.bg} ${style.text} rounded-full text-xs font-semibold`}>
                                                             {style.label}
                                                         </span>
                                                     </td>
-                                                    <td className="px-3 py-2.5 text-center text-slate-600 font-mono text-xs">
+                                                    <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
                                                         {formatTime12(r.entryTime)}
                                                     </td>
-                                                    <td className="px-3 py-2.5 text-center text-slate-600 font-mono text-xs">
+                                                    <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
                                                         {formatTime12(r.exitTime)}
                                                     </td>
                                                     <td className="px-3 py-2.5 text-center">
@@ -296,7 +297,7 @@ const MajmoohiHazri = () => {
                                         })}
 
                                         {/* ===== SUMMARY ROW ===== */}
-                                        <tr className="bg-gradient-to-r from-slate-100 to-slate-50 border-t-2 border-emerald-200 font-bold">
+                                        <tr className="bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-700/50 border-t-2 border-emerald-200 dark:border-emerald-700 font-bold">
                                             <td className="px-3 py-3 text-center text-emerald-600" colSpan={3}>
                                                 {t('majmoohi.table.total')}: {totals.total} {t('majmoohi.table.totalDays')}
                                             </td>

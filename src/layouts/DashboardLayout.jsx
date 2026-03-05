@@ -278,9 +278,29 @@ const DashboardLayout = () => {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setMobileMenuOpen(true)}
-                        className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                        className="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg"
                     >
                         <Menu size={24} />
+                    </button>
+
+                    {/* Current Page Title — visible on mobile */}
+                    <h2 className="lg:hidden text-sm font-bold text-slate-700 dark:text-slate-200 truncate flex-1 text-center">
+                        {location.pathname === '/dashboard' && t('sidebar.dashboard')}
+                        {location.pathname === '/teachers' && t('sidebar.teachersList')}
+                        {location.pathname === '/teachers/schedule' && t('sidebar.attendanceSchedule')}
+                        {location.pathname === '/teachers/summary' && t('sidebar.attendanceSummary')}
+                        {location.pathname === '/teachers/daily' && t('sidebar.dailyAttendance')}
+                        {location.pathname === '/teachers/reports' && t('sidebar.hazriReports')}
+                        {location.pathname === '/settings' && (isRTL ? 'ترتیبات' : 'Settings')}
+                        {location.pathname === '/students' && t('sidebar.students')}
+                    </h2>
+
+                    {/* Language Toggle — mobile only */}
+                    <button
+                        onClick={handleLanguageChange}
+                        className="lg:hidden px-3 py-1.5 bg-emerald-500 text-white text-xs font-bold rounded-lg"
+                    >
+                        {isRTL ? 'EN' : 'اردو'}
                     </button>
                 </div>
 

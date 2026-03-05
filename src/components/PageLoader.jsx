@@ -11,6 +11,7 @@ import i18n from '../config/i18n';
 const PageLoader = ({ loadingText }) => {
     const { t } = useTranslation();
     const isRTL = i18n.language === 'ur';
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
 
     // Default text agar prop nahi diya
     const displayText = loadingText || t('loader.loading');
@@ -22,7 +23,7 @@ const PageLoader = ({ loadingText }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: '#ffffff',
+            backgroundColor: isDark ? '#0f172a' : '#ffffff',
             zIndex: 9999,
             display: 'flex',
             flexDirection: 'column',
@@ -37,7 +38,7 @@ const PageLoader = ({ loadingText }) => {
                 left: 0,
                 right: 0,
                 height: '4px',
-                backgroundColor: '#e0e7ef',
+                backgroundColor: isDark ? '#1e293b' : '#e0e7ef',
                 overflow: 'hidden'
             }}>
                 <motion.div
@@ -111,7 +112,7 @@ const PageLoader = ({ loadingText }) => {
                 >
                     <p style={{
                         fontSize: isRTL ? '16px' : '14px',
-                        color: '#64748b',
+                        color: isDark ? '#94a3b8' : '#64748b',
                         margin: 0,
                         fontWeight: '500'
                     }}>
@@ -140,7 +141,7 @@ const PageLoader = ({ loadingText }) => {
                 <div style={{
                     width: '250px',
                     height: '3px',
-                    backgroundColor: '#e5e7eb',
+                    backgroundColor: isDark ? '#1e293b' : '#e5e7eb',
                     borderRadius: '3px',
                     overflow: 'hidden'
                 }}>
