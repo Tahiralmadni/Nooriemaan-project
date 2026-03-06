@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'; // Urdu/English language badalne
 import { useNavigate } from 'react-router-dom'; // Navigation ke liye
 import { Helmet } from 'react-helmet-async'; // Dynamic page titles ke liye
 import { motion, AnimatePresence } from 'framer-motion'; // Smooth animation ke liye (card ka entry effect, shake effect)
-import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Type, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
-import FontSettings, { getSavedFont } from '../components/FontSettings'; // Font change karne wala component
+import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
 import toast, { Toaster } from 'react-hot-toast'; // Khubsurat notifications (popups) ke liye
 import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Auth
 import { auth } from '../config/firebase'; // Firebase config
@@ -35,7 +34,6 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false); // Kya password dikhana hai ya chhupana hai? (Aankh wala button)
     const [isLoading, setIsLoading] = useState(false); // Jab login ho raha ho to spinner ghumane ke liye
     const [shouldShake, setShouldShake] = useState(false); // Agar password ghalat ho to card hilane (shake) ke liye
-    const [showFontSettings, setShowFontSettings] = useState(false); // Font settings wala modal kholne/band karne ke liye
     const [capsLockOn, setCapsLockOn] = useState(false); // Ye check karne ke liye ke user ka Caps Lock On to nahi?
     const [rememberMe, setRememberMe] = useState(false); // "Mujhe Yaad Rakhein" checkbox ki state
     const [isOnline, setIsOnline] = useState(navigator.onLine); // Internet connection ki halat (true = online, false = offline)
@@ -43,11 +41,15 @@ const Login = () => {
     const [initialLoading, setInitialLoading] = useState(true); // Website pehli baar khulne par loader dikhaye
 
     // --- USE EFFECT (Page Load Hote Hi Kya Ho?) ---
-    // Jab page pehli baar khulega, to saved font settings apply hongi
     useEffect(() => {
-        const savedUrdu = getSavedFont('ur'); // Local storage se Urdu font uthaya
-        const savedEnglish = getSavedFont('en'); // Local storage se English font uthaya
-        // CSS variables update kiye taaki poore page ka font change ho jaye
+        // Initial loading animation - 5 seconds for better visibility
+        const savedUrdu = localStorage.getItem('font-ur')
+            ? JSON.parse(localStorage.getItem('font-ur'))
+            : { family: "'Noto Nastaliq Urdu', serif" };
+        const savedEnglish = localStorage.getItem('font-en')
+            ? JSON.parse(localStorage.getItem('font-en'))
+            : { family: "'Amiri', serif" };
+
         document.documentElement.style.setProperty('--font-urdu', savedUrdu.family);
         document.documentElement.style.setProperty('--font-english', savedEnglish.family);
 
@@ -351,6 +353,7 @@ const Login = () => {
 
     // Check karna ke abhi Urdu hai ya English? (RTL ya LTR)
     const isRTL = i18n.language === 'ur';
+    const isDark = localStorage.getItem('darkMode') === 'true';
 
     // --- MAIN UI RENDER ---
 
@@ -431,9 +434,10 @@ const Login = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)', // Dynamic Font
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    backgroundColor: isDark ? '#0f172a' : undefined
                 }}
             >
                 {/* Background Watermark Logo (Halka sa peeche) */}
@@ -472,74 +476,6 @@ const Login = () => {
                     borderRadius: '50%'
                 }} />
 
-                {/* Top Buttons (Language & Font) - Modern Hover Effects */}
-                <div style={{
-                    position: 'fixed',
-                    top: '16px',
-                    [isRTL ? 'left' : 'right']: '16px',
-                    zIndex: 20,
-                    display: 'flex',
-                    gap: '8px'
-                }}>
-                    {/* Language Switcher Button - motion se hover effect */}
-                    <motion.button
-                        onClick={toggleLanguage}
-                        whileHover={{
-                            scale: 1.05,
-                            boxShadow: '0 4px 15px rgba(4, 120, 87, 0.25)',
-                            borderColor: '#10b981'
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: '10px 16px',
-                            backgroundColor: '#ffffff',
-                            border: '1.5px solid #e2e8f0',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            color: '#475569',
-                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-                            fontWeight: '600'
-                        }}
-                    >
-                        <span style={{ fontSize: '16px' }}>{isRTL ? '🇬🇧' : '🇵🇰'}</span>
-                        <span>{isRTL ? t('login.switchToEnglish') : t('login.switchToUrdu')}</span>
-                    </motion.button>
-
-                    {/* Font Settings Button - motion se hover effect */}
-                    <motion.button
-                        onClick={() => setShowFontSettings(true)}
-                        whileHover={{
-                            scale: 1.05,
-                            boxShadow: '0 4px 15px rgba(4, 120, 87, 0.25)',
-                            borderColor: '#10b981'
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: '10px 16px',
-                            backgroundColor: '#ffffff',
-                            border: '1.5px solid #e2e8f0',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            color: '#475569',
-                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-                            fontWeight: '600'
-                        }}
-                    >
-                        <Type size={14} />
-                        <span>{t('login.font')}</span>
-                    </motion.button>
-                </div>
-
                 {/* --- LOGIN CARD CONTAINER --- */}
                 <motion.div
                     variants={cardVariants}
@@ -557,9 +493,9 @@ const Login = () => {
                         animate={shouldShake ? 'shake' : ''} // Shake animation trigger
                         variants={shakeVariants}
                         style={{
-                            backgroundColor: '#ffffff',
+                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
                             borderRadius: '16px',
-                            boxShadow: '0 10px 40px -10px rgba(4, 120, 87, 0.2), 0 0 0 1px rgba(4, 120, 87, 0.05)',
+                            boxShadow: isDark ? '0 10px 40px -10px rgba(0,0,0,0.5)' : '0 10px 40px -10px rgba(4, 120, 87, 0.2), 0 0 0 1px rgba(4, 120, 87, 0.05)',
                             padding: '36px 32px',
                             position: 'relative'
                         }}
@@ -615,7 +551,7 @@ const Login = () => {
                                 style={{
                                     fontSize: isRTL ? '22px' : '18px',
                                     fontWeight: '700',
-                                    color: '#0f172a',
+                                    color: isDark ? '#e2e8f0' : '#0f172a',
                                     marginBottom: '4px'
                                 }}
                             >
@@ -627,7 +563,7 @@ const Login = () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.3 }}
                                 style={{
-                                    color: '#64748b',
+                                    color: isDark ? '#94a3b8' : '#64748b',
                                     fontSize: '12px'
                                 }}
                             >
@@ -642,10 +578,10 @@ const Login = () => {
                             <div style={{ marginBottom: '12px' }}>
                                 <div style={{
                                     position: 'relative',
-                                    border: '1.5px solid #e2e8f0',
+                                    border: '1.5px solid ' + (isDark ? '#334155' : '#e2e8f0'),
                                     borderRadius: '10px',
                                     transition: 'all 0.2s',
-                                    backgroundColor: '#f8fafc'
+                                    backgroundColor: isDark ? '#0f172a' : '#f8fafc'
                                 }}>
                                     {/* User Icon */}
                                     <span style={{
@@ -673,7 +609,7 @@ const Login = () => {
                                             border: 'none',
                                             borderRadius: '10px',
                                             fontSize: '14px',
-                                            color: '#1e293b',
+                                            color: isDark ? '#e2e8f0' : '#1e293b',
                                             outline: 'none',
                                             boxSizing: 'border-box',
                                             textAlign: 'left',
@@ -683,7 +619,7 @@ const Login = () => {
                                         // Focus Styles (Green Border)
                                         onFocus={(e) => {
                                             e.target.parentElement.style.borderColor = '#10b981';
-                                            e.target.parentElement.style.backgroundColor = '#ffffff';
+                                            e.target.parentElement.style.backgroundColor = isDark ? '#1e293b' : '#ffffff';
                                             e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
                                         }}
                                         onBlur={(e) => {
@@ -699,10 +635,10 @@ const Login = () => {
                             <div style={{ marginBottom: '14px' }}>
                                 <div style={{
                                     position: 'relative',
-                                    border: '1.5px solid #e2e8f0',
+                                    border: '1.5px solid ' + (isDark ? '#334155' : '#e2e8f0'),
                                     borderRadius: '10px',
                                     transition: 'all 0.2s',
-                                    backgroundColor: '#f8fafc'
+                                    backgroundColor: isDark ? '#0f172a' : '#f8fafc'
                                 }}>
                                     {/* Lock Icon */}
                                     <span style={{
@@ -733,7 +669,7 @@ const Login = () => {
                                             border: 'none',
                                             borderRadius: '10px',
                                             fontSize: '14px',
-                                            color: '#1e293b',
+                                            color: isDark ? '#e2e8f0' : '#1e293b',
                                             outline: 'none',
                                             boxSizing: 'border-box',
                                             textAlign: 'left',
@@ -742,12 +678,12 @@ const Login = () => {
                                         }}
                                         onFocus={(e) => {
                                             e.target.parentElement.style.borderColor = '#10b981';
-                                            e.target.parentElement.style.backgroundColor = '#ffffff';
+                                            e.target.parentElement.style.backgroundColor = isDark ? '#1e293b' : '#ffffff';
                                             e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
                                         }}
                                         onBlur={(e) => {
-                                            e.target.parentElement.style.borderColor = '#e2e8f0';
-                                            e.target.parentElement.style.backgroundColor = '#f8fafc';
+                                            e.target.parentElement.style.borderColor = isDark ? '#334155' : '#e2e8f0';
+                                            e.target.parentElement.style.backgroundColor = isDark ? '#0f172a' : '#f8fafc';
                                             e.target.parentElement.style.boxShadow = 'none';
                                             setCapsLockOn(false);
                                         }}
@@ -814,8 +750,8 @@ const Login = () => {
                                                 gap: '6px',
                                                 marginTop: '8px',
                                                 padding: '8px 12px',
-                                                backgroundColor: '#fffbeb',
-                                                border: '1px solid #fcd34d',
+                                                backgroundColor: isDark ? '#1e293b' : '#fffbeb',
+                                                border: isDark ? '1px solid #854d0e' : '1px solid #fcd34d',
                                                 borderRadius: '8px',
                                                 color: '#d97706',
                                                 fontSize: '12px',
@@ -858,7 +794,7 @@ const Login = () => {
                                         height: '20px',
                                         borderRadius: '6px',
                                         border: rememberMe ? '2px solid #10b981' : '2px solid #cbd5e1', // Agar checked hai to green border
-                                        backgroundColor: rememberMe ? '#10b981' : '#ffffff', // Agar checked hai to green background
+                                        backgroundColor: rememberMe ? '#10b981' : (isDark ? '#334155' : '#ffffff'),
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -883,7 +819,7 @@ const Login = () => {
                                     onClick={() => setRememberMe(!rememberMe)} // Label par click bhi kaam karega
                                     style={{
                                         fontSize: '13px',
-                                        color: '#475569',
+                                        color: isDark ? '#94a3b8' : '#475569',
                                         cursor: 'pointer',
                                         userSelect: 'none', // Text select na ho
                                         fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
@@ -949,19 +885,19 @@ const Login = () => {
                                         alignItems: 'center',
                                         gap: '4px',
                                         fontSize: '11px',
-                                        color: '#64748b',
+                                        color: isDark ? '#94a3b8' : '#64748b',
                                         background: 'none',
                                         border: 'none',
                                         cursor: 'pointer'
                                     }}
                                     onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
-                                    onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
+                                    onMouseOut={(e) => e.currentTarget.style.color = isDark ? '#94a3b8' : '#64748b'}
                                 >
                                     <HelpCircle size={12} />
                                     <span>{t('login.forgotPassword')}</span>
                                 </button>
 
-                                <span style={{ color: '#e2e8f0' }}>|</span>
+                                <span style={{ color: isDark ? '#475569' : '#e2e8f0' }}>|</span>
 
                                 <button
                                     type="button"
@@ -970,13 +906,13 @@ const Login = () => {
                                         alignItems: 'center',
                                         gap: '4px',
                                         fontSize: '11px',
-                                        color: '#64748b',
+                                        color: isDark ? '#94a3b8' : '#64748b',
                                         background: 'none',
                                         border: 'none',
                                         cursor: 'pointer'
                                     }}
                                     onMouseOver={(e) => e.currentTarget.style.color = '#047857'}
-                                    onMouseOut={(e) => e.currentTarget.style.color = '#64748b'}
+                                    onMouseOut={(e) => e.currentTarget.style.color = isDark ? '#94a3b8' : '#64748b'}
                                 >
                                     <Phone size={12} />
                                     <span>{t('login.support')}</span>
@@ -1010,12 +946,8 @@ const Login = () => {
                         {isRTL ? appConfig.copyright.ur : appConfig.copyright.en}
                     </p>
                 </motion.div>
-                {/* Font Settings Modal */}
-                <FontSettings
-                    isOpen={showFontSettings}
-                    onClose={() => setShowFontSettings(false)}
-                />
-            </div>
+
+            </div >
         </>
     );
 };

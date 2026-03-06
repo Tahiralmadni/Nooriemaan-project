@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Globe, Type, Moon, Sun, Check, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Globe, Type, Moon, Sun, Check, ChevronRight, ChevronLeft, Info, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import FontSettings from '../components/FontSettings';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Settings = () => {
     const { t, i18n } = useTranslation();
@@ -33,11 +34,27 @@ const Settings = () => {
         i18n.changeLanguage(lang);
     };
 
+    // Clear cache
+    const handleClearCache = () => {
+        const keysToKeep = ['darkMode', 'i18nextLng'];
+        const allKeys = Object.keys(localStorage);
+        let cleared = 0;
+        allKeys.forEach(key => {
+            if (!keysToKeep.includes(key)) {
+                localStorage.removeItem(key);
+                cleared++;
+            }
+        });
+        toast.success(isRTL ? `${cleared} آئٹمز صاف ہو گئے` : `${cleared} cached items cleared`, { duration: 2000 });
+    };
+
     return (
         <>
             <Helmet defer={false}>
                 <title>{isRTL ? 'ترتیبات' : 'Settings'}</title>
             </Helmet>
+
+            <Toaster containerStyle={{ zIndex: 99999 }} />
 
             <div
                 style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}
@@ -47,7 +64,7 @@ const Settings = () => {
                 <div className="md:hidden mb-4">
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="flex items-center gap-2 text-slate-600 hover:text-emerald-600 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 w-full justify-center group"
+                        className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 w-full justify-center group"
                     >
                         {isRTL
                             ? <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -89,8 +106,8 @@ const Settings = () => {
                             <button
                                 onClick={() => handleLanguageChange('ur')}
                                 className={`relative p-3 rounded-xl border-2 transition-all text-center ${isRTL
-                                        ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
-                                        : 'border-gray-200 dark:border-slate-600 hover:border-emerald-200'
+                                    ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
+                                    : 'border-gray-200 dark:border-slate-600 hover:border-emerald-200'
                                     }`}
                             >
                                 {isRTL && <Check size={14} className="absolute top-2 right-2 text-emerald-500" />}
@@ -99,8 +116,8 @@ const Settings = () => {
                             <button
                                 onClick={() => handleLanguageChange('en')}
                                 className={`relative p-3 rounded-xl border-2 transition-all text-center ${!isRTL
-                                        ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
-                                        : 'border-gray-200 dark:border-slate-600 hover:border-emerald-200'
+                                    ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
+                                    : 'border-gray-200 dark:border-slate-600 hover:border-emerald-200'
                                     }`}
                             >
                                 {!isRTL && <Check size={14} className="absolute top-2 right-2 text-emerald-500" />}
@@ -164,6 +181,61 @@ const Settings = () => {
                         </div>
                         {isRTL ? <ChevronLeft size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                     </motion.button>
+
+                    {/* 4. Clear Cache */}
+                    <motion.button
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        onClick={handleClearCache}
+                        className="w-full bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow text-left group"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-red-50 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                                <Trash2 size={18} className="text-red-500" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                    {isRTL ? 'کیشے صاف کریں' : 'Clear Cache'}
+                                </p>
+                                <p className="text-[11px] text-gray-400">
+                                    {isRTL ? 'محفوظ تصاویر اور ڈیٹا حذف کریں' : 'Remove saved photos & local data'}
+                                </p>
+                            </div>
+                        </div>
+                        {isRTL ? <ChevronLeft size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
+                    </motion.button>
+
+                    {/* 5. App Info */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm p-4"
+                    >
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                                <Info size={18} className="text-emerald-500" />
+                            </div>
+                            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {isRTL ? 'ایپ کی معلومات' : 'App Info'}
+                            </span>
+                        </div>
+                        <div className="space-y-2 text-xs">
+                            <div className="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-slate-700">
+                                <span className="text-gray-500 dark:text-gray-400">{isRTL ? 'ورژن' : 'Version'}</span>
+                                <span className="font-bold text-slate-700 dark:text-slate-200">1.0.0</span>
+                            </div>
+                            <div className="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-slate-700">
+                                <span className="text-gray-500 dark:text-gray-400">{isRTL ? 'ڈویلپر' : 'Developer'}</span>
+                                <span className="font-bold text-slate-700 dark:text-slate-200">Hanzalah Tahir</span>
+                            </div>
+                            <div className="flex justify-between items-center py-1.5">
+                                <span className="text-gray-500 dark:text-gray-400">{isRTL ? 'فریم ورک' : 'Framework'}</span>
+                                <span className="font-bold text-slate-700 dark:text-slate-200">React + Vite</span>
+                            </div>
+                        </div>
+                    </motion.div>
 
                 </div>
             </div>

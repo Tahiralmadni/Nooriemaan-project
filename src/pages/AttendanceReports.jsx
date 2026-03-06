@@ -403,7 +403,7 @@ const AttendanceReports = () => {
                                         transition={{ delay: 0.2, duration: 0.4 }}
                                         className="bg-white dark:bg-slate-800 border-x border-gray-200 dark:border-slate-700 px-4 py-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
                                     >
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 flex-wrap">
                                             <button
                                                 onClick={handleExportExcel}
                                                 className="px-3 py-1.5 bg-emerald-500 text-white text-xs font-semibold rounded hover:bg-emerald-600 transition-colors flex items-center gap-1"
@@ -413,15 +413,27 @@ const AttendanceReports = () => {
                                             </button>
                                             <button
                                                 onClick={handleExportPDF}
-                                                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded hover:bg-gray-200 transition-colors flex items-center gap-1 border border-gray-200"
+                                                className="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-200 text-xs font-semibold rounded hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-1 border border-gray-200 dark:border-slate-600"
                                             >
                                                 <FileText size={14} />
                                                 PDF / Print
                                             </button>
+                                            <button
+                                                onClick={() => {
+                                                    const headers = [t('reports.tableHeaders.serial'), t('reports.tableHeaders.date'), t('reports.tableHeaders.day'), t('reports.tableHeaders.status'), t('reports.tableHeaders.lateIn'), t('reports.tableHeaders.earlyOut'), t('reports.tableHeaders.deduction'), t('reports.tableHeaders.remarks')];
+                                                    const rows = monthDays.map(r => [r.serial, r.date, r.day, r.status, r.startLessMin > 0 ? r.startLessMin : '-', r.endLessMin > 0 ? r.endLessMin : '-', r.deduction > 0 ? r.deduction : '-', r.remarks || '-'].join('\t'));
+                                                    const text = headers.join('\t') + '\n' + rows.join('\n');
+                                                    navigator.clipboard.writeText(text);
+                                                    import('react-hot-toast').then(m => m.default.success(isRTL ? 'کاپی ہو گیا' : 'Copied!', { duration: 1500 }));
+                                                }}
+                                                className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1 border border-blue-200 dark:border-blue-800"
+                                            >
+                                                {t('reports.export.copy')}
+                                            </button>
                                         </div>
                                         <div className="flex items-center gap-2 text-xs text-gray-500">
                                             <span>{t('reports.showEntries')}:</span>
-                                            <select className="bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-emerald-300 outline-none">
+                                            <select className="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-slate-200 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-emerald-300 outline-none">
                                                 <option>50</option>
                                                 <option>25</option>
                                                 <option>10</option>

@@ -11,7 +11,7 @@ import i18n from '../config/i18n';
 const PageLoader = ({ loadingText }) => {
     const { t } = useTranslation();
     const isRTL = i18n.language === 'ur';
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const isDark = localStorage.getItem('darkMode') === 'true';
 
     // Default text agar prop nahi diya
     const displayText = loadingText || t('loader.loading');
