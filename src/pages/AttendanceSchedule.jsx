@@ -263,6 +263,28 @@ const AttendanceSchedule = () => {
             country: 'Pakistan',
             joinDate: 'August 2025',
             setupDate: '2026-03-05'
+        },
+        6: {
+            id: 6,
+            nameUr: 'مدثر رضا',
+            nameEn: 'Mudassir Raza',
+            roleUr: 'عطیہ — موسیٰ لائن',
+            roleEn: 'Aattiya — Musa line',
+            entryTime: '11:15 AM',
+            exitTime: '1:15 PM',
+            entryHour: 11.25,
+            exitHour: 13.25,
+            totalHours: 2,
+            salary: 7500,
+            perDaySalary: Math.round(7500 / 26),
+            perHourSalary: Math.round(7500 / 26 / 2),
+            perMinuteSalary: 7500 / 26 / 2 / 60,
+            phone: '03243499859',
+            email: 'mudassirrazachishti@gmail.com',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'August 2025',
+            setupDate: '2025-08-01'
         }
     };
 
@@ -516,16 +538,19 @@ const AttendanceSchedule = () => {
             const [entryHours, entryMins] = manualEntryTime.split(':').map(Number);
             const [exitHours, exitMins] = manualExitTime.split(':').map(Number);
 
-            // Check entry time (staff.entryHour to staff.exitHour)
-            if (entryHours < staff.entryHour || entryHours > staff.exitHour || (entryHours === staff.exitHour && entryMins > 0)) {
-                showErrorToast(t('hazri.validation.entryTimeInvalid'));
+            // Check entry time (Math.floor(staff.entryHour) to Math.ceil(staff.exitHour))
+            const minEntryHour = Math.floor(staff.entryHour);
+            const maxExitHour = Math.ceil(staff.exitHour);
+
+            if (entryHours < minEntryHour || entryHours > maxExitHour || (entryHours === maxExitHour && entryMins > 0)) {
+                showErrorToast(t('hazri.validation.entryTimeInvalid') + ` (Allowed: ${minEntryHour}:00 to ${maxExitHour}:00)`);
                 setIsSaving(false);
                 return;
             }
 
-            // Check exit time (staff.entryHour to staff.exitHour)
-            if (exitHours < staff.entryHour || exitHours > staff.exitHour || (exitHours === staff.exitHour && exitMins > 0)) {
-                showErrorToast(t('hazri.validation.exitTimeInvalid'));
+            // Check exit time
+            if (exitHours < minEntryHour || exitHours > maxExitHour || (exitHours === maxExitHour && exitMins > 0)) {
+                showErrorToast(t('hazri.validation.exitTimeInvalid') + ` (Allowed: ${minEntryHour}:00 to ${maxExitHour}:00)`);
                 setIsSaving(false);
                 return;
             }

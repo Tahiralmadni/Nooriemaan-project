@@ -20,7 +20,8 @@ const StaffProfile = () => {
         2: { phone: '03138657703', address: 'Karachi, Pakistan', role: 'Madrasa Nazim Hussainabad', roleUr: 'مدرسہ ناظم حسین آباد', joinDate: 'June 2025', salary: '13,000', timing: '8:00 AM - 4:00 PM', email: '-' },
         3: { phone: '03152643153', address: 'Karachi, Pakistan', role: 'Mudarris - Bilal Masjid', roleUr: 'مدرس - بلال مسجد', joinDate: 'October 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'muneebattari527@gmail.com' },
         4: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Subha', roleUr: 'مدرس — نیا آباد صبح', joinDate: 'August 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'mudassirrazachishti@gmail.com' },
-        5: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Dopher', roleUr: 'مدرس — نیا آباد دوپہر', joinDate: 'August 2025', salary: '6,000', timing: '2:00 PM - 4:00 PM', email: 'mudassirrazachishti@gmail.com' }
+        5: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Dopher', roleUr: 'مدرس — نیا آباد دوپہر', joinDate: 'August 2025', salary: '6,000', timing: '2:00 PM - 4:00 PM', email: 'mudassirrazachishti@gmail.com' },
+        6: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Aattiya — Musa line', roleUr: 'عطیہ — موسیٰ لائن', joinDate: 'August 2025', salary: '7,500', timing: '11:15 AM - 1:15 PM', email: 'mudassirrazachishti@gmail.com' }
     };
 
     const staff = staffDetails[id] || staffDetails[1];

@@ -17,7 +17,8 @@ const MajmoohiHazri = () => {
         { id: 2, nameKey: 'staff.2' },
         { id: 3, nameKey: 'staff.3' },
         { id: 4, nameKey: 'staff.4' },
-        { id: 5, nameKey: 'staff.5' }
+        { id: 5, nameKey: 'staff.5' },
+        { id: 6, nameKey: 'staff.6' }
     ];
 
     const [selectedStaff, setSelectedStaff] = useState(1);
@@ -96,18 +97,69 @@ const MajmoohiHazri = () => {
             // Sort by date (oldest first)
             data.sort((a, b) => a.dateObj - b.dateObj);
 
-            // Filter duplicates
-            const unique = [];
+            // Filter duplicates from DB
+            const dbRecords = [];
             const seen = new Set();
             for (const r of data) {
                 if (!seen.has(r.dateStr)) {
                     seen.add(r.dateStr);
-                    unique.push(r);
+                    dbRecords.push(r);
                 }
             }
 
-            setRecords(unique);
-            if (unique.length === 0) {
+            // Fill missing dates
+            const finalRecords = [];
+            const now = new Date();
+            now.setHours(23, 59, 59, 999); // End of today for "isPast" check
+
+            // Loop from start date to end date
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                // Formatting date string
+                const dStr = d.toLocaleDateString('en-GB'); // DD/MM/YYYY
+                const dayOfWeek = d.getDay();
+
+                // Find existing record
+                const existing = dbRecords.find(r => r.dateStr === dStr);
+
+                if (existing) {
+                    finalRecords.push(existing);
+                } else if (d <= now && dayOfWeek !== 0) { // If past date and not Sunday
+                    // Inject an empty ABSENT record
+                    finalRecords.push({
+                        id: 'auto-absent-' + d.getTime(),
+                        staffId: selectedStaff,
+                        dateObj: new Date(d),
+                        dateStr: dStr,
+                        dayName: dayNames[dayOfWeek],
+                        status: 'absent',
+                        isLate: false,
+                        lateMinutes: 0,
+                        isEarlyLeave: false,
+                        earlyMinutes: 0,
+                        deduction: 0,
+                        reason: 'Auto Marked (No Record)'
+                    });
+                } else if (d <= now && dayOfWeek === 0) { // If past date and is Sunday
+                    // Inject an empty HOLIDAY record
+                    finalRecords.push({
+                        id: 'auto-holiday-' + d.getTime(),
+                        staffId: selectedStaff,
+                        dateObj: new Date(d),
+                        dateStr: dStr,
+                        dayName: dayNames[dayOfWeek],
+                        status: 'holiday',
+                        isLate: false,
+                        lateMinutes: 0,
+                        isEarlyLeave: false,
+                        earlyMinutes: 0,
+                        deduction: 0,
+                        reason: 'Sunday'
+                    });
+                }
+            }
+
+            setRecords(finalRecords);
+            if (finalRecords.length === 0) {
                 setLoadError(isRTL ? 'اس مدت میں کوئی ریکارڈ نہیں ملا' : 'No records found for this period');
             }
         } catch (error) {

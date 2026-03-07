@@ -42,7 +42,7 @@ const Teachers = () => {
     };
 
     // Setup complete staff IDs — sirf inke eye icon green honge
-    const setupStaffIds = [1, 2, 3, 4, 5];
+    const setupStaffIds = [1, 2, 3, 4, 5, 6];
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');

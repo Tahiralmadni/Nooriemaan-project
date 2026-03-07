@@ -76,7 +76,8 @@ const AttendanceReports = () => {
         { id: 2, name: t('staff.2') },
         { id: 3, name: t('staff.3') },
         { id: 4, name: t('staff.4') },
-        { id: 5, name: t('staff.5') }
+        { id: 5, name: t('staff.5') },
+        { id: 6, name: t('staff.6') }
     ];
 
     // Tabs configuration
@@ -160,10 +161,12 @@ const AttendanceReports = () => {
                 if (record.isEarlyLeave) earlyMins += (record.earlyMinutes || 0);
                 if (record.deduction) deduction += (record.deduction || 0);
 
-            } else if (isPast) {
-                // If past date and no record found -> Absent (Subject to policy, but safe assumption for visual gap)
-                statusText = '-'; // Or 'Not Marked'
-                // Don't count as absent yet to avoid skewing data if just not marked
+            } else if (isPast && !isSunday) {
+                // If past date and no record found -> Mark it as Absent
+                statusText = isRTL ? 'غیر حاضر' : 'Absent';
+                statusClass = 'text-red-600 bg-red-50';
+                statusRaw = 'absent';
+                absent++; // Count it as absent
             }
 
             rows.push({
