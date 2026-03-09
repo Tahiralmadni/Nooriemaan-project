@@ -285,6 +285,28 @@ const AttendanceSchedule = () => {
             country: 'Pakistan',
             joinDate: 'August 2025',
             setupDate: '2025-08-01'
+        },
+        7: {
+            id: 7,
+            nameUr: 'عبید رضا',
+            nameEn: 'Ubaid Raza',
+            roleUr: 'مدرس — نیا آباد',
+            roleEn: 'Mudaris (Nayabad)',
+            entryTime: '2:00 PM',
+            exitTime: '4:00 PM',
+            entryHour: 14,
+            exitHour: 16,
+            totalHours: 2,
+            salary: 6500,
+            perDaySalary: Math.round(6500 / 26),
+            perHourSalary: Math.round(6500 / 26 / 2),
+            perMinuteSalary: 6500 / 26 / 2 / 60,
+            phone: '03269676389',
+            email: 'ubaidattari0326@gmail.com',
+            city: 'Karachi',
+            country: 'Pakistan',
+            joinDate: 'January 2023',
+            setupDate: '2023-01-01'
         }
     };
 
