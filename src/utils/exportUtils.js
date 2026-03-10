@@ -213,7 +213,6 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
             top: { style: 'medium', color: { argb: 'FF10B981' } },
             bottom: { style: 'thin', color: { argb: 'FFD1FAE5' } }
         };
-
         const pairs = [
             ['Total Days / کل دن', summaryStats.totalDays || '-'],
             ['Present / حاضری', summaryStats.present || 0],
@@ -221,7 +220,6 @@ export const exportToExcel = async (data, fileName, title = 'Report', isRTL = fa
             ['Leave / رخصت', summaryStats.leave || 0],
             ['Holidays / تعطیلات', summaryStats.holiday || 0],
             ['Late Minutes / تاخیر (منٹ)', summaryStats.lateMins || 0],
-            ['Deduction / کٹوتی', `Rs. ${summaryStats.deduction || 0}`],
         ];
 
         pairs.forEach(([label, value], idx) => {

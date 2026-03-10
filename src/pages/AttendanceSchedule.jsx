@@ -9,9 +9,181 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import PageLoader from '../components/PageLoader';
 
+// Helper: Convert 24-hour time to 12-hour AM/PM format
+export const formatTime12Hour = (time24) => {
+    if (!time24) return '-';
+    const [hours, minutes] = time24.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12; // Convert 0 to 12 for midnight, 13-23 to 1-11
+    return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
+};
+
+// ===== STAFF DATA — Exported so reports can access setup dates =====
+export const staffData = {
+    1: {
+        id: 1,
+        nameUr: 'محمد اکرم عطاری',
+        nameEn: 'Muhammad Akram Attari',
+        roleUr: 'نائب ناظم',
+        roleEn: 'Naib Nazim',
+        entryTime: '8:00 AM',
+        exitTime: '4:00 PM',
+        entryHour: 8,
+        exitHour: 16,
+        totalHours: 8,
+        salary: 26620,
+        perDaySalary: Math.round(26620 / 26),
+        perHourSalary: Math.round(26620 / 26 / 8),
+        perMinuteSalary: 26620 / 26 / 8 / 60,
+        phone: '03128593301',
+        email: 'ishaqakram67@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'October 2020',
+        setupDate: '2026-02-01' // For Akram Attari
+    },
+    2: {
+        id: 2,
+        nameUr: 'قاری سید عمیر عطاری',
+        nameEn: 'Qari Syed Umair Attari',
+        roleUr: 'مدرسہ ناظم حسین آباد',
+        roleEn: 'Madrasa Nazim Hussainabad',
+        entryTime: '8:00 AM',
+        exitTime: '4:00 PM',
+        entryHour: 8,
+        exitHour: 16,
+        totalHours: 8,
+        salary: 13000,
+        perDaySalary: Math.round(13000 / 26),
+        perHourSalary: Math.round(13000 / 26 / 8),
+        perMinuteSalary: 13000 / 26 / 8 / 60,
+        phone: '03138657703',
+        email: '-',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'June 2025',
+        setupDate: '2026-02-25'
+    },
+    3: {
+        id: 3,
+        nameUr: 'محمد منیب صابر',
+        nameEn: 'Muhammad Muneeb Sabir',
+        roleUr: 'مدرس - بلال مسجد',
+        roleEn: 'Mudarris - Bilal Masjid',
+        entryTime: '8:00 AM',
+        exitTime: '11:00 AM',
+        entryHour: 8,
+        exitHour: 11,
+        totalHours: 3,
+        salary: 7500,
+        perDaySalary: Math.round(7500 / 26),
+        perHourSalary: Math.round(7500 / 26 / 3),
+        perMinuteSalary: 7500 / 26 / 3 / 60,
+        phone: '03152643153',
+        email: 'muneebattari527@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'October 2025',
+        setupDate: '2026-02-26'
+    },
+    4: {
+        id: 4,
+        nameUr: 'مدثر رضا',
+        nameEn: 'Mudassir Raza',
+        roleUr: 'مدرس — نیا آباد صبح',
+        roleEn: 'Mudaris — Nayabad Subha',
+        entryTime: '8:00 AM',
+        exitTime: '11:00 AM',
+        entryHour: 8,
+        exitHour: 11,
+        totalHours: 3,
+        salary: 7500,
+        perDaySalary: Math.round(7500 / 26),
+        perHourSalary: Math.round(7500 / 26 / 3),
+        perMinuteSalary: 7500 / 26 / 3 / 60,
+        phone: '03243499859',
+        email: 'mudassirrazachishti@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'August 2025',
+        setupDate: '2026-03-01'
+    },
+    5: {
+        id: 5,
+        nameUr: 'مدثر رضا',
+        nameEn: 'Mudassir Raza',
+        roleUr: 'مدرس — نیا آباد دوپہر',
+        roleEn: 'Mudaris — Nayabad Dopher',
+        entryTime: '2:00 PM',
+        exitTime: '4:00 PM',
+        entryHour: 14,
+        exitHour: 16,
+        totalHours: 2,
+        salary: 6000,
+        perDaySalary: Math.round(6000 / 26),
+        perHourSalary: Math.round(6000 / 26 / 2),
+        perMinuteSalary: 6000 / 26 / 2 / 60,
+        phone: '03243499859',
+        email: 'mudassirrazachishti@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'August 2025',
+        setupDate: '2026-03-05'
+    },
+    6: {
+        id: 6,
+        nameUr: 'مدثر رضا',
+        nameEn: 'Mudassir Raza',
+        roleUr: 'عطیہ — موسیٰ لائن',
+        roleEn: 'Aattiya — Musa line',
+        entryTime: '11:15 AM',
+        exitTime: '1:15 PM',
+        entryHour: 11.25,
+        exitHour: 13.25,
+        totalHours: 2,
+        salary: 7500,
+        perDaySalary: Math.round(7500 / 26),
+        perHourSalary: Math.round(7500 / 26 / 2),
+        perMinuteSalary: 7500 / 26 / 2 / 60,
+        phone: '03243499859',
+        email: 'mudassirrazachishti@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'August 2025',
+        setupDate: '2026-03-01'
+    },
+    7: {
+        id: 7,
+        nameUr: 'عبید رضا',
+        nameEn: 'Ubaid Raza',
+        roleUr: 'مدرس — نیا آباد',
+        roleEn: 'Mudaris (Nayabad)',
+        entryTime: '2:00 PM',
+        exitTime: '4:00 PM',
+        entryHour: 14,
+        exitHour: 16,
+        totalHours: 2,
+        salary: 6500,
+        perDaySalary: Math.round(6500 / 26),
+        perHourSalary: Math.round(6500 / 26 / 2),
+        perMinuteSalary: 6500 / 26 / 2 / 60,
+        phone: '03269676389',
+        email: 'ubaidattari0326@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'January 2023',
+        setupDate: '2026-03-09'
+    }
+};
+
 const AttendanceSchedule = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
+
+    // Current date/time
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('en-GB');
+    const currentTime = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
     // Kamyabi (Success) Toast - Professional Green Style
     const showSuccessToast = (message) => {
@@ -136,179 +308,6 @@ const AttendanceSchedule = () => {
 
     // Top-level Tab State (عملہ / حاضری / جدید جدول)
     const [topActiveTab, setTopActiveTab] = useState('attendance');
-
-
-    // Helper: Convert 24-hour time to 12-hour AM/PM format
-    const formatTime12Hour = (time24) => {
-        if (!time24) return '-';
-        const [hours, minutes] = time24.split(':').map(Number);
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const hours12 = hours % 12 || 12; // Convert 0 to 12 for midnight, 13-23 to 1-11
-        return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
-    };
-
-    // Current date/time
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('en-GB');
-    const currentTime = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-    // ===== STAFF DATA — Yahan naye staff add karo =====
-    const staffData = {
-        1: {
-            id: 1,
-            nameUr: 'محمد اکرم عطاری',
-            nameEn: 'Muhammad Akram Attari',
-            roleUr: 'نائب ناظم',
-            roleEn: 'Naib Nazim',
-            entryTime: '8:00 AM',
-            exitTime: '4:00 PM',
-            entryHour: 8,
-            exitHour: 16,
-            totalHours: 8,
-            salary: 26620,
-            perDaySalary: Math.round(26620 / 26),
-            perHourSalary: Math.round(26620 / 26 / 8),
-            perMinuteSalary: 26620 / 26 / 8 / 60,
-            phone: '03128593301',
-            email: 'ishaqakram67@gmail.com',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'October 2020',
-            setupDate: '2025-01-01' // For Akram Attari, from January
-        },
-        2: {
-            id: 2,
-            nameUr: 'قاری سید عمیر عطاری',
-            nameEn: 'Qari Syed Umair Attari',
-            roleUr: 'مدرسہ ناظم حسین آباد',
-            roleEn: 'Madrasa Nazim Hussainabad',
-            entryTime: '8:00 AM',
-            exitTime: '4:00 PM',
-            entryHour: 8,
-            exitHour: 16,
-            totalHours: 8,
-            salary: 13000,
-            perDaySalary: Math.round(13000 / 26),
-            perHourSalary: Math.round(13000 / 26 / 8),
-            perMinuteSalary: 13000 / 26 / 8 / 60,
-            phone: '03138657703',
-            email: '-',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'June 2025',
-            setupDate: '2026-02-25'
-        },
-        3: {
-            id: 3,
-            nameUr: 'محمد منیب صابر',
-            nameEn: 'Muhammad Muneeb Sabir',
-            roleUr: 'مدرس - بلال مسجد',
-            roleEn: 'Mudarris - Bilal Masjid',
-            entryTime: '8:00 AM',
-            exitTime: '11:00 AM',
-            entryHour: 8,
-            exitHour: 11,
-            totalHours: 3,
-            salary: 7500,
-            perDaySalary: Math.round(7500 / 26),
-            perHourSalary: Math.round(7500 / 26 / 3),
-            perMinuteSalary: 7500 / 26 / 3 / 60,
-            phone: '03152643153',
-            email: 'muneebattari527@gmail.com',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'October 2025',
-            setupDate: '2026-02-26'
-        },
-        4: {
-            id: 4,
-            nameUr: 'مدثر رضا',
-            nameEn: 'Mudassir Raza',
-            roleUr: 'مدرس — نیا آباد صبح',
-            roleEn: 'Mudaris — Nayabad Subha',
-            entryTime: '8:00 AM',
-            exitTime: '11:00 AM',
-            entryHour: 8,
-            exitHour: 11,
-            totalHours: 3,
-            salary: 7500,
-            perDaySalary: Math.round(7500 / 26),
-            perHourSalary: Math.round(7500 / 26 / 3),
-            perMinuteSalary: 7500 / 26 / 3 / 60,
-            phone: '03243499859',
-            email: 'mudassirrazachishti@gmail.com',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'August 2025',
-            setupDate: '2025-08-01'
-        },
-        5: {
-            id: 5,
-            nameUr: 'مدثر رضا',
-            nameEn: 'Mudassir Raza',
-            roleUr: 'مدرس — نیا آباد دوپہر',
-            roleEn: 'Mudaris — Nayabad Dopher',
-            entryTime: '2:00 PM',
-            exitTime: '4:00 PM',
-            entryHour: 14,
-            exitHour: 16,
-            totalHours: 2,
-            salary: 6000,
-            perDaySalary: Math.round(6000 / 26),
-            perHourSalary: Math.round(6000 / 26 / 2),
-            perMinuteSalary: 6000 / 26 / 2 / 60,
-            phone: '03243499859',
-            email: 'mudassirrazachishti@gmail.com',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'August 2025',
-            setupDate: '2026-03-05'
-        },
-        6: {
-            id: 6,
-            nameUr: 'مدثر رضا',
-            nameEn: 'Mudassir Raza',
-            roleUr: 'عطیہ — موسیٰ لائن',
-            roleEn: 'Aattiya — Musa line',
-            entryTime: '11:15 AM',
-            exitTime: '1:15 PM',
-            entryHour: 11.25,
-            exitHour: 13.25,
-            totalHours: 2,
-            salary: 7500,
-            perDaySalary: Math.round(7500 / 26),
-            perHourSalary: Math.round(7500 / 26 / 2),
-            perMinuteSalary: 7500 / 26 / 2 / 60,
-            phone: '03243499859',
-            email: 'mudassirrazachishti@gmail.com',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'August 2025',
-            setupDate: '2025-08-01'
-        },
-        7: {
-            id: 7,
-            nameUr: 'عبید رضا',
-            nameEn: 'Ubaid Raza',
-            roleUr: 'مدرس — نیا آباد',
-            roleEn: 'Mudaris (Nayabad)',
-            entryTime: '2:00 PM',
-            exitTime: '4:00 PM',
-            entryHour: 14,
-            exitHour: 16,
-            totalHours: 2,
-            salary: 6500,
-            perDaySalary: Math.round(6500 / 26),
-            perHourSalary: Math.round(6500 / 26 / 2),
-            perMinuteSalary: 6500 / 26 / 2 / 60,
-            phone: '03269676389',
-            email: 'ubaidattari0326@gmail.com',
-            city: 'Karachi',
-            country: 'Pakistan',
-            joinDate: 'January 2023',
-            setupDate: '2023-01-01'
-        }
-    };
 
     // Selected staff — dropdown se change hoga
     const [selectedStaffId, setSelectedStaffId] = useState(1);
@@ -479,31 +478,28 @@ const AttendanceSchedule = () => {
         }
     }, [activeTab]);
 
-    // Check for missing previous days attendance
+    // Check for missing previous days attendance in the current month
     const checkMissingDays = async () => {
         const selectedDateObj = new Date(selectedDate);
+        selectedDateObj.setHours(0, 0, 0, 0);
         const missingDays = [];
 
         // Skip if before staff setup date
-        const setupDateStr = staff.setupDate || '2020-01-01'; // Default purane staff ke liye
+        const setupDateStr = staff.setupDate || '2020-01-01'; // Default
         const setupDateObj = new Date(setupDateStr);
         setupDateObj.setHours(0, 0, 0, 0);
 
-        // Check previous days in current month
-        for (let i = 1; i <= 7; i++) {
-            const checkDate = new Date(selectedDateObj);
-            checkDate.setDate(selectedDateObj.getDate() - i);
+        // Define the start date (either 1st of the month or setupDate, whichever is later)
+        const startOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), 1);
+        const loopStart = new Date(Math.max(startOfMonth.getTime(), setupDateObj.getTime()));
+
+        // Check every day from loopStart up to (but not including) selectedDateObj
+        for (let d = new Date(loopStart); d < selectedDateObj; d.setDate(d.getDate() + 1)) {
+            const checkDate = new Date(d);
             checkDate.setHours(0, 0, 0, 0);
 
-            // 1. Skip if before month start
-            if (checkDate.getMonth() !== selectedDateObj.getMonth()) break;
-
-            // 2. Skip if before staff setup date (naye staff ki hazri pichhle dino ki nahi mangega)
-            if (checkDate < setupDateObj) break;
-
-            // Query Firebase for this date (Including Sundays now)
+            // Query Firebase for this date
             const startOfDay = new Date(checkDate);
-            startOfDay.setHours(0, 0, 0, 0);
             const endOfDay = new Date(checkDate);
             endOfDay.setHours(23, 59, 59, 999);
 
@@ -524,34 +520,32 @@ const AttendanceSchedule = () => {
         return missingDays;
     };
 
-    // Save attendance (NO LOCK for Admin)
+    // Save attendance
     const handleSave = async () => {
         if (!status) return;
 
-        // Check for missing previous days (ALWAYS check)
-        setIsSaving(true);
-        try {
-            const missingDays = await checkMissingDays();
+        // Check for missing previous days ONLY if trying to mark Present today
+        if (status === 'present') {
+            setIsSaving(true);
+            try {
+                const missingDays = await checkMissingDays();
 
-            if (missingDays.length > 0) {
+                if (missingDays.length > 0) {
+                    setIsSaving(false);
+                    const datesList = missingDays.join(' ، ');
+                    showErrorToast(
+                        isRTL
+                            ? `پہلے سابقہ دنوں کی حاضری لگائیں: ${datesList}`
+                            : `Please mark attendance for previous day(s): ${datesList}`
+                    );
+                    return;
+                }
+            } catch (error) {
+                console.error("Validation Error:", error);
                 setIsSaving(false);
-                const datesList = missingDays.join(' ، ');
-                showErrorToast(
-                    isRTL
-                        ? `تاریخ حد سے تجاوز ہے۔ برائے کرم سابقہ دنوں کی حاضری لگائیں: ${datesList}`
-                        : `Please mark attendance for ${missingDays.length} previous day(s): ${datesList}`
-                );
+                showErrorToast("Validation Failed: " + error.message);
                 return;
             }
-        } catch (error) {
-            console.error("Validation Error:", error);
-            setIsSaving(false);
-            if (error.code === 'failed-precondition') {
-                showErrorToast("System Error: Missing Index. Please check the Console.");
-            } else {
-                showErrorToast("Validation Failed: " + error.message);
-            }
-            return;
         }
 
         // Validate time is within working hours for present status

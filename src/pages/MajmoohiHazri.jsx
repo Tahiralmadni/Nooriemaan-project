@@ -6,6 +6,7 @@ import { Calendar, Users, Loader2, Search } from 'lucide-react';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import toast, { Toaster } from 'react-hot-toast';
+import { staffData } from './AttendanceSchedule';
 
 const MajmoohiHazri = () => {
     const { t, i18n } = useTranslation();
@@ -113,16 +114,49 @@ const MajmoohiHazri = () => {
             const now = new Date();
             now.setHours(23, 59, 59, 999); // End of today for "isPast" check
 
+            const staff = staffData[selectedStaff];
+            let effectiveDate = new Date('2000-01-01'); // Default fallback
+
+            if (staff && staff.setupDate) {
+                const [sYear, sMonth, sDay] = staff.setupDate.split('-').map(Number);
+                // If setupDate day is <= 10, consider the first of that month as effective.
+                // Otherwise, consider the setupDate itself.
+                if (sDay <= 10) {
+                    effectiveDate = new Date(sYear, sMonth - 1, 1);
+                } else {
+                    effectiveDate = new Date(sYear, sMonth - 1, sDay);
+                }
+                effectiveDate.setHours(0, 0, 0, 0); // Normalize to start of day
+            }
+
             // Loop from start date to end date
             for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
                 // Formatting date string
                 const dStr = d.toLocaleDateString('en-GB'); // DD/MM/YYYY
                 const dayOfWeek = d.getDay();
 
+                const isBeforeJoin = d < effectiveDate;
+
                 // Find existing record
                 const existing = dbRecords.find(r => r.dateStr === dStr);
 
-                if (existing) {
+                if (isBeforeJoin && d <= now) {
+                    // Inject a NOT JOINED record (empty placeholder), overriding any anomalous DB records
+                    finalRecords.push({
+                        id: 'auto-notjoined-' + d.getTime(),
+                        staffId: selectedStaff,
+                        dateObj: new Date(d),
+                        dateStr: dStr,
+                        dayName: dayNames[dayOfWeek],
+                        status: 'not_joined',
+                        isLate: false,
+                        lateMinutes: 0,
+                        isEarlyLeave: false,
+                        earlyMinutes: 0,
+                        deduction: 0,
+                        reason: '-'
+                    });
+                } else if (existing) {
                     finalRecords.push(existing);
                 } else if (d <= now && dayOfWeek !== 0) { // If past date and not Sunday
                     // Inject an empty ABSENT record

@@ -10,6 +10,7 @@ import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import AttendanceSummaryChart from '../components/AttendanceSummaryChart';
 import { exportToExcel, exportToPDF } from '../utils/exportUtils';
+import { staffData } from './AttendanceSchedule';
 
 const AttendanceReports = () => {
     const { t, i18n } = useTranslation();
@@ -123,12 +124,34 @@ const AttendanceReports = () => {
 
             const record = attendanceData[dateStr];
 
+            // Calculate Effective Joining Date for 'Not Joined' logic
+            let isBeforeJoin = false;
+            const staff = staffData[selectedStaff];
+            if (staff && staff.setupDate) {
+                const [sYear, sMonth, sDay] = staff.setupDate.split('-').map(Number);
+                let effectiveDate;
+                if (sDay <= 10) {
+                    effectiveDate = new Date(sYear, sMonth - 1, 1);
+                } else {
+                    effectiveDate = new Date(sYear, sMonth - 1, sDay);
+                }
+                effectiveDate.setHours(0, 0, 0, 0);
+                if (date < effectiveDate) {
+                    isBeforeJoin = true;
+                }
+            }
+
             // Determine status text/color from real record or default logic
             let statusText = '-';
             let statusClass = 'text-gray-500';
             let statusRaw = 'unknown';
 
-            if (isSunday) {
+            if (isBeforeJoin && isPast) {
+                // Before effective setup date -> Not Joined (-)
+                statusText = '-';
+                statusClass = 'text-gray-400 bg-gray-50/50';
+                statusRaw = 'not_joined';
+            } else if (isSunday) {
                 statusText = isRTL ? 'تعطیل: اتوار' : 'Holiday: Sunday';
                 statusClass = 'text-blue-600 bg-blue-50';
                 statusRaw = 'holiday';
@@ -160,8 +183,6 @@ const AttendanceReports = () => {
                 // Accumulate numeric stats
                 if (record.isLate) lateMins += (record.lateMinutes || 0);
                 if (record.isEarlyLeave) earlyMins += (record.earlyMinutes || 0);
-                if (record.deduction) deduction += (record.deduction || 0);
-
             } else if (isPast && !isSunday) {
                 // If past date and no record found -> Mark it as Absent
                 statusText = isRTL ? 'غیر حاضر' : 'Absent';
@@ -232,7 +253,6 @@ const AttendanceReports = () => {
             [t('reports.tableHeaders.status')]: row.status,
             [t('reports.tableHeaders.lateIn')]: row.startLessMin > 0 ? row.startLessMin : '-',
             [t('reports.tableHeaders.earlyOut')]: row.endLessMin > 0 ? row.endLessMin : '-',
-            [t('reports.tableHeaders.deduction')]: row.deduction > 0 ? row.deduction : '-',
             [t('reports.tableHeaders.remarks')]: row.remarks
         }));
 
@@ -250,7 +270,6 @@ const AttendanceReports = () => {
             t('reports.tableHeaders.status'),
             t('reports.tableHeaders.lateIn'),
             t('reports.tableHeaders.earlyOut'),
-            t('reports.tableHeaders.deduction'),
             t('reports.tableHeaders.remarks')
         ];
 
@@ -261,7 +280,6 @@ const AttendanceReports = () => {
             row.status,
             row.startLessMin > 0 ? `${row.startLessMin}m` : '-',
             row.endLessMin > 0 ? `${row.endLessMin}m` : '-',
-            row.deduction > 0 ? `Rs.${row.deduction}` : '-',
             row.remarks || '-'
         ]);
 
@@ -293,9 +311,8 @@ const AttendanceReports = () => {
                         </Helmet>
 
                         <div className="min-h-screen bg-gray-50/50 pb-8 relative" dir={isRTL ? 'rtl' : 'ltr'}>
-                            {/* ===== TOP BAR — Premium Glassmorphism ===== */}
-                            {/* ===== TOP BAR — Compact & Clean ===== */}
-                            <div className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 md:px-6 py-2 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm relative">
+                            {/* ===== TOP BAR — Clean Flow without overlapping ===== */}
+                            <div className="w-full bg-white dark:bg-slate-900 px-4 md:px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center gap-3 shadow-sm">
                                 {/* Back Button */}
                                 <button
                                     onClick={() => navigate('/teachers')}
@@ -305,11 +322,8 @@ const AttendanceReports = () => {
                                     <span className="hidden sm:inline">{t('common.backToDashboard')}</span>
                                 </button>
 
-                                {/* Title - Centered & Solid Color to prevent clipping */}
-                                <h1 className="hidden sm:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg md:text-xl font-bold text-emerald-800 dark:text-emerald-400 whitespace-nowrap leading-relaxed pt-1">
-                                    {t('reports.title')}
-                                </h1>
-                                <h1 className="sm:hidden text-base font-bold text-emerald-800 dark:text-emerald-400 leading-relaxed">
+                                {/* Title - Centered without absolute positioning to flow naturally */}
+                                <h1 className="text-lg md:text-xl font-bold text-emerald-800 dark:text-emerald-400 whitespace-nowrap">
                                     {t('reports.title')}
                                 </h1>
 
@@ -424,8 +438,8 @@ const AttendanceReports = () => {
                                             </button>
                                             <button
                                                 onClick={() => {
-                                                    const headers = [t('reports.tableHeaders.serial'), t('reports.tableHeaders.date'), t('reports.tableHeaders.day'), t('reports.tableHeaders.status'), t('reports.tableHeaders.lateIn'), t('reports.tableHeaders.earlyOut'), t('reports.tableHeaders.deduction'), t('reports.tableHeaders.remarks')];
-                                                    const rows = monthDays.map(r => [r.serial, r.date, r.day, r.status, r.startLessMin > 0 ? r.startLessMin : '-', r.endLessMin > 0 ? r.endLessMin : '-', r.deduction > 0 ? r.deduction : '-', r.remarks || '-'].join('\t'));
+                                                    const headers = [t('reports.tableHeaders.serial'), t('reports.tableHeaders.date'), t('reports.tableHeaders.day'), t('reports.tableHeaders.status'), t('reports.tableHeaders.lateIn'), t('reports.tableHeaders.earlyOut'), t('reports.tableHeaders.remarks')];
+                                                    const rows = monthDays.map(r => [r.serial, r.date, r.day, r.status, r.startLessMin > 0 ? r.startLessMin : '-', r.endLessMin > 0 ? r.endLessMin : '-', r.remarks || '-'].join('\t'));
                                                     const text = headers.join('\t') + '\n' + rows.join('\n');
                                                     navigator.clipboard.writeText(text);
                                                     import('react-hot-toast').then(m => m.default.success(isRTL ? 'کاپی ہو گیا' : 'Copied!', { duration: 1500 }));
@@ -552,11 +566,6 @@ const AttendanceReports = () => {
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalLeave')}:</span>
                                                         <span className="font-bold text-amber-600">{stats.leave}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                        <span className="text-gray-500">{t('reports.summaryLabels.totalDeduction')}:</span>
-                                                        <span className="font-bold text-blue-600">Rs. {stats.deduction}</span>
-                                                    </div>
                                                 </div>
                                             </motion.div>
                                         )}
@@ -603,10 +612,6 @@ const AttendanceReports = () => {
                                                     <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                                         <span className="text-gray-600 font-medium">{t('reports.summaryLabels.totalLateMin')}</span>
                                                         <span className="text-lg font-bold text-red-500">{stats.lateMins} m</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-600 font-medium">{t('reports.summaryLabels.totalDeduction')}</span>
-                                                        <span className="text-lg font-bold text-blue-600">Rs. {stats.deduction}</span>
                                                     </div>
                                                 </div>
 
