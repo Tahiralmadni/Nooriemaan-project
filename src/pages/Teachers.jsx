@@ -157,7 +157,17 @@ const Teachers = () => {
                                             <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-center">
                                                 <button
                                                     onClick={() => handleViewProfile(staff.id)}
-                                                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg cursor-pointer transition-colors inline-flex"
+                                                    disabled={!staff.setupComplete}
+                                                    style={{
+                                                        backgroundColor: staff.setupComplete ? '#10b981' : '#e2e8f0',
+                                                        color: staff.setupComplete ? '#ffffff' : '#94a3b8',
+                                                        border: 'none',
+                                                        padding: '8px 12px',
+                                                        borderRadius: '8px',
+                                                        cursor: staff.setupComplete ? 'pointer' : 'not-allowed',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center'
+                                                    }}
                                                 >
                                                     <Eye size={16} />
                                                 </button>
@@ -192,7 +202,15 @@ const Teachers = () => {
                                         </h3>
                                         <button
                                             onClick={() => handleViewProfile(staff.id)}
-                                            className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg cursor-pointer transition-colors"
+                                            disabled={!staff.setupComplete}
+                                            style={{
+                                                backgroundColor: staff.setupComplete ? '#10b981' : '#e2e8f0',
+                                                color: staff.setupComplete ? '#ffffff' : '#94a3b8',
+                                                border: 'none',
+                                                padding: '8px',
+                                                borderRadius: '8px',
+                                                cursor: staff.setupComplete ? 'pointer' : 'not-allowed'
+                                            }}
                                         >
                                             <Eye size={16} />
                                         </button>

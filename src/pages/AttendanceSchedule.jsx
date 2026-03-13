@@ -173,6 +173,28 @@ export const staffData = {
         country: 'Pakistan',
         joinDate: 'January 2023',
         setupDate: '2026-03-09'
+    },
+    8: {
+        id: 8,
+        nameUr: 'عبید رضا (2)',
+        nameEn: 'Ubaid Raza (2)',
+        roleUr: 'مدرس — موسیٰ لائن',
+        roleEn: 'Mudaris (Mosalane)',
+        entryTime: '7:00 AM',
+        exitTime: '9:00 AM',
+        entryHour: 7,
+        exitHour: 9,
+        totalHours: 2,
+        salary: 6500,
+        perDaySalary: Math.round(6500 / 26),
+        perHourSalary: Math.round(6500 / 26 / 2),
+        perMinuteSalary: 6500 / 26 / 2 / 60,
+        phone: '03269676389',
+        email: 'ubaidattari0326@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'January 2023',
+        setupDate: '2026-03-13'
     }
 };
 

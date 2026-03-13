@@ -45,6 +45,15 @@ function App() {
   });
   const [authLoading, setAuthLoading] = useState(true);
 
+  // === TEMPORARY: Run migration to push Staff 8 to Firebase ===
+  useEffect(() => {
+    migrateStaff().then((success) => {
+      if (success) {
+        console.log('✅ Staff 8 updated in Firebase!');
+      }
+    });
+  }, []);
+
   // Listen to Firebase Auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
