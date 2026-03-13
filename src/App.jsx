@@ -5,6 +5,8 @@ import NetworkStatus from './components/NetworkStatus';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase';
 
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+
 // ===== LAZY LOADING — Pages load sirf jab zaroorat ho =====
 const DeveloperIntro = lazy(() => import('./components/DeveloperIntro'));
 const Login = lazy(() => import('./pages/Login'));
@@ -73,6 +75,11 @@ function App() {
     );
   }
 
+  // Prevent routing before initial auth check is complete to avoid flicker
+  if (authLoading) {
+    return <PageFallback />;
+  }
+
   return (
     <HelmetProvider>
       <BrowserRouter>
@@ -84,7 +91,7 @@ function App() {
             <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
 
             {/* All pages inside DashboardLayout */}
-            <Route element={<DashboardLayout />}>
+            <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/students" element={<Students />} />
 
@@ -99,7 +106,7 @@ function App() {
             </Route>
 
             {/* Standalone Pages (with mini-navbar) */}
-            <Route path="/teachers/schedule" element={<AttendanceSchedule />} />
+            <Route path="/teachers/schedule" element={<ProtectedRoute><AttendanceSchedule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Phone, Mail, MapPin, Calendar, Clock, Banknote, Briefcase, Shield, Camera } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const StaffProfile = () => {
     const { id } = useParams();
@@ -11,24 +13,36 @@ const StaffProfile = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
 
+    const [staff, setStaff] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        document.title = `${t('staff.' + id)} - Profile`;
-    }, [t, id]);
+        const fetchProfile = async () => {
+            try {
+                const docRef = doc(db, 'staff', id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setStaff(docSnap.data());
+                } else {
+                    console.log("No such staff!");
+                }
+            } catch (error) {
+                console.error("Error fetching staff:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfile();
+    }, [id]);
 
-    const staffDetails = {
-        1: { phone: '03128593301', address: 'Karachi, Pakistan', role: 'Naib Nazim', roleUr: 'نائب ناظم', joinDate: 'October 2020', salary: '26,620', timing: '8:00 AM - 4:00 PM', email: 'ishaqakram67@gmail.com' },
-        2: { phone: '03138657703', address: 'Karachi, Pakistan', role: 'Madrasa Nazim Hussainabad', roleUr: 'مدرسہ ناظم حسین آباد', joinDate: 'June 2025', salary: '13,000', timing: '8:00 AM - 4:00 PM', email: '-' },
-        3: { phone: '03152643153', address: 'Karachi, Pakistan', role: 'Mudarris - Bilal Masjid', roleUr: 'مدرس - بلال مسجد', joinDate: 'October 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'muneebattari527@gmail.com' },
-        4: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Subha', roleUr: 'مدرس — نیا آباد صبح', joinDate: 'August 2025', salary: '7,500', timing: '8:00 AM - 11:00 AM', email: 'mudassirrazachishti@gmail.com' },
-        5: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Mudaris — Nayabad Dopher', roleUr: 'مدرس — نیا آباد دوپہر', joinDate: 'August 2025', salary: '6,000', timing: '2:00 PM - 4:00 PM', email: 'mudassirrazachishti@gmail.com' },
-        6: { phone: '03243499859', address: 'Karachi, Pakistan', role: 'Aattiya — Musa line', roleUr: 'عطیہ — موسیٰ لائن', joinDate: 'August 2025', salary: '7,500', timing: '11:15 AM - 1:15 PM', email: 'mudassirrazachishti@gmail.com' },
-        7: { phone: '03269676389', address: 'Karachi, Pakistan', role: 'Mudaris (Nayabad)', roleUr: 'مدرس — نیا آباد', joinDate: 'January 2023', salary: '6,500', timing: '2:00 PM - 4:00 PM', email: 'ubaidattari0326@gmail.com' }
-    };
-
-    const staff = staffDetails[id] || staffDetails[1];
+    useEffect(() => {
+        if (staff) {
+            document.title = `${isRTL ? staff.nameUr : staff.nameEn} - Profile`;
+        }
+    }, [staff, isRTL]);
 
     // Initials for avatar
-    const initials = t('staff.' + id).split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const initials = staff ? (isRTL ? staff.nameUr : staff.nameEn).split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() : '';
 
     // Photo upload
     const fileInputRef = useRef(null);
@@ -47,10 +61,31 @@ const StaffProfile = () => {
         reader.readAsDataURL(file);
     };
 
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin w-8 h-8 rounded-full border-4 border-emerald-500 border-t-transparent"></div>
+            </div>
+        );
+    }
+
+    if (!staff) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-gray-500">{isRTL ? 'اسٹاف نہیں ملا' : 'Staff not found'}</div>
+            </div>
+        );
+    }
+
+    // Role display parsing
+    const currentRole = isRTL ? staff.roleUr : staff.roleEn;
+    const currentName = isRTL ? staff.nameUr : staff.nameEn;
+    const currentTiming = `${staff.entryTime} - ${staff.exitTime}`;
+
     return (
         <>
             <Helmet defer={false}>
-                <title>{t('staff.' + id)} - Profile</title>
+                <title>{currentName} - Profile</title>
             </Helmet>
 
             <div
@@ -115,7 +150,7 @@ const StaffProfile = () => {
                                 {staffPhoto ? (
                                     <img
                                         src={staffPhoto}
-                                        alt={t('staff.' + id)}
+                                        alt={currentName}
                                         className="w-24 h-24 rounded-2xl object-cover shadow-lg border-4 border-white"
                                         style={{ transform: 'rotate(-3deg)' }}
                                     />
@@ -149,7 +184,7 @@ const StaffProfile = () => {
                             className="text-center text-xl font-extrabold text-slate-800 dark:text-white mb-1"
                             style={{ lineHeight: '2.2' }}
                         >
-                            {t('staff.' + id)}
+                            {currentName}
                         </h1>
 
                         {/* Role Badge */}
@@ -163,7 +198,7 @@ const StaffProfile = () => {
                                 }}
                             >
                                 <Shield size={12} />
-                                {isRTL ? staff.roleUr : staff.role}
+                                {currentRole}
                             </span>
                         </div>
 
@@ -177,14 +212,14 @@ const StaffProfile = () => {
                             </div>
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
-                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.timing.split(' - ')[0]}</p>
+                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.entryTime}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {isRTL ? 'آمد' : 'Entry'}
                                 </p>
                             </div>
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
-                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.timing.split(' - ')[1]}</p>
+                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.exitTime}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {isRTL ? 'روانگی' : 'Exit'}
                                 </p>
@@ -198,9 +233,9 @@ const StaffProfile = () => {
                     {[
                         { icon: Phone, label: isRTL ? 'فون نمبر' : 'Phone', value: staff.phone, accent: '#3b82f6' },
                         { icon: Mail, label: isRTL ? 'ای میل' : 'Email', value: staff.email, accent: '#8b5cf6', dim: staff.email === '-' },
-                        { icon: MapPin, label: isRTL ? 'پتہ' : 'Address', value: staff.address, accent: '#ef4444' },
+                        { icon: MapPin, label: isRTL ? 'پتہ' : 'Address', value: staff.city + ', ' + staff.country, accent: '#ef4444' },
                         { icon: Calendar, label: isRTL ? 'تعیناتی' : 'Join Date', value: staff.joinDate, accent: '#f59e0b' },
-                        { icon: Clock, label: isRTL ? 'اوقات' : 'Timing', value: staff.timing, accent: '#0d9488' },
+                        { icon: Clock, label: isRTL ? 'اوقات' : 'Timing', value: currentTiming, accent: '#0d9488' },
                     ].map((item, index) => (
                         <motion.div
                             key={index}

@@ -5,17 +5,35 @@
 **Platform:** Web Application (React + Firebase)
 **Description:** A comprehensive staff and student management system built for Nooriemaan. The current focus is heavily on the **Staff Management, Attendance, and Salary Calculation** modules. The system features multi-language support (English/Urdu) and a robust role-based dashboard for administrators.
 
-## 2. Core Modules & Objectives
+## 2. Authentication
 
-### 2.1 Authentication & Roles
+### Login Credentials
+- **GR Number:** 21435
+- **Password:** User134
+- **Login URL:** /login
+
+### Login Flow
+1. Navigate to `/login`
+2. Wait **6 seconds** for the initial PageLoader animation to finish (mandatory loading screen)
+3. Enter GR Number `21435` in the input field with `id="grNumber"`
+4. Enter Password `User134` in the input field with `id="password"`
+5. Click the Login / Submit button
+6. Wait **4 seconds** for Firebase auth + PageLoader transition
+7. Verify redirect to `/dashboard`
+
+**IMPORTANT:** The login page shows a 5-second loading animation before showing the login form. Tests MUST wait for this animation to complete before trying to interact with form elements.
+
+## 3. Core Modules & Objectives
+
+### 3.1 Authentication & Roles
 - **System Roles:** Super Admin, Branch Admin, Teachers.
 - **Goal:** Secure login using Firebase Authentication. Ensure teachers only see their own attendance/profile, while Admins have full access.
 
-### 2.2 Staff Management (Teachers Profile)
+### 3.2 Staff Management (Teachers Profile)
 - **Features:** Add, Update, and Delete staff members.
 - **Key Data Points:** Name (En/Ur), Role, Phone, Salary, Entry/Exit Timings, and Setup Date (Joining Date).
 
-### 2.3 Attendance Tracking
+### 3.3 Attendance Tracking
 - **Features:** Daily attendance marking (Present, Absent, Leave, Holiday).
 - **Core Rules (Current Implementation):**
   - **Setup Date Logic:** If a staff member joins on or before the 10th of the month, their effective joining date is the 1st of that month. If after the 10th, it is their exact setup date.
@@ -25,14 +43,14 @@
     - Entry and Exit times must be validated against the staff's scheduled shift timings.
   - **Automated Actions:** Sundays are automatically marked as Weekly Holidays.
 
-### 2.4 Reporting & Summaries
+### 3.4 Reporting & Summaries
 - **Features:** Daily, Monthly, and Cumulative (Majmoohi Hazri) reports.
 - **Functionality:** 
   - Dynamic UI tables highlighting staff status (Present = Green, Absent = Red, Leave = Amber, Holiday = Blue, Not Joined = Gray).
   - Export capabilities to **PDF** and **Excel** with custom styling and fonts (Amiri font for Urdu support).
   - **Note:** Deductions (Katoti) have been temporarily removed from all reports and exports.
 
-## 3. Technology Stack Requirements
+## 4. Technology Stack Requirements
 - **Frontend:** React (Vite environment), Tailwind CSS, Framer Motion (for animations).
 - **Backend/Database:** Firebase Firestore, Firebase Authentication.
 - **Exports:** 
@@ -40,7 +58,7 @@
   - `exceljs` & `file-saver` (Excel Export).
 - **Internationalization:** `react-i18next` for seamless English/Urdu bilingual context.
 
-## 4. Current State & Testing Scope
+## 5. Current State & Testing Scope
 The codebase has recently undergone significant logical refactoring regarding:
 - *Overriding anomalous database absent records with "Not Joined" for dates before joining.*
 - *Adding a chronological validation lock for daily attendance.*

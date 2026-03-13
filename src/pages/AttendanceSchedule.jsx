@@ -524,28 +524,26 @@ const AttendanceSchedule = () => {
     const handleSave = async () => {
         if (!status) return;
 
-        // Check for missing previous days ONLY if trying to mark Present today
-        if (status === 'present') {
-            setIsSaving(true);
-            try {
-                const missingDays = await checkMissingDays();
+        // Check for missing previous days for ALL statuses to enforce Chronological Lock
+        setIsSaving(true);
+        try {
+            const missingDays = await checkMissingDays();
 
-                if (missingDays.length > 0) {
-                    setIsSaving(false);
-                    const datesList = missingDays.join(' ، ');
-                    showErrorToast(
-                        isRTL
-                            ? `پہلے سابقہ دنوں کی حاضری لگائیں: ${datesList}`
-                            : `Please mark attendance for previous day(s): ${datesList}`
-                    );
-                    return;
-                }
-            } catch (error) {
-                console.error("Validation Error:", error);
+            if (missingDays && missingDays.length > 0) {
                 setIsSaving(false);
-                showErrorToast("Validation Failed: " + error.message);
+                const datesList = missingDays.join(' ، ');
+                showErrorToast(
+                    isRTL
+                        ? `پہلے سابقہ دنوں کی حاضری لگائیں: ${datesList}`
+                        : `Please mark attendance for previous day(s): ${datesList}`
+                );
                 return;
             }
+        } catch (error) {
+            console.error("Validation Error:", error);
+            setIsSaving(false);
+            showErrorToast(isRTL ? "حاضری چیک کرنے میں مسئلہ آیا: " + error.message : "Validation Failed: " + error.message);
+            return;
         }
 
         // Validate time is within working hours for present status

@@ -3,64 +3,54 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { Eye, ArrowRight, ArrowLeft, Search, X } from 'lucide-react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const isRTL = i18n.language === 'ur';
 
-    useEffect(() => {
-        document.title = t('pageTitles.teachers');
-    }, [t]);
-
-    const staffIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-
-    const emails = {
-        1: 'ishaqakram67@gmail.com',
-        23: 'ishaqakram67@gmail.com',
-        2: '-',
-        3: 'muneebattari527@gmail.com',
-        4: 'mudassirrazachishti@gmail.com',
-        5: 'mudassirrazachishti@gmail.com',
-        6: 'mudassirrazachishti@gmail.com',
-        7: 'ubaidattari0326@gmail.com',
-        8: 'ubaidattari0326@gmail.com',
-        9: 'ubaidattari0326@gmail.com',
-        10: '-',
-        11: '-',
-        12: '-',
-        13: '-',
-        14: 'jawadsoomrowork@gmail.com',
-        15: 'hanzalahtahir93@gmail.com',
-        16: 'balochjuni010@gmail.com',
-        17: '-',
-        18: 'attaridilawar510@gmail.com',
-        19: 'princeShoaibkhan990@gmail.com',
-        20: 'aliyn00177@gmail.com',
-        21: 'ar8693524@gmail.com',
-        22: '-',
-    };
-
-    // Setup complete staff IDs — sirf inke eye icon green honge
-    const setupStaffIds = [1, 2, 3, 4, 5, 6, 7];
-
-    // Search
+    const [staffList, setStaffList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredStaffIds = staffIds.filter(id => {
+    useEffect(() => {
+        document.title = t('pageTitles.teachers');
+        fetchStaff();
+    }, [t]);
+
+    const fetchStaff = async () => {
+        setLoading(true);
+        try {
+            const querySnapshot = await getDocs(collection(db, 'staff'));
+            const staffData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            // Sort by integer ID
+            staffData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+            setStaffList(staffData);
+        } catch (error) {
+            console.error('Error fetching staff:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredStaffList = staffList.filter(staff => {
         if (!searchQuery.trim()) return true;
         const query = searchQuery.toLowerCase().trim();
-        const nameEn = t(`staff.${id}`).toLowerCase();
-        const idStr = String(id);
-        const email = (emails[id] || '').toLowerCase();
-        return nameEn.includes(query) || idStr.includes(query) || email.includes(query);
+        const nameEn = (staff.nameEn || '').toLowerCase();
+        const nameUr = (staff.nameUr || '');
+        const idStr = String(staff.id);
+        const email = (staff.email || '').toLowerCase();
+        return nameEn.includes(query) || nameUr.includes(query) || idStr.includes(query) || email.includes(query);
     });
 
     // View profile handler
     const handleViewProfile = (id) => {
-        if (setupStaffIds.includes(id)) {
-            navigate(`/teachers/profile/${id}`);
-        }
+        navigate(`/teachers/profile/${id}`);
     };
 
     return (
@@ -89,7 +79,7 @@ const Teachers = () => {
                         {t('sidebar.teachersList')}
                     </h1>
                     <span className="self-start sm:self-auto bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow-md">
-                        {staffIds.length} {t('table.members')}
+                        {staffList.length} {t('table.members')}
                     </span>
                 </div>
 
@@ -117,107 +107,111 @@ const Teachers = () => {
                     </div>
                     {searchQuery && (
                         <p className="text-xs text-gray-400 mt-1.5 px-1">
-                            {filteredStaffIds.length} {isRTL ? 'نتائج ملے' : 'results found'}
+                            {filteredStaffList.length} {isRTL ? 'نتائج ملے' : 'results found'}
                         </p>
                     )}
                 </div>
 
-                {/* Desktop Table - Hidden on Mobile */}
-                <div className="hidden md:block bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-slate-700">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="bg-gradient-to-r from-emerald-500 to-emerald-600">
-                                <th className="px-6 py-4 text-white font-semibold text-center w-20">
-                                    {t('table.serial')}
-                                </th>
-                                <th className="px-6 py-4 text-white font-semibold">
-                                    {t('table.name')}
-                                </th>
-                                <th className="px-6 py-4 text-white font-semibold">
-                                    {t('table.email')}
-                                </th>
-                                <th className="px-6 py-4 text-white font-semibold text-center w-24">
-                                    {t('table.view')}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredStaffIds.map((id, index) => (
-                                <tr
-                                    key={id}
-                                    className={`${index % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-slate-50 dark:bg-slate-800/50'} hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors`}
+                {/* Main Content Area */}
+                {loading ? (
+                    <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 text-center">
+                        <div className="animate-spin w-8 h-8 rounded-full border-4 border-emerald-500 border-t-transparent mx-auto mb-4"></div>
+                        <p className="text-gray-500">{isRTL ? 'لوڈ ہو رہا ہے...' : 'Loading staff...'}</p>
+                    </div>
+                ) : (
+                    <>
+                        {/* Desktop Table - Hidden on Mobile */}
+                        <div className="hidden md:block bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-slate-700">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="bg-gradient-to-r from-emerald-500 to-emerald-600">
+                                        <th className="px-6 py-4 text-white font-semibold text-center w-20">
+                                            {t('table.serial')}
+                                        </th>
+                                        <th className="px-6 py-4 text-white font-semibold">
+                                            {t('table.name')}
+                                        </th>
+                                        <th className="px-6 py-4 text-white font-semibold">
+                                            {t('table.email')}
+                                        </th>
+                                        <th className="px-6 py-4 text-white font-semibold text-center w-24">
+                                            {t('table.view')}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredStaffList.map((staff, index) => (
+                                        <tr
+                                            key={staff.id}
+                                            className={`${index % 2 === 0 ? 'bg-white dark:bg-slate-800' : 'bg-slate-50 dark:bg-slate-800/50'} hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors`}
+                                        >
+                                            <td className="px-6 py-4 text-center border-b border-gray-100 dark:border-slate-700 text-emerald-600 font-bold text-lg">
+                                                {staff.id}
+                                            </td>
+                                            <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-medium">
+                                                {isRTL ? staff.nameUr : staff.nameEn}
+                                            </td>
+                                            <td className={`px-6 py-4 border-b border-gray-100 dark:border-slate-700 ${staff.email === '-' ? 'text-gray-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                                                {staff.email}
+                                            </td>
+                                            <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-center">
+                                                <button
+                                                    onClick={() => handleViewProfile(staff.id)}
+                                                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg cursor-pointer transition-colors inline-flex"
+                                                >
+                                                    <Eye size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {filteredStaffList.length === 0 && (
+                                        <tr>
+                                            <td colSpan="4" className="px-6 py-8 text-center text-gray-500 border-b border-gray-100">
+                                                {isRTL ? 'کوئی ریکارڈ نہیں ملا' : 'No records found'}
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - Professional Design */}
+                        <div className="md:hidden space-y-3">
+                            {filteredStaffList.map((staff) => (
+                                <div
+                                    key={staff.id}
+                                    className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow"
                                 >
-                                    <td className="px-6 py-4 text-center border-b border-gray-100 dark:border-slate-700 text-emerald-600 font-bold text-lg">
-                                        {id}
-                                    </td>
-                                    <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-medium">
-                                        {t(`staff.${id}`)}
-                                    </td>
-                                    <td className={`px-6 py-4 border-b border-gray-100 dark:border-slate-700 ${emails[id] === '-' ? 'text-gray-400' : 'text-blue-600 dark:text-blue-400'}`}>
-                                        {emails[id]}
-                                    </td>
-                                    <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-center">
+                                    {/* Top Row - Number, Name, Eye Icon */}
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="inline-flex items-center justify-center w-8 h-8 bg-emerald-500 text-white rounded-lg font-bold text-sm">
+                                            {staff.id}
+                                        </span>
+                                        <h3 className="flex-1 text-slate-800 dark:text-white font-semibold text-lg leading-tight">
+                                            {isRTL ? staff.nameUr : staff.nameEn}
+                                        </h3>
                                         <button
-                                            onClick={() => handleViewProfile(id)}
-                                            disabled={!setupStaffIds.includes(id)}
-                                            style={{
-                                                backgroundColor: setupStaffIds.includes(id) ? '#10b981' : '#e2e8f0',
-                                                color: setupStaffIds.includes(id) ? '#ffffff' : '#94a3b8',
-                                                border: 'none',
-                                                padding: '8px 12px',
-                                                borderRadius: '8px',
-                                                cursor: setupStaffIds.includes(id) ? 'pointer' : 'not-allowed',
-                                                display: 'inline-flex',
-                                                alignItems: 'center'
-                                            }}
+                                            onClick={() => handleViewProfile(staff.id)}
+                                            className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg cursor-pointer transition-colors"
                                         >
                                             <Eye size={16} />
                                         </button>
-                                    </td>
-                                </tr>
+                                    </div>
+
+                                    {/* Email Row */}
+                                    <div className={`text-sm ${isRTL ? 'pr-11' : 'pl-11'} ${staff.email === '-' ? 'text-gray-400' : 'text-blue-500'}`}>
+                                        📧 {staff.email}
+                                    </div>
+                                </div>
                             ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Mobile Cards - Professional Design */}
-                <div className="md:hidden space-y-3">
-                    {filteredStaffIds.map((id, index) => (
-                        <div
-                            key={id}
-                            className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow"
-                        >
-                            {/* Top Row - Number, Name, Eye Icon */}
-                            <div className="flex items-center gap-3 mb-2">
-                                <span className="inline-flex items-center justify-center w-8 h-8 bg-emerald-500 text-white rounded-lg font-bold text-sm">
-                                    {id}
-                                </span>
-                                <h3 className="flex-1 text-slate-800 dark:text-white font-semibold text-lg leading-tight">
-                                    {t(`staff.${id}`)}
-                                </h3>
-                                <button
-                                    onClick={() => handleViewProfile(id)}
-                                    disabled={!setupStaffIds.includes(id)}
-                                    style={{
-                                        backgroundColor: setupStaffIds.includes(id) ? '#10b981' : '#e2e8f0',
-                                        color: setupStaffIds.includes(id) ? '#ffffff' : '#94a3b8',
-                                        border: 'none',
-                                        padding: '8px',
-                                        borderRadius: '8px',
-                                        cursor: setupStaffIds.includes(id) ? 'pointer' : 'not-allowed'
-                                    }}
-                                >
-                                    <Eye size={16} />
-                                </button>
-                            </div>
-
-                            {/* Email Row */}
-                            <div className={`text-sm ${isRTL ? 'pr-11' : 'pl-11'} ${emails[id] === '-' ? 'text-gray-400' : 'text-blue-500'}`}>
-                                📧 {emails[id]}
-                            </div>
+                            {filteredStaffList.length === 0 && (
+                                <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center text-gray-500 shadow-sm border border-gray-100">
+                                    {isRTL ? 'کوئی ریکارڈ نہیں ملا' : 'No records found'}
+                                </div>
+                            )}
                         </div>
-                    ))}
-                </div>
+                    </>
+                )}
             </div>
         </>
     );
