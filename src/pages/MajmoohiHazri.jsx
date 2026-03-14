@@ -20,7 +20,8 @@ const MajmoohiHazri = () => {
         { id: 4, nameKey: 'staff.4' },
         { id: 5, nameKey: 'staff.5' },
         { id: 6, nameKey: 'staff.6' },
-        { id: 7, nameKey: 'staff.7' }
+        { id: 7, nameKey: 'staff.7' },
+        { id: 8, nameKey: 'staff.8' }
     ];
 
     const [selectedStaff, setSelectedStaff] = useState(1);
@@ -195,7 +196,7 @@ const MajmoohiHazri = () => {
 
             setRecords(finalRecords);
             if (finalRecords.length === 0) {
-                setLoadError(isRTL ? 'اس مدت میں کوئی ریکارڈ نہیں ملا' : 'No records found for this period');
+                setLoadError(t('common.noRecordsForPeriod'));
             }
         } catch (error) {
             console.error('Load error:', error);
@@ -277,7 +278,7 @@ const MajmoohiHazri = () => {
                         {/* Start Date */}
                         <div className="flex-1">
                             <label className="text-xs text-slate-500 dark:text-slate-400 font-semibold block mb-1.5">
-                                {isRTL ? 'حاضری ابتداء' : 'Start Date'}
+                                {t('common.startDate')}
                             </label>
                             <input
                                 type="date"
@@ -290,7 +291,7 @@ const MajmoohiHazri = () => {
                         {/* End Date */}
                         <div className="flex-1">
                             <label className="text-xs text-slate-500 dark:text-slate-400 font-semibold block mb-1.5">
-                                {isRTL ? 'حاضری انتہا' : 'End Date'}
+                                {t('common.endDate')}
                             </label>
                             <input
                                 type="date"
@@ -312,7 +313,7 @@ const MajmoohiHazri = () => {
                                 ) : (
                                     <Search size={16} />
                                 )}
-                                {isRTL ? 'لوڈ کیجئے' : 'Load'}
+                                {t('common.loadButton')}
                             </button>
                         </div>
                     </div>

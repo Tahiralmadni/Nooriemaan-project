@@ -72,7 +72,7 @@ const StaffProfile = () => {
     if (!staff) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="text-gray-500">{isRTL ? 'اسٹاف نہیں ملا' : 'Staff not found'}</div>
+                <div className="text-gray-500">{t('common.staffNotFound')}</div>
             </div>
         );
     }
@@ -207,21 +207,21 @@ const StaffProfile = () => {
                             <div className="text-center">
                                 <p className="text-lg font-black text-teal-600">Rs {staff.salary}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
-                                    {isRTL ? 'تنخواہ' : 'Salary'}
+                                    {t('profile.salary')}
                                 </p>
                             </div>
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
                                 <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.entryTime}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
-                                    {isRTL ? 'آمد' : 'Entry'}
+                                    {t('profile.entry')}
                                 </p>
                             </div>
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
                                 <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.exitTime}</p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
-                                    {isRTL ? 'روانگی' : 'Exit'}
+                                    {t('profile.exit')}
                                 </p>
                             </div>
                         </div>
@@ -231,11 +231,11 @@ const StaffProfile = () => {
                 {/* ===== DETAIL ROWS ===== */}
                 <div className="mx-4 space-y-2.5 pb-8">
                     {[
-                        { icon: Phone, label: isRTL ? 'فون نمبر' : 'Phone', value: staff.phone, accent: '#3b82f6' },
-                        { icon: Mail, label: isRTL ? 'ای میل' : 'Email', value: staff.email, accent: '#8b5cf6', dim: staff.email === '-' },
-                        { icon: MapPin, label: isRTL ? 'پتہ' : 'Address', value: staff.city + ', ' + staff.country, accent: '#ef4444' },
-                        { icon: Calendar, label: isRTL ? 'تعیناتی' : 'Join Date', value: staff.joinDate, accent: '#f59e0b' },
-                        { icon: Clock, label: isRTL ? 'اوقات' : 'Timing', value: currentTiming, accent: '#0d9488' },
+                        { icon: Phone, label: t('profile.phoneNumber'), value: staff.phone, accent: '#3b82f6' },
+                        { icon: Mail, label: t('profile.email'), value: staff.email, accent: '#8b5cf6', dim: staff.email === '-' },
+                        { icon: MapPin, label: t('profile.address'), value: staff.city + ', ' + staff.country, accent: '#ef4444' },
+                        { icon: Calendar, label: t('profile.joinDate'), value: staff.joinDate, accent: '#f59e0b' },
+                        { icon: Clock, label: t('profile.timing'), value: currentTiming, accent: '#0d9488' },
                     ].map((item, index) => (
                         <motion.div
                             key={index}

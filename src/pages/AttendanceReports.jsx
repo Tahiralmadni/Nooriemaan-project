@@ -79,7 +79,8 @@ const AttendanceReports = () => {
         { id: 4, name: t('staff.4') },
         { id: 5, name: t('staff.5') },
         { id: 6, name: t('staff.6') },
-        { id: 7, name: t('staff.7') }
+        { id: 7, name: t('staff.7') },
+        { id: 8, name: t('staff.8') }
     ];
 
     // Tabs configuration
@@ -532,7 +533,7 @@ const AttendanceReports = () => {
                                                                         {t('reports.selectStaff')}
                                                                     </p>
                                                                     <p className="text-gray-400 text-xs">
-                                                                        {isRTL ? 'رپورٹ دیکھنے کے لیے اوپر سے عملہ منتخب کریں' : 'Select a staff member above to view their report'}
+                                                                        {t('common.selectStaffPrompt')}
                                                                     </p>
                                                                 </motion.div>
                                                             </td>

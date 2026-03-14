@@ -51,7 +51,7 @@ const Settings = () => {
     return (
         <>
             <Helmet defer={false}>
-                <title>{isRTL ? 'ترتیبات' : 'Settings'}</title>
+                <title>{t('settings.title')}</title>
             </Helmet>
 
             <Toaster containerStyle={{ zIndex: 99999 }} />
@@ -81,7 +81,7 @@ const Settings = () => {
                     className="text-2xl font-bold text-slate-800 dark:text-white mb-6"
                     style={{ lineHeight: '2' }}
                 >
-                    {isRTL ? 'ترتیبات' : 'Settings'}
+                    {t('settings.title')}
                 </motion.h1>
 
                 {/* ===== OPTIONS LIST ===== */}
@@ -99,7 +99,7 @@ const Settings = () => {
                                 <Globe size={18} className="text-blue-500" />
                             </div>
                             <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                                {isRTL ? 'زبان' : 'Language'}
+                                {t('settings.language')}
                             </span>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -139,10 +139,10 @@ const Settings = () => {
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                                    {isRTL ? 'ڈارک موڈ' : 'Dark Mode'}
+                                    {t('settings.darkMode')}
                                 </p>
                                 <p className="text-[11px] text-gray-400">
-                                    {isRTL ? 'رات کو آنکھوں کی حفاظت' : 'Easier on eyes at night'}
+                                    {t('settings.darkModeDesc')}
                                 </p>
                             </div>
                         </div>
@@ -172,10 +172,10 @@ const Settings = () => {
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                                    {isRTL ? 'فونٹ تبدیل کریں' : 'Change Font'}
+                                    {t('settings.changeFont')}
                                 </p>
                                 <p className="text-[11px] text-gray-400">
-                                    {isRTL ? 'اردو اور انگریزی فونٹ' : 'Urdu & English fonts'}
+                                    {t('settings.changeFontDesc')}
                                 </p>
                             </div>
                         </div>
@@ -196,10 +196,10 @@ const Settings = () => {
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                                    {isRTL ? 'کیشے صاف کریں' : 'Clear Cache'}
+                                    {t('settings.clearCache')}
                                 </p>
                                 <p className="text-[11px] text-gray-400">
-                                    {isRTL ? 'محفوظ تصاویر اور ڈیٹا حذف کریں' : 'Remove saved photos & local data'}
+                                    {t('settings.clearCacheDesc')}
                                 </p>
                             </div>
                         </div>
@@ -218,20 +218,20 @@ const Settings = () => {
                                 <Info size={18} className="text-emerald-500" />
                             </div>
                             <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                                {isRTL ? 'ایپ کی معلومات' : 'App Info'}
+                                {t('settings.appInfo')}
                             </span>
                         </div>
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-slate-700">
-                                <span className="text-gray-500 dark:text-gray-400">{isRTL ? 'ورژن' : 'Version'}</span>
+                                <span className="text-gray-500 dark:text-gray-400">{t('settings.version')}</span>
                                 <span className="font-bold text-slate-700 dark:text-slate-200">1.0.0</span>
                             </div>
                             <div className="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-slate-700">
-                                <span className="text-gray-500 dark:text-gray-400">{isRTL ? 'ڈویلپر' : 'Developer'}</span>
+                                <span className="text-gray-500 dark:text-gray-400">{t('settings.developer')}</span>
                                 <span className="font-bold text-slate-700 dark:text-slate-200">Hanzalah Tahir</span>
                             </div>
                             <div className="flex justify-between items-center py-1.5">
-                                <span className="text-gray-500 dark:text-gray-400">{isRTL ? 'فریم ورک' : 'Framework'}</span>
+                                <span className="text-gray-500 dark:text-gray-400">{t('settings.framework')}</span>
                                 <span className="font-bold text-slate-700 dark:text-slate-200">React + Vite</span>
                             </div>
                         </div>

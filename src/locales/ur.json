@@ -195,7 +195,10 @@
         "joinDate": "شمولیت کی تاریخ",
         "timing": "اوقات",
         "salary": "تنخواہ",
-        "role": "عہدہ"
+        "role": "عہدہ",
+        "entry": "آمد",
+        "exit": "روانگی",
+        "phoneNumber": "فون نمبر"
     },
     "hazri": {
         "title": "حاضری جدول",
@@ -264,7 +267,17 @@
     "common": {
         "backToDashboard": "ڈیش بورڈ پر واپس جائیں",
         "cancel": "منسوخ کریں",
-        "confirm": "تصدیق کریں"
+        "confirm": "تصدیق کریں",
+        "noRecordsFound": "کوئی ریکارڈ نہیں ملا",
+        "loading": "لوڈ ہو رہا ہے...",
+        "searchPlaceholder": "نام، نمبر یا ای میل سے تلاش کریں...",
+        "resultsFound": "نتائج ملے",
+        "staffNotFound": "اسٹاف نہیں ملا",
+        "selectStaffPrompt": "رپورٹ دیکھنے کے لیے اوپر سے عملہ منتخب کریں",
+        "noRecordsForPeriod": "اس مدت میں کوئی ریکارڈ نہیں ملا",
+        "loadButton": "لوڈ کیجئے",
+        "startDate": "حاضری ابتداء",
+        "endDate": "حاضری انتہا"
     },
     "logoutModal": {
         "title": "لاگ آؤٹ کی تصدیق",
@@ -335,5 +348,22 @@
             "totalPresent": "کل حاضریاں",
             "attendancePercentage": "حاضری کا تناسب"
         }
+    },
+    "settings": {
+        "title": "ترتیبات",
+        "language": "زبان",
+        "darkMode": "ڈارک موڈ",
+        "darkModeDesc": "رات کو آنکھوں کی حفاظت",
+        "changeFont": "فونٹ تبدیل کریں",
+        "changeFontDesc": "اردو اور انگریزی فونٹ",
+        "clearCache": "کیشے صاف کریں",
+        "clearCacheDesc": "محفوظ تصاویر اور ڈیٹا حذف کریں",
+        "appInfo": "ایپ کی معلومات",
+        "version": "ورژن",
+        "developer": "ڈویلپر",
+        "framework": "فریم ورک"
+    },
+    "notFound": {
+        "title": "صفحہ نہیں ملا"
     }
 }

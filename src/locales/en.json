@@ -195,7 +195,10 @@
         "joinDate": "Join Date",
         "timing": "Timing",
         "salary": "Salary",
-        "role": "Role"
+        "role": "Role",
+        "entry": "Entry",
+        "exit": "Exit",
+        "phoneNumber": "Phone Number"
     },
     "hazri": {
         "title": "Attendance Schedule",
@@ -264,7 +267,17 @@
     "common": {
         "backToDashboard": "Back to Dashboard",
         "cancel": "Cancel",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "noRecordsFound": "No records found",
+        "loading": "Loading...",
+        "searchPlaceholder": "Search by name, number or email...",
+        "resultsFound": "results found",
+        "staffNotFound": "Staff not found",
+        "selectStaffPrompt": "Select a staff member above to view their report",
+        "noRecordsForPeriod": "No records found for this period",
+        "loadButton": "Load",
+        "startDate": "Start Date",
+        "endDate": "End Date"
     },
     "logoutModal": {
         "title": "Logout Confirmation",
@@ -335,5 +348,22 @@
             "totalPresent": "Total Present",
             "attendancePercentage": "Attendance Percentage"
         }
+    },
+    "settings": {
+        "title": "Settings",
+        "language": "Language",
+        "darkMode": "Dark Mode",
+        "darkModeDesc": "Easier on eyes at night",
+        "changeFont": "Change Font",
+        "changeFontDesc": "Urdu & English fonts",
+        "clearCache": "Clear Cache",
+        "clearCacheDesc": "Remove saved photos & local data",
+        "appInfo": "App Info",
+        "version": "Version",
+        "developer": "Developer",
+        "framework": "Framework"
+    },
+    "notFound": {
+        "title": "Page Not Found"
     }
 }

@@ -25,7 +25,7 @@ const NotFound = () => {
                     </div>
 
                     <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
-                        {isRTL ? 'صفحہ نہیں ملا' : 'Page Not Found'}
+                        {t('notFound.title')}
                     </h1>
 
                     <p className="text-gray-500 dark:text-gray-400 mb-8">

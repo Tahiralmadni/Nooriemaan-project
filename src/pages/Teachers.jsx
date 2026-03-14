@@ -92,7 +92,7 @@ const Teachers = () => {
                             dir="auto"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder={isRTL ? 'نام، نمبر یا ای میل سے تلاش کریں...' : 'Search by name, number or email...'}
+                            placeholder={t('common.searchPlaceholder')}
                             className="w-full bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-xl py-3 pl-12 pr-12 text-sm text-slate-700 dark:text-slate-200 shadow-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all"
                             style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)', textAlign: 'start' }}
                         />
@@ -107,7 +107,7 @@ const Teachers = () => {
                     </div>
                     {searchQuery && (
                         <p className="text-xs text-gray-400 mt-1.5 px-1">
-                            {filteredStaffList.length} {isRTL ? 'نتائج ملے' : 'results found'}
+                            {filteredStaffList.length} {t('common.resultsFound')}
                         </p>
                     )}
                 </div>
@@ -116,7 +116,7 @@ const Teachers = () => {
                 {loading ? (
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 text-center">
                         <div className="animate-spin w-8 h-8 rounded-full border-4 border-emerald-500 border-t-transparent mx-auto mb-4"></div>
-                        <p className="text-gray-500">{isRTL ? 'لوڈ ہو رہا ہے...' : 'Loading staff...'}</p>
+                        <p className="text-gray-500">{t('common.loading')}</p>
                     </div>
                 ) : (
                     <>
@@ -177,7 +177,7 @@ const Teachers = () => {
                                     {filteredStaffList.length === 0 && (
                                         <tr>
                                             <td colSpan="4" className="px-6 py-8 text-center text-gray-500 border-b border-gray-100">
-                                                {isRTL ? 'کوئی ریکارڈ نہیں ملا' : 'No records found'}
+                                                {t('common.noRecordsFound')}
                                             </td>
                                         </tr>
                                     )}
@@ -224,7 +224,7 @@ const Teachers = () => {
                             ))}
                             {filteredStaffList.length === 0 && (
                                 <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center text-gray-500 shadow-sm border border-gray-100">
-                                    {isRTL ? 'کوئی ریکارڈ نہیں ملا' : 'No records found'}
+                                    {t('common.noRecordsFound')}
                                 </div>
                             )}
                         </div>

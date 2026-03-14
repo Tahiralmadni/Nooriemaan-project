@@ -31,6 +31,8 @@ const PageFallback = () => (
   }} />
 );
 
+import { migrateStaff } from './utils/migrateStaffToFirebase';
+
 /**
  * App Component - Clean URL Structure with Asataza Dropdown Routes
  */
