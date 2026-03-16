@@ -47,12 +47,10 @@ function App() {
   });
   const [authLoading, setAuthLoading] = useState(true);
 
-  // === TEMPORARY: Run migration to push Staff 8 to Firebase ===
+  // === TEMPORARY: Push updated staff data to Firebase ===
   useEffect(() => {
     migrateStaff().then((success) => {
-      if (success) {
-        console.log('✅ Staff 8 updated in Firebase!');
-      }
+      if (success) console.log('✅ Staff data pushed to Firebase!');
     });
   }, []);
 

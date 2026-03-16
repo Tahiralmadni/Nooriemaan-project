@@ -195,6 +195,28 @@ export const staffData = {
         country: 'Pakistan',
         joinDate: 'January 2023',
         setupDate: '2026-03-13'
+    },
+    9: {
+        id: 9,
+        nameUr: 'عبید رضا (3)',
+        nameEn: 'Ubaid Raza (3)',
+        roleUr: 'تحریر',
+        roleEn: 'Tharir',
+        entryTime: '11:00 AM',
+        exitTime: '12:00 PM',
+        entryHour: 11,
+        exitHour: 12,
+        totalHours: 1,
+        salary: 2500,
+        perDaySalary: Math.round(2500 / 26),
+        perHourSalary: Math.round(2500 / 26 / 1),
+        perMinuteSalary: 2500 / 26 / 1 / 60,
+        phone: '03269676389',
+        email: 'ubaidattari0326@gmail.com',
+        city: 'Karachi',
+        country: 'Pakistan',
+        joinDate: 'January 2023',
+        setupDate: '2026-03-16'
     }
 };
 
