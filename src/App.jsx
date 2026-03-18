@@ -31,7 +31,6 @@ const PageFallback = () => (
   }} />
 );
 
-import { migrateStaff } from './utils/migrateStaffToFirebase';
 
 /**
  * App Component - Clean URL Structure with Asataza Dropdown Routes
@@ -46,13 +45,6 @@ function App() {
     return localStorage.getItem('isLoggedIn') === 'true';
   });
   const [authLoading, setAuthLoading] = useState(true);
-
-  // === TEMPORARY: Push updated staff data to Firebase ===
-  useEffect(() => {
-    migrateStaff().then((success) => {
-      if (success) console.log('✅ Staff data pushed to Firebase!');
-    });
-  }, []);
 
   // Listen to Firebase Auth state changes
   useEffect(() => {
