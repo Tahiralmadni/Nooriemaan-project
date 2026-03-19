@@ -154,24 +154,24 @@ const AttendanceReports = () => {
                 statusClass = 'text-gray-400 bg-gray-50/50';
                 statusRaw = 'not_joined';
             } else if (isSunday) {
-                statusText = isRTL ? 'تعطیل: اتوار' : 'Holiday: Sunday';
+                statusText = t('common.statusHolidaySunday');
                 statusClass = 'text-blue-600 bg-blue-50';
                 statusRaw = 'holiday';
                 holiday++;
             } else if (record) {
                 // Translate status from DB ('present', 'absent', 'leave')
                 if (record.status === 'present') {
-                    statusText = isRTL ? 'حاضر' : 'Present';
+                    statusText = t('common.statusPresent');
                     statusClass = 'text-emerald-600 bg-emerald-50';
                     statusRaw = 'present';
                     present++;
                 } else if (record.status === 'absent') {
-                    statusText = isRTL ? 'غیر حاضر' : 'Absent';
+                    statusText = t('common.statusAbsent');
                     statusClass = 'text-red-600 bg-red-50';
                     statusRaw = 'absent';
                     absent++;
                 } else if (record.status === 'leave') {
-                    statusText = isRTL ? 'رخصت' : 'Leave';
+                    statusText = t('common.statusLeave');
                     statusClass = 'text-amber-600 bg-amber-50';
                     statusRaw = 'leave';
                     leave++;

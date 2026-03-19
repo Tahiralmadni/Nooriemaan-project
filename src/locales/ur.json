@@ -277,7 +277,15 @@
         "noRecordsForPeriod": "اس مدت میں کوئی ریکارڈ نہیں ملا",
         "loadButton": "لوڈ کیجئے",
         "startDate": "حاضری ابتداء",
-        "endDate": "حاضری انتہا"
+        "endDate": "حاضری انتہا",
+        "backDashboard": "واپس ڈیش بورڈ",
+        "sundayAutoSaved": "اتوار کی چھٹی خود بخود محفوظ ہو گئی ✅",
+        "font": "فونٹ",
+        "goToSummary": "مجموعی حاضری کے لیے یہاں جائیں",
+        "statusPresent": "حاضر",
+        "statusAbsent": "غیر حاضر",
+        "statusLeave": "رخصت",
+        "statusHolidaySunday": "تعطیل: اتوار"
     },
     "logoutModal": {
         "title": "لاگ آؤٹ کی تصدیق",

@@ -703,7 +703,7 @@ const AttendanceSchedule = () => {
                         deduction: 0
                     });
                     console.log('✅ Sunday Holiday auto-saved for:', nextDay.toDateString());
-                    showSuccessToast(isRTL ? 'اتوار کی چھٹی خود بخود محفوظ ہو گئی ✅' : 'Sunday Holiday auto-saved ✅');
+                    showSuccessToast(t('common.sundayAutoSaved'));
                 }
             }
 
@@ -787,7 +787,7 @@ const AttendanceSchedule = () => {
                                     <span className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
                                         {isRTL ? '→' : '←'}
                                     </span>
-                                    <span className="hidden sm:inline">{isRTL ? 'واپس ڈیش بورڈ' : 'Dashboard'}</span>
+                                    <span className="hidden sm:inline">{t('common.backDashboard')}</span>
                                 </a>
 
                                 {/* Right side buttons - Premium Style */}
@@ -803,7 +803,7 @@ const AttendanceSchedule = () => {
                                         className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl text-gray-600 dark:text-slate-300 font-semibold text-xs md:text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 hover:shadow-md transition-all flex items-center gap-1.5"
                                     >
                                         <Type size={14} />
-                                        <span className="hidden sm:inline">{isRTL ? 'فونٹ' : 'Font'}</span>
+                                        <span className="hidden sm:inline">{t('common.font')}</span>
                                     </button>
                                 </div>
 
@@ -1221,7 +1221,7 @@ const AttendanceSchedule = () => {
                                                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all duration-200"
                                                 >
                                                     <UserCheck size={16} />
-                                                    <span>{isRTL ? 'مجموعی حاضری کے لیے یہاں جائیں' : 'Go to Attendance Summary'}</span>
+                                                    <span>{t('common.goToSummary')}</span>
                                                     <span>{isRTL ? '←' : '→'}</span>
                                                 </a>
                                             </div>

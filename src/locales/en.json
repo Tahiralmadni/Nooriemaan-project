@@ -277,7 +277,15 @@
         "noRecordsForPeriod": "No records found for this period",
         "loadButton": "Load",
         "startDate": "Start Date",
-        "endDate": "End Date"
+        "endDate": "End Date",
+        "backDashboard": "Dashboard",
+        "sundayAutoSaved": "Sunday Holiday auto-saved ✅",
+        "font": "Font",
+        "goToSummary": "Go to Attendance Summary",
+        "statusPresent": "Present",
+        "statusAbsent": "Absent",
+        "statusLeave": "Leave",
+        "statusHolidaySunday": "Holiday: Sunday"
     },
     "logoutModal": {
         "title": "Logout Confirmation",
