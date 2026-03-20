@@ -123,7 +123,7 @@ const FontSettings = ({ isOpen, onClose }) => {
                                 color: '#1f2937',
                                 margin: 0
                             }}>
-                                {isRTL ? 'فونٹ کی ترتیبات' : 'Font Settings'}
+                                {t('settings.fontSettings')}
                             </h2>
                         </div>
                         <button
@@ -301,7 +301,7 @@ const FontSettings = ({ isOpen, onClose }) => {
                                 cursor: 'pointer'
                             }}
                         >
-                            {isRTL ? 'محفوظ کریں' : 'Save & Close'}
+                            {t('settings.saveAndClose')}
                         </button>
                     </div>
                 </motion.div>

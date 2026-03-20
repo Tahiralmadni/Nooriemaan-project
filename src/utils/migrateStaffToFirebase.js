@@ -60,16 +60,16 @@ export const staffData = {
 
 export const migrateStaff = async () => {
     try {
-        console.log("Starting staff migration to Firebase (all 23 members)...");
+
 
         for (const key in staffData) {
             const staff = staffData[key];
             const strId = String(staff.id);
             await setDoc(doc(db, 'staff', strId), staff);
-            console.log(`Migrated staff ${strId}: ${staff.nameEn}`);
+
         }
 
-        console.log("✅ Migration completed for all 23 staff!");
+
         return true;
     } catch (error) {
         console.error("Migration failed:", error);

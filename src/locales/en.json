@@ -145,8 +145,13 @@
         "22": "Ghulam Qadir"
     },
     "loader": {
-        "loading": "Loading, please wait",
-        "preparingDashboard": "Preparing your dashboard"
+        "loading": "Loading NooriEmaan Digital Portal...",
+        "dashboard": "Loading NooriEmaan Dashboard...",
+        "preparingDashboard": "Preparing Dashboard..."
+    },
+    "toast": {
+        "backOnline": "You are back online!",
+        "offline": "You are Offline - Changes may not save"
     },
     "clock": {
         "am": "AM",
@@ -363,6 +368,8 @@
         "darkMode": "Dark Mode",
         "darkModeDesc": "Easier on eyes at night",
         "changeFont": "Change Font",
+        "fontSettings": "Font Settings",
+        "saveAndClose": "Save & Close",
         "changeFontDesc": "Urdu & English fonts",
         "clearCache": "Clear Cache",
         "clearCacheDesc": "Remove saved photos & local data",

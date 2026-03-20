@@ -1,44 +1,42 @@
-import { useState, useEffect } from 'react';  // React ke hooks jo state (data) aur side effects (jaise font load karna) sambhalte hain
-import { useTranslation } from 'react-i18next'; // Urdu/English language badalne ke liye library
-import { useNavigate } from 'react-router-dom'; // Navigation ke liye
-import { Helmet } from 'react-helmet-async'; // Dynamic page titles ke liye
-import { motion, AnimatePresence } from 'framer-motion'; // Smooth animation ke liye (card ka entry effect, shake effect)
-import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Wifi, WifiOff } from 'lucide-react'; // Icons ki library
-import toast, { Toaster } from 'react-hot-toast'; // Khubsurat notifications (popups) ke liye
-import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Auth
-import { auth } from '../config/firebase'; // Firebase config
-import PageLoader from '../components/PageLoader'; // Professional transition loader
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Lock, Eye, EyeOff, Loader2, ArrowRight, User, HelpCircle, Phone, Wifi, WifiOff } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
+import PageLoader from '../components/PageLoader';
 
-// Import main logo & config
-import logoMain from '../assets/logo-main.png'; // Madrassa ka main logo import kiya
-import i18n from '../config/i18n'; // Language configuration file
-import appConfig from '../config/appConfig'; // App ki branding aur settings
+import logoMain from '../assets/logo-main.png';
+import i18n from '../config/i18n';
+import appConfig from '../config/appConfig';
 
 /**
  * Login Component - NooriEmaan Digital Portal
  * Compact Enterprise Design with Logo Background
  */
 const Login = () => {
-    // Translation hook (t('key') use karke hum urdu/english text dikhayenge)
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate(); // Navigation hook
+    const navigate = useNavigate();
 
     // Update title when language changes
     useEffect(() => {
         document.title = t('pageTitles.login');
     }, [t, i18n.language]);
 
-    // --- STATE MANAGEMENT (Data Store Karne Ki Jagah) ---
-    const [grNumber, setGrNumber] = useState(''); // User jo ID/GR Number type karega wo yahan save hoga
-    const [password, setPassword] = useState(''); // User jo Password type karega wo yahan save hoga
-    const [showPassword, setShowPassword] = useState(false); // Kya password dikhana hai ya chhupana hai? (Aankh wala button)
-    const [isLoading, setIsLoading] = useState(false); // Jab login ho raha ho to spinner ghumane ke liye
-    const [shouldShake, setShouldShake] = useState(false); // Agar password ghalat ho to card hilane (shake) ke liye
-    const [capsLockOn, setCapsLockOn] = useState(false); // Ye check karne ke liye ke user ka Caps Lock On to nahi?
-    const [rememberMe, setRememberMe] = useState(false); // "Mujhe Yaad Rakhein" checkbox ki state
-    const [isOnline, setIsOnline] = useState(navigator.onLine); // Internet connection ki halat (true = online, false = offline)
-    const [showPageLoader, setShowPageLoader] = useState(false); // Professional transition loader dikhane ke liye
-    const [initialLoading, setInitialLoading] = useState(true); // Website pehli baar khulne par loader dikhaye
+    // --- STATE ---
+    const [grNumber, setGrNumber] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [shouldShake, setShouldShake] = useState(false);
+    const [capsLockOn, setCapsLockOn] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [showPageLoader, setShowPageLoader] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
 
     // --- USE EFFECT (Page Load Hote Hi Kya Ho?) ---
     useEffect(() => {
@@ -59,18 +57,17 @@ const Login = () => {
         }, 5000);
     }, []);
 
-    // --- INTERNET CONNECTIVITY CHECK (Online/Offline Status) ---
-    // Ye useEffect internet connection monitor karta hai
+    // --- INTERNET CONNECTIVITY CHECK ---
     useEffect(() => {
-        // Track karna ke pehle offline tha ya nahi
+        // Track previous offline state
         let wasOffline = !navigator.onLine;
 
-        // Jab internet wapas aaye
+        // When internet comes back
         const handleOnline = () => {
             setIsOnline(true);
-            // Agar pehle offline tha, to "Back Online" toast dikhao
+            // Show "Back Online" toast if was previously offline
             if (wasOffline) {
-                // Professional green toast - 3 second ke liye
+                // Green toast - 3 seconds
                 toast.custom((t) => (
                     <div
                         style={{
@@ -97,30 +94,27 @@ const Login = () => {
                         <span style={{ fontSize: '20px' }}>📶</span>
                         {/* Message - Urdu/English */}
                         <span style={{ flex: 1 }}>
-                            {i18n.language === 'ur'
-                                ? 'انٹرنیٹ کنکشن بحال ہو گیا!'
-                                : 'You are back online!'
-                            }
+                            {t('toast.backOnline')}
                         </span>
                         {/* Checkmark */}
                         <span style={{ fontSize: '18px' }}>✅</span>
                     </div>
-                ), { duration: 3000, position: 'top-center' }); // 3 second tak dikhe
+                ), { duration: 3000, position: 'top-center' });
             }
-            wasOffline = false; // Reset flag
+            wasOffline = false;
         };
 
-        // Jab internet chala jaye
+        // When internet goes offline
         const handleOffline = () => {
             setIsOnline(false);
-            wasOffline = true; // Mark karo ke offline ho gaye
+            wasOffline = true;
         };
 
-        // Browser events par listeners lagaye
+        // Add event listeners
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
 
-        // Cleanup - jab component unmount ho to listeners hata do
+        // Cleanup on unmount
         return () => {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
@@ -128,9 +122,9 @@ const Login = () => {
     }, []);
 
 
-    // --- TOAST HELPERS (Messages Dikhane Ke Liye) ---
+    // --- TOAST HELPERS ---
 
-    // Ghalati (Error) ka message dikhane ke liye function (Laal rang mein)
+    // Error toast (red)
     const showErrorToast = (message) => {
         toast.custom((t) => (
             <div
@@ -143,11 +137,11 @@ const Login = () => {
                     fontWeight: '600',
                     padding: '16px 20px',
                     borderRadius: '12px',
-                    boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)', // Saaya (Shadow)
-                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)', // Language ke hisaab se font
+                    boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)', // Shadow
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
                     fontSize: isRTL ? '16px' : '14px',
                     direction: isRTL ? 'rtl' : 'ltr',
-                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)', // Animation (upar se niche aana)
+                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
                     opacity: t.visible ? 1 : 0,
                     transition: 'all 0.3s ease-in-out',
                     minWidth: '280px',
@@ -187,10 +181,10 @@ const Login = () => {
                     ✕
                 </button>
             </div>
-        ), { duration: 4000, position: 'top-center' }); // 4 second tak dikhega
+        ), { duration: 4000, position: 'top-center' });
     };
 
-    // Kamyabi (Success) ka message dikhane ke liye function (Hara rang mein)
+    // Success toast (green)
     const showSuccessToast = (message) => {
         toast.custom((t) => (
             <div
@@ -248,44 +242,44 @@ const Login = () => {
         ), { duration: 4000, position: 'top-center' });
     };
 
-    // --- FORM VALIDATION (Check karna ke data sahi hai ya nahi) ---
+    // --- FORM VALIDATION ---
     const validateForm = () => {
-        // Agar GR Number khali hai
+        // Check if GR number is empty
         if (!grNumber.trim()) {
             showErrorToast(t('validation.grNumberRequired')); // Error dikhao
             triggerShake(); // Card ko hila do
             return false;
         }
-        // Agar password chhota hai
+        // Check if password is too short
         if (password.length < 6) {
             showErrorToast(t('validation.passwordMinLength'));
             triggerShake();
             return false;
         }
-        return true; // Sab theek hai
+        return true; // Form is valid
     };
 
-    // Card ko hilane (Shake) ka logic
+    // Card shake animation logic
     const triggerShake = () => {
-        setShouldShake(true); // Shake shuru
-        setTimeout(() => setShouldShake(false), 500); // Aadhe second baad band
+        setShouldShake(true);
+        setTimeout(() => setShouldShake(false), 500);
     };
 
-    // --- LOGIN HANDLER (Jab Button Dabayein) ---
+    // --- LOGIN HANDLER ---
     const handleLogin = async (e) => {
-        e.preventDefault(); // Page refresh hone se roko
-        if (!validateForm()) return; // Agar form ghalat hai to yahi ruk jao
+        e.preventDefault();
+        if (!validateForm()) return;
 
-        setIsLoading(true); // Spinner ghuma do
+        setIsLoading(true);
 
         try {
-            // Firebase Auth - GR number ko email format mein convert karo
+            // Convert GR number to email format for Firebase Auth
             const email = `${grNumber}@nooriemaan.edu.pk`;
 
-            // Firebase se login karo
+            // Execute Firebase Login
             await signInWithEmailAndPassword(auth, email, password);
 
-            console.log('✅ Firebase Login successful!');
+            // Login successful
             showSuccessToast(t('success.loginSuccess'));
             setIsLoading(false);
 
@@ -298,10 +292,10 @@ const Login = () => {
                 localStorage.removeItem('userGR');
             }
 
-            // PageLoader dikhao - Professional UX ke liye
+            // Show professional transition loader
             setShowPageLoader(true);
 
-            // 3 seconds baad dashboard par redirect (faster now)
+            // Redirect to dashboard after delay
             setTimeout(() => {
                 navigate('/dashboard');
             }, 3000);
@@ -330,7 +324,7 @@ const Login = () => {
 
     // --- ANIMATIONS CONFIGURATION ---
 
-    // Card ki entry animation (niche se upar aana)
+    // Card entry animation (slide up)
     const cardVariants = {
         hidden: { opacity: 0, scale: 0.95 },
         visible: {
@@ -345,13 +339,13 @@ const Login = () => {
         shake: { x: [0, -6, 6, -6, 6, -3, 3, 0], transition: { duration: 0.35 } }
     };
 
-    // Language Toggle Function (Urdu <-> English)
+    // Language Toggle Function
     const toggleLanguage = () => {
         const newLang = i18n.language === 'ur' ? 'en' : 'ur';
         i18n.changeLanguage(newLang);
     };
 
-    // Check karna ke abhi Urdu hai ya English? (RTL ya LTR)
+    // Detect text direction
     const isRTL = i18n.language === 'ur';
     const isDark = localStorage.getItem('darkMode') === 'true';
 

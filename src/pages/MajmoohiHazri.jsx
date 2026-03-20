@@ -12,7 +12,7 @@ const MajmoohiHazri = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
 
-    // Abhi sirf Akram Attari
+    // Staff options for dropdown
     const staffOptions = [
         { id: 1, nameKey: 'staff.1' },
         { id: 2, nameKey: 'staff.2' },

@@ -176,7 +176,7 @@ const AttendanceReports = () => {
                     statusRaw = 'leave';
                     leave++;
                 } else if (record.status === 'holiday') {
-                    statusText = isRTL ? 'تعطیل' : 'Holiday';
+                    statusText = t('common.statusHolidaySunday');
                     statusClass = 'text-blue-600 bg-blue-50';
                     statusRaw = 'holiday';
                     holiday++;
@@ -187,7 +187,7 @@ const AttendanceReports = () => {
                 if (record.isEarlyLeave) earlyMins += (record.earlyMinutes || 0);
             } else if (isPast && !isSunday) {
                 // If past date and no record found -> Mark it as Absent
-                statusText = isRTL ? 'غیر حاضر' : 'Absent';
+                statusText = t('common.statusAbsent');
                 statusClass = 'text-red-600 bg-red-50';
                 statusRaw = 'absent';
                 absent++; // Count it as absent

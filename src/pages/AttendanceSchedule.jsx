@@ -458,7 +458,7 @@ const AttendanceSchedule = () => {
                             lateMinutes: 0,
                             deduction: 0
                         });
-                        console.log('✅ Sunday Holiday auto-saved for:', s.nameEn);
+
                     }
                 } catch (error) {
                     console.error('Auto-save Sunday error for', s.nameEn, ':', error);
@@ -702,7 +702,7 @@ const AttendanceSchedule = () => {
                         earlyMinutes: 0,
                         deduction: 0
                     });
-                    console.log('✅ Sunday Holiday auto-saved for:', nextDay.toDateString());
+
                     showSuccessToast(t('common.sundayAutoSaved'));
                 }
             }

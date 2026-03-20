@@ -40,10 +40,7 @@ const NetworkStatus = () => {
         >
             {isOnline ? <Wifi size={20} /> : <WifiOff size={20} />}
             <span className="font-semibold text-sm">
-                {isOnline
-                    ? (isRTL ? 'انٹرنیٹ کنکشن بحال ہو گیا ہے' : 'Back Online')
-                    : (isRTL ? 'انٹرنیٹ کنکشن منقطع ہے - ڈیٹا محفوظ نہیں ہوگا' : 'You are Offline - Changes may not save')
-                }
+                {isOnline ? t('toast.backOnline') : t('toast.offline')}
             </span>
         </div>
     );

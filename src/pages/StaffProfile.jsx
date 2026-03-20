@@ -24,7 +24,7 @@ const StaffProfile = () => {
                 if (docSnap.exists()) {
                     setStaff(docSnap.data());
                 } else {
-                    console.log("No such staff!");
+                    setStaff(null);
                 }
             } catch (error) {
                 console.error("Error fetching staff:", error);
