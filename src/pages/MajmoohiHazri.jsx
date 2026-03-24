@@ -6,24 +6,14 @@ import { Calendar, Users, Loader2, Search } from 'lucide-react';
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import toast, { Toaster } from 'react-hot-toast';
-import { staffData } from './AttendanceSchedule';
+import useStaffData from '../hooks/useStaffData';
 
 const MajmoohiHazri = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
 
-    // Staff options for dropdown
-    const staffOptions = [
-        { id: 1, nameKey: 'staff.1' },
-        { id: 2, nameKey: 'staff.2' },
-        { id: 3, nameKey: 'staff.3' },
-        { id: 4, nameKey: 'staff.4' },
-        { id: 5, nameKey: 'staff.5' },
-        { id: 6, nameKey: 'staff.6' },
-        { id: 7, nameKey: 'staff.7' },
-        { id: 8, nameKey: 'staff.8' },
-        { id: 9, nameKey: 'staff.9' }
-    ];
+    // Fetch staff data from Firebase
+    const { staffList: staffOptions, staffData, loading: staffLoading } = useStaffData();
 
     const [selectedStaff, setSelectedStaff] = useState(1);
 

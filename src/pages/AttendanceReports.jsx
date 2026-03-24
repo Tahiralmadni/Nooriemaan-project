@@ -9,13 +9,17 @@ import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import AttendanceSummaryChart from '../components/AttendanceSummaryChart';
+import { formatTime12Hour } from './AttendanceSchedule';
+import useStaffData from '../hooks/useStaffData';
 import { exportToExcel, exportToPDF } from '../utils/exportUtils';
-import { staffData } from './AttendanceSchedule';
 
 const AttendanceReports = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
     const navigate = useNavigate();
+
+    // Fetch staff data from Firebase
+    const { staffData, staffList, loading: staffLoading } = useStaffData();
 
     // ===== STATES =====
     const [isPageLoading, setIsPageLoading] = useState(true);
@@ -71,18 +75,7 @@ const AttendanceReports = () => {
         fetchData();
     }, [selectedStaff, selectedMonth]);
 
-    // Staff list
-    const staffList = [
-        { id: 1, name: t('staff.1') },
-        { id: 2, name: t('staff.2') },
-        { id: 3, name: t('staff.3') },
-        { id: 4, name: t('staff.4') },
-        { id: 5, name: t('staff.5') },
-        { id: 6, name: t('staff.6') },
-        { id: 7, name: t('staff.7') },
-        { id: 8, name: t('staff.8') },
-        { id: 9, name: t('staff.9') }
-    ];
+
 
     // Tabs configuration
     const tabs = [
@@ -371,7 +364,7 @@ const AttendanceReports = () => {
                                         >
                                             <option value="">{t('reports.selectStaff')}</option>
                                             {staffList.map((s) => (
-                                                <option key={s.id} value={s.id}>{s.id}. {s.name}</option>
+                                                <option key={s.id} value={s.id}>{s.id}. {isRTL ? s.nameUr : s.nameEn}</option>
                                             ))}
                                         </select>
                                         <ChevronDown size={16} className="absolute top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" style={{ [isRTL ? 'left' : 'right']: '12px' }} />

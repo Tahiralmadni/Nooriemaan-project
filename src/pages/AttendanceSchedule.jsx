@@ -8,6 +8,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import PageLoader from '../components/PageLoader';
+import useStaffData from '../hooks/useStaffData';
 
 // Helper: Convert 24-hour time to 12-hour AM/PM format
 export const formatTime12Hour = (time24) => {
@@ -18,208 +19,6 @@ export const formatTime12Hour = (time24) => {
     return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
 };
 
-// ===== STAFF DATA — Exported so reports can access setup dates =====
-export const staffData = {
-    1: {
-        id: 1,
-        nameUr: 'محمد اکرم عطاری',
-        nameEn: 'Muhammad Akram Attari',
-        roleUr: 'نائب ناظم',
-        roleEn: 'Naib Nazim',
-        entryTime: '8:00 AM',
-        exitTime: '4:00 PM',
-        entryHour: 8,
-        exitHour: 16,
-        totalHours: 8,
-        salary: 26620,
-        perDaySalary: Math.round(26620 / 26),
-        perHourSalary: Math.round(26620 / 26 / 8),
-        perMinuteSalary: 26620 / 26 / 8 / 60,
-        phone: '03128593301',
-        email: 'ishaqakram67@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'October 2020',
-        setupDate: '2026-02-01' // For Akram Attari
-    },
-    2: {
-        id: 2,
-        nameUr: 'قاری سید عمیر عطاری',
-        nameEn: 'Qari Syed Umair Attari',
-        roleUr: 'مدرسہ ناظم حسین آباد',
-        roleEn: 'Madrasa Nazim Hussainabad',
-        entryTime: '8:00 AM',
-        exitTime: '4:00 PM',
-        entryHour: 8,
-        exitHour: 16,
-        totalHours: 8,
-        salary: 13000,
-        perDaySalary: Math.round(13000 / 26),
-        perHourSalary: Math.round(13000 / 26 / 8),
-        perMinuteSalary: 13000 / 26 / 8 / 60,
-        phone: '03138657703',
-        email: '-',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'June 2025',
-        setupDate: '2026-02-25'
-    },
-    3: {
-        id: 3,
-        nameUr: 'محمد منیب صابر',
-        nameEn: 'Muhammad Muneeb Sabir',
-        roleUr: 'مدرس - بلال مسجد',
-        roleEn: 'Mudarris - Bilal Masjid',
-        entryTime: '8:00 AM',
-        exitTime: '11:00 AM',
-        entryHour: 8,
-        exitHour: 11,
-        totalHours: 3,
-        salary: 7500,
-        perDaySalary: Math.round(7500 / 26),
-        perHourSalary: Math.round(7500 / 26 / 3),
-        perMinuteSalary: 7500 / 26 / 3 / 60,
-        phone: '03152643153',
-        email: 'muneebattari527@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'October 2025',
-        setupDate: '2026-02-26'
-    },
-    4: {
-        id: 4,
-        nameUr: 'مدثر رضا',
-        nameEn: 'Mudassir Raza',
-        roleUr: 'مدرس — نیا آباد صبح',
-        roleEn: 'Mudaris — Nayabad Subha',
-        entryTime: '8:00 AM',
-        exitTime: '11:00 AM',
-        entryHour: 8,
-        exitHour: 11,
-        totalHours: 3,
-        salary: 7500,
-        perDaySalary: Math.round(7500 / 26),
-        perHourSalary: Math.round(7500 / 26 / 3),
-        perMinuteSalary: 7500 / 26 / 3 / 60,
-        phone: '03243499859',
-        email: 'mudassirrazachishti@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'August 2025',
-        setupDate: '2026-03-01'
-    },
-    5: {
-        id: 5,
-        nameUr: 'مدثر رضا',
-        nameEn: 'Mudassir Raza',
-        roleUr: 'مدرس — نیا آباد دوپہر',
-        roleEn: 'Mudaris — Nayabad Dopher',
-        entryTime: '2:00 PM',
-        exitTime: '4:00 PM',
-        entryHour: 14,
-        exitHour: 16,
-        totalHours: 2,
-        salary: 6000,
-        perDaySalary: Math.round(6000 / 26),
-        perHourSalary: Math.round(6000 / 26 / 2),
-        perMinuteSalary: 6000 / 26 / 2 / 60,
-        phone: '03243499859',
-        email: 'mudassirrazachishti@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'August 2025',
-        setupDate: '2026-03-05'
-    },
-    6: {
-        id: 6,
-        nameUr: 'مدثر رضا',
-        nameEn: 'Mudassir Raza',
-        roleUr: 'عطیہ — موسیٰ لائن',
-        roleEn: 'Aattiya — Musa line',
-        entryTime: '11:15 AM',
-        exitTime: '1:15 PM',
-        entryHour: 11.25,
-        exitHour: 13.25,
-        totalHours: 2,
-        salary: 7500,
-        perDaySalary: Math.round(7500 / 26),
-        perHourSalary: Math.round(7500 / 26 / 2),
-        perMinuteSalary: 7500 / 26 / 2 / 60,
-        phone: '03243499859',
-        email: 'mudassirrazachishti@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'August 2025',
-        setupDate: '2026-03-01'
-    },
-    7: {
-        id: 7,
-        nameUr: 'عبید رضا',
-        nameEn: 'Ubaid Raza',
-        roleUr: 'مدرس — نیا آباد',
-        roleEn: 'Mudaris (Nayabad)',
-        entryTime: '2:00 PM',
-        exitTime: '4:00 PM',
-        entryHour: 14,
-        exitHour: 16,
-        totalHours: 2,
-        salary: 6500,
-        perDaySalary: Math.round(6500 / 26),
-        perHourSalary: Math.round(6500 / 26 / 2),
-        perMinuteSalary: 6500 / 26 / 2 / 60,
-        phone: '03269676389',
-        email: 'ubaidattari0326@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'January 2023',
-        setupDate: '2026-03-09'
-    },
-    8: {
-        id: 8,
-        nameUr: 'عبید رضا (2)',
-        nameEn: 'Ubaid Raza (2)',
-        roleUr: 'مدرس — موسیٰ لائن',
-        roleEn: 'Mudaris (Mosalane)',
-        entryTime: '7:00 AM',
-        exitTime: '9:00 AM',
-        entryHour: 7,
-        exitHour: 9,
-        totalHours: 2,
-        salary: 6500,
-        perDaySalary: Math.round(6500 / 26),
-        perHourSalary: Math.round(6500 / 26 / 2),
-        perMinuteSalary: 6500 / 26 / 2 / 60,
-        phone: '03269676389',
-        email: 'ubaidattari0326@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'January 2023',
-        setupDate: '2026-03-13'
-    },
-    9: {
-        id: 9,
-        nameUr: 'عبید رضا (3)',
-        nameEn: 'Ubaid Raza (3)',
-        roleUr: 'تحریر',
-        roleEn: 'Tharir',
-        entryTime: '11:00 AM',
-        exitTime: '12:00 PM',
-        entryHour: 11,
-        exitHour: 12,
-        totalHours: 1,
-        salary: 2500,
-        perDaySalary: Math.round(2500 / 26),
-        perHourSalary: Math.round(2500 / 26 / 1),
-        perMinuteSalary: 2500 / 26 / 1 / 60,
-        phone: '03269676389',
-        email: 'ubaidattari0326@gmail.com',
-        city: 'Karachi',
-        country: 'Pakistan',
-        joinDate: 'January 2023',
-        setupDate: '2026-03-16'
-    }
-};
-
 const AttendanceSchedule = () => {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === 'ur';
@@ -228,6 +27,11 @@ const AttendanceSchedule = () => {
     const today = new Date();
     const dateStr = today.toLocaleDateString('en-GB');
     const currentTime = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    // Firebase Staff Data implementation
+    const { staffList, staffData, loading: staffLoading } = useStaffData();
+    const [selectedStaffId, setSelectedStaffId] = useState(1);
+    const staff = staffData ? staffData[selectedStaffId] : null;
 
     // Kamyabi (Success) Toast - Professional Green Style
     const showSuccessToast = (message) => {
@@ -353,21 +157,16 @@ const AttendanceSchedule = () => {
     // Top-level Tab State (عملہ / حاضری / جدید جدول)
     const [topActiveTab, setTopActiveTab] = useState('attendance');
 
-    // Selected staff — dropdown se change hoga
-    const [selectedStaffId, setSelectedStaffId] = useState(1);
-    const staff = staffData[selectedStaffId];
-
     // Auto-update entry/exit times when staff changes
     useEffect(() => {
-        const s = staffData[selectedStaffId];
-        if (s) {
-            setManualEntryTime(String(s.entryHour).padStart(2, '0') + ':00');
-            setManualExitTime(String(s.exitHour).padStart(2, '0') + ':00');
-        }
-    }, [selectedStaffId]);
+        if (!staff) return;
+        setManualEntryTime(String(staff.entryHour).padStart(2, '0') + ':00');
+        setManualExitTime(String(staff.exitHour).padStart(2, '0') + ':00');
+    }, [selectedStaffId, staff]);
 
     // Check if late based on manual entry time (NO grace period - 1 min late = deduction)
     useEffect(() => {
+        if (!staff) return;
         const [hours, minutes] = manualEntryTime.split(':').map(Number);
         const entryInMinutes = hours * 60 + minutes;
         const expectedEntry = staff.entryHour * 60;
@@ -379,10 +178,11 @@ const AttendanceSchedule = () => {
             setIsLate(false);
             setLateMinutes(0);
         }
-    }, [manualEntryTime, selectedStaffId]);
+    }, [manualEntryTime, selectedStaffId, staff]);
 
     // Check if leaving early based on manual exit time
     useEffect(() => {
+        if (!staff) return;
         const [hours, minutes] = manualExitTime.split(':').map(Number);
         const exitInMinutes = hours * 60 + minutes;
         const expectedExit = staff.exitHour * 60;
@@ -394,7 +194,7 @@ const AttendanceSchedule = () => {
             setIsEarlyLeave(false);
             setEarlyMinutes(0);
         }
-    }, [manualExitTime, selectedStaffId]);
+    }, [manualExitTime, selectedStaffId, staff]);
 
     useEffect(() => {
         document.title = t('pageTitles.attendanceSchedule');
@@ -426,8 +226,10 @@ const AttendanceSchedule = () => {
             const endOfDay = new Date(today);
             endOfDay.setHours(23, 59, 59, 999);
 
+            if (!staffList || staffList.length === 0) return;
+
             // Loop through ALL staff members
-            for (const s of Object.values(staffData)) {
+            for (const s of staffList) {
                 try {
                     const q = query(
                         collection(db, 'attendance'),
@@ -466,11 +268,14 @@ const AttendanceSchedule = () => {
             }
         };
 
-        autoSaveSundayHoliday();
-    }, []); // Run once on component mount
+        if (!staffLoading && staffList && staffList.length > 0) {
+            autoSaveSundayHoliday();
+        }
+    }, [staffLoading, staffList]); // Run once on component mount/data load
 
     // Fetch Attendance History
     const fetchHistory = async () => {
+        if (!staff) return;
         setIsLoadingHistory(true);
         try {
             // Get start/end of current month
@@ -520,10 +325,11 @@ const AttendanceSchedule = () => {
         if (activeTab === 'summary') {
             fetchHistory();
         }
-    }, [activeTab]);
+    }, [activeTab, staff]);
 
     // Check for missing previous days attendance in the current month
     const checkMissingDays = async () => {
+        if (!staff) return [];
         const selectedDateObj = new Date(selectedDate);
         selectedDateObj.setHours(0, 0, 0, 0);
         const missingDays = [];
@@ -566,7 +372,7 @@ const AttendanceSchedule = () => {
 
     // Save attendance
     const handleSave = async () => {
-        if (!status) return;
+        if (!status || !staff) return;
 
         // Check for missing previous days for ALL statuses to enforce Chronological Lock
         setIsSaving(true);
@@ -754,7 +560,7 @@ const AttendanceSchedule = () => {
     return (
         <>
             <AnimatePresence mode="wait">
-                {isPageLoading ? (
+                {(isPageLoading || staffLoading || !staff) ? (
                     <PageLoader key="loader" loadingText={t('hazri.loadingAttendance')} />
                 ) : (
                     <motion.div
@@ -914,7 +720,7 @@ const AttendanceSchedule = () => {
                                                 className="w-full px-3 py-2.5 border-2 border-emerald-200 dark:border-emerald-800 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none cursor-pointer"
                                                 style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}
                                             >
-                                                {Object.values(staffData).map(s => (
+                                                {staffList.map(s => (
                                                     <option key={s.id} value={s.id}>
                                                         {isRTL ? s.nameUr : s.nameEn} — {isRTL ? s.roleUr : s.roleEn}
                                                     </option>
