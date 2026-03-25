@@ -205,7 +205,14 @@ const StaffProfile = () => {
                         {/* Quick Stats */}
                         <div className="flex justify-center gap-6 pt-3 border-t border-gray-100 dark:border-slate-700">
                             <div className="text-center">
-                                <p className="text-lg font-black text-teal-600">Rs {staff.salary}</p>
+                                <p className="text-lg font-black text-teal-600">
+                                    Rs {staff.salary?.toLocaleString()}
+                                    {staff.allowance ? (
+                                        <span className="text-xs font-semibold text-teal-400 ml-1">
+                                            (+ {staff.allowance?.toLocaleString()} الاؤنس)
+                                        </span>
+                                    ) : null}
+                                </p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {t('profile.salary')}
                                 </p>
