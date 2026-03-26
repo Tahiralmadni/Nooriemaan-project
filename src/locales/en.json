@@ -144,6 +144,9 @@
         "21": "Ahmed",
         "22": "Ghulam Qadir"
     },
+    "roles": {
+        "panchser": "Panchser"
+    },
     "loader": {
         "loading": "Loading NooriEmaan Digital Portal...",
         "dashboard": "Loading NooriEmaan Dashboard...",
