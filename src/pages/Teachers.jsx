@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { Eye, ArrowRight, ArrowLeft, Search, X } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import toast from 'react-hot-toast';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
@@ -33,6 +34,7 @@ const Teachers = () => {
             setStaffList(staffData);
         } catch (error) {
             console.error('Error fetching staff:', error);
+            toast.error(isRTL ? 'اسٹاف کا ڈیٹا لوڈ کرنے میں مسئلہ آیا' : 'Error fetching staff data');
         } finally {
             setLoading(false);
         }

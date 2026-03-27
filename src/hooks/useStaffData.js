@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import toast from 'react-hot-toast';
 
 /**
  * Custom hook to fetch staff data from Firebase Firestore.
@@ -61,6 +62,7 @@ const useStaffData = () => {
                 setStaffList(listArr);
             } catch (error) {
                 console.error('Error fetching staff data:', error);
+                toast.error('Failed to load staff data: ' + error.message);
             } finally {
                 setLoading(false);
             }
