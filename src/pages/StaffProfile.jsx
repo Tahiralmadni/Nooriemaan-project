@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Phone, Mail, MapPin, Calendar, Clock, Banknote, Briefcase, Shield, Camera, Edit2, X, Save } from 'lucide-react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -187,7 +187,7 @@ const StaffProfile = () => {
                     </div>
 
                     {/* Staff ID Indicator & Edit Button */}
-                    <div className="absolute top-4 right-4 flex items-center gap-3">
+                    <div className="absolute top-4 right-4 flex items-center gap-3 z-10">
                         <button 
                             onClick={handleEditClick}
                             className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-colors flex items-center gap-1.5 shadow-sm"
