@@ -249,15 +249,19 @@ const DashboardLayout = () => {
                     <NavLink
                         to="/settings"
                         className={({ isActive }) => `
-                            flex items-center gap-2.5 w-full py-3.5
+                            flex items-center w-full py-3.5 gap-3
                             ${isCollapsed ? 'justify-center' : 'px-5'}
-                            no-underline text-sm font-medium
-                            ${isActive ? 'text-emerald-500 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50'}
-                            transition-all duration-200
+                            no-underline text-sm
+                            ${isActive ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 font-semibold' : 'text-gray-600 dark:text-gray-400 font-medium'}
+                            ${isRTL
+                                ? (isActive ? 'border-r-4 border-emerald-500' : 'border-r-4 border-transparent')
+                                : (isActive ? 'border-l-4 border-emerald-500' : 'border-l-4 border-transparent')
+                            }
+                            transition-all duration-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20
                         `}
                     >
-                        <Settings size={18} />
-                        {!isCollapsed && (isRTL ? 'پسند کریں' : 'Settings')}
+                        <Settings size={20} />
+                        {!isCollapsed && t('common.settings')}
                     </NavLink>
 
                     {/* Logout */}
@@ -291,7 +295,7 @@ const DashboardLayout = () => {
                         {location.pathname === '/teachers/summary' && t('sidebar.attendanceSummary')}
                         {location.pathname === '/teachers/daily' && t('sidebar.dailyAttendance')}
                         {location.pathname === '/teachers/reports' && t('sidebar.hazriReports')}
-                        {location.pathname === '/settings' && (isRTL ? 'ترتیبات' : 'Settings')}
+                        {location.pathname === '/settings' && t('common.settings')}
                         {location.pathname === '/students' && t('sidebar.students')}
                     </h2>
 

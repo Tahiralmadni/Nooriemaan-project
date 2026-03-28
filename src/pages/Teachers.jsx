@@ -34,7 +34,7 @@ const Teachers = () => {
             setStaffList(staffData);
         } catch (error) {
             console.error('Error fetching staff:', error);
-            toast.error(isRTL ? 'اسٹاف کا ڈیٹا لوڈ کرنے میں مسئلہ آیا' : 'Error fetching staff data');
+            toast.error(t('toast.staffLoadError'));
         } finally {
             setLoading(false);
         }
@@ -123,7 +123,7 @@ const Teachers = () => {
                 ) : (
                     <>
                         {/* Desktop Table - Hidden on Mobile */}
-                        <div className="hidden md:block bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-slate-700">
+                        <div className="hidden md:block bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 overflow-x-auto">
                             <table className="w-full">
                                 <thead>
                                     <tr className="bg-gradient-to-r from-emerald-500 to-emerald-600">

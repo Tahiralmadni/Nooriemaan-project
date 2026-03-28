@@ -23,7 +23,8 @@
         "support": "Support",
         "font": "Font",
         "switchToEnglish": "English",
-        "switchToUrdu": "اردو"
+        "switchToUrdu": "اردو",
+        "noInternet": "No Internet Connection"
     },
     "validation": {
         "grNumberRequired": "Please enter GR Number",
@@ -121,7 +122,6 @@
     },
     "staff": {
         "1": "Muhammad Akram Attari (1)",
-        "23": "Muhammad Akram Attari (2)",
         "2": "Qari Syed Umair Attari",
         "3": "Muhammad Muneeb Sabir",
         "4": "Mudassir Raza (1)",
@@ -142,7 +142,8 @@
         "19": "Shoaib",
         "20": "Muhammad Aliyan",
         "21": "Ahmed",
-        "22": "Ghulam Qadir"
+        "22": "Ghulam Qadir",
+        "23": "Muhammad Akram Attari (2)"
     },
     "roles": {
         "panchser": "Panchser"
@@ -154,7 +155,16 @@
     },
     "toast": {
         "backOnline": "You are back online!",
-        "offline": "You are Offline - Changes may not save"
+        "offline": "You are Offline - Changes may not save",
+        "staffLoadError": "Error fetching staff data",
+        "nameEmpty": "Name cannot be empty!",
+        "profileUpdated": "Profile updated successfully!",
+        "profileUpdateError": "Failed to update profile",
+        "dataLoadError": "Failed to load: {{msg}}",
+        "cacheCleared": "{{count}} cached items cleared",
+        "copied": "Copied!",
+        "validationFailed": "Validation Failed: {{error}}",
+        "capsLock": "Warning: Caps Lock is ON"
     },
     "clock": {
         "am": "AM",
@@ -293,7 +303,8 @@
         "statusPresent": "Present",
         "statusAbsent": "Absent",
         "statusLeave": "Leave",
-        "statusHolidaySunday": "Holiday: Sunday"
+        "statusHolidaySunday": "Holiday: Sunday",
+        "settings": "Settings"
     },
     "logoutModal": {
         "title": "Logout Confirmation",
@@ -382,6 +393,22 @@
         "framework": "Framework"
     },
     "notFound": {
-        "title": "Page Not Found"
+        "title": "Page Not Found",
+        "message": "Sorry, the page you are looking for does not exist or has been moved."
+    },
+    "editProfile": {
+        "title": "Edit Profile",
+        "editBtn": "Edit Profile",
+        "nameEn": "Name (English)",
+        "nameUr": "Name (Urdu)",
+        "phoneLabel": "Phone Number",
+        "salaryLabel": "Salary",
+        "cancelBtn": "Cancel",
+        "saveBtn": "Save Changes",
+        "allowanceText": "(+ {{amount}} Allowance)"
+    },
+    "attendance": {
+        "fillPreviousFirst": "Please mark attendance for previous days first: {{dates}}",
+        "detailedReportDesc": "View complete detailed attendance record, statistics and deduction report"
     }
 }

@@ -45,7 +45,7 @@ const Settings = () => {
                 cleared++;
             }
         });
-        toast.success(isRTL ? `${cleared} آئٹمز صاف ہو گئے` : `${cleared} cached items cleared`, { duration: 2000 });
+        toast.success(t('toast.cacheCleared', { count: cleared }), { duration: 2000 });
     };
 
     return (

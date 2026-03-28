@@ -383,16 +383,14 @@ const AttendanceSchedule = () => {
                 setIsSaving(false);
                 const datesList = missingDays.join(' ، ');
                 showErrorToast(
-                    isRTL
-                        ? `پہلے سابقہ دنوں کی حاضری لگائیں: ${datesList}`
-                        : `Please mark attendance for previous day(s): ${datesList}`
+                    t('attendance.fillPreviousFirst', { dates: datesList })
                 );
                 return;
             }
         } catch (error) {
             console.error("Validation Error:", error);
             setIsSaving(false);
-            showErrorToast(isRTL ? "حاضری چیک کرنے میں مسئلہ آیا: " + error.message : "Validation Failed: " + error.message);
+            showErrorToast(t('toast.validationFailed', { error: error.message }));
             return;
         }
 
@@ -1017,10 +1015,7 @@ const AttendanceSchedule = () => {
                                                     {t('hazri.tabs.summary')}
                                                 </h3>
                                                 <p className="text-sm text-slate-500 mb-5" style={{ lineHeight: '2' }}>
-                                                    {isRTL
-                                                        ? 'تفصیلی حاضری ریکارڈ، اعداد و شمار اور کٹوتی کی مکمل رپورٹ دیکھیں'
-                                                        : 'View detailed attendance records, statistics and deduction reports'
-                                                    }
+                                                    {t('attendance.detailedReportDesc')}
                                                 </p>
                                                 <a
                                                     href="/teachers/majmoohi"

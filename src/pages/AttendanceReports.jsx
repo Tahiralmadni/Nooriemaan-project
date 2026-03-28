@@ -437,7 +437,7 @@ const AttendanceReports = () => {
                                                     const rows = monthDays.map(r => [r.serial, r.date, r.day, r.status, r.startLessMin > 0 ? r.startLessMin : '-', r.endLessMin > 0 ? r.endLessMin : '-', r.remarks || '-'].join('\t'));
                                                     const text = headers.join('\t') + '\n' + rows.join('\n');
                                                     navigator.clipboard.writeText(text);
-                                                    import('react-hot-toast').then(m => m.default.success(isRTL ? 'کاپی ہو گیا' : 'Copied!', { duration: 1500 }));
+                                                    import('react-hot-toast').then(m => m.default.success(t('toast.copied'), { duration: 1500 }));
                                                 }}
                                                 className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1 border border-blue-200 dark:border-blue-800"
                                             >

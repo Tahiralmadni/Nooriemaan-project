@@ -29,9 +29,7 @@ const NotFound = () => {
                     </h1>
 
                     <p className="text-gray-500 dark:text-gray-400 mb-8">
-                        {isRTL
-                            ? 'معذرت، جو صفحہ آپ تلاش کر رہے ہیں وہ موجود نہیں ہے یا ہٹا دیا گیا ہے۔'
-                            : 'Sorry, the page you are looking for does not exist or has been removed.'}
+                        {t('notFound.message')}
                     </p>
 
                     <button

@@ -404,10 +404,7 @@ const Login = () => {
                     <span style={{ fontSize: '18px' }}>⚠️</span>
                     {/* Message - Urdu/English dono mein */}
                     <span>
-                        {isRTL
-                            ? 'انٹرنیٹ کنکشن منقطع ہے'
-                            : 'Internet Connection Lost'
-                        }
+                        {t('login.noInternet')}
                     </span>
                     {/* Pulsing dot - connection loss ka indicator */}
                     <span style={{
@@ -761,10 +758,7 @@ const Login = () => {
                                                 ⚠️
                                             </motion.span>
                                             <span>
-                                                {isRTL
-                                                    ? 'دھیان دیں: Caps Lock آن ہے'
-                                                    : 'Warning: Caps Lock is ON'
-                                                }
+                                                {t('toast.capsLock')}
                                             </span>
                                         </motion.div>
                                     )}

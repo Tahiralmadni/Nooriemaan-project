@@ -3,9 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Phone, Mail, MapPin, Calendar, Clock, Banknote, Briefcase, Shield, Camera } from 'lucide-react';
-import { doc, getDoc } from 'firebase/firestore';
+import { ArrowLeft, ArrowRight, Phone, Mail, MapPin, Calendar, Clock, Banknote, Briefcase, Shield, Camera, Edit2, X, Save } from 'lucide-react';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import toast, { Toaster } from 'react-hot-toast';
 
 const StaffProfile = () => {
     const { id } = useParams();
@@ -59,6 +60,61 @@ const StaffProfile = () => {
             localStorage.setItem(`staffPhoto_${id}`, reader.result);
         };
         reader.readAsDataURL(file);
+    };
+
+    // Edit Profile Logic
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState({});
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleEditClick = () => {
+        setEditForm({
+            nameEn: staff.nameEn || '',
+            nameUr: staff.nameUr || '',
+            phone: staff.phone || '',
+            salary: staff.salary || 0
+        });
+        setIsEditing(true);
+    };
+
+    const handleSaveEdit = async () => {
+        // Bug 11: Profile Validation (Prevent Empty Name)
+        if (!editForm.nameEn.trim() || !editForm.nameUr.trim()) {
+            toast.error(t('toast.nameEmpty'));
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            const docRef = doc(db, 'staff', id);
+            await updateDoc(docRef, {
+                nameEn: editForm.nameEn,
+                nameUr: editForm.nameUr,
+                phone: editForm.phone,
+                salary: Number(editForm.salary)
+            });
+            
+            // Update local state
+            setStaff({ ...staff, ...editForm, salary: Number(editForm.salary) });
+            setIsEditing(false);
+            
+            // Bug 5: Missing Success Toasts
+            toast.success(t('toast.profileUpdated'), {
+                style: {
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    padding: '16px 20px',
+                    borderRadius: '12px',
+                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
+                },
+                iconTheme: { primary: '#fff', secondary: '#059669' }
+            });
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            toast.error(t('toast.profileUpdateError'));
+        }
+        setIsSaving(false);
     };
 
     if (loading) {
@@ -130,9 +186,18 @@ const StaffProfile = () => {
                         </button>
                     </div>
 
-                    {/* Staff ID Indicator */}
-                    <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
-                        <span className="text-white/60 text-xs font-mono">#{id}</span>
+                    {/* Staff ID Indicator & Edit Button */}
+                    <div className="absolute top-4 right-4 flex items-center gap-3">
+                        <button 
+                            onClick={handleEditClick}
+                            className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-colors flex items-center gap-1.5 shadow-sm"
+                        >
+                            <Edit2 size={14} />
+                            <span className="text-xs font-bold">{t('editProfile.editBtn')}</span>
+                        </button>
+                        <div className="bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
+                            <span className="text-white/80 text-xs font-mono font-bold">#{id}</span>
+                        </div>
                     </div>
                 </motion.div>
 
@@ -208,8 +273,8 @@ const StaffProfile = () => {
                                 <p className="text-lg font-black text-teal-600">
                                     Rs {staff.salary?.toLocaleString()}
                                     {staff.allowance ? (
-                                        <span className="text-xs font-semibold text-teal-400 ml-1">
-                                            (+ {staff.allowance?.toLocaleString()} الاؤنس)
+                                        <span className="text-sm font-normal text-emerald-600 dark:text-emerald-400">
+                                            {t('editProfile.allowanceText', { amount: staff.allowance?.toLocaleString() })}
                                         </span>
                                     ) : null}
                                 </p>
@@ -267,6 +332,100 @@ const StaffProfile = () => {
                     ))}
                 </div>
             </div>
+
+            <Toaster position="top-center" reverseOrder={false} />
+
+            {/* Edit Profile Modal */}
+            <AnimatePresence>
+                {isEditing && (
+                    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            exit={{ opacity: 0 }} 
+                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+                            onClick={() => !isSaving && setIsEditing(false)}
+                        />
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden"
+                            dir={isRTL ? 'rtl' : 'ltr'}
+                            style={{ fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)' }}
+                        >
+                            <div className="p-5 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+                                    {t('editProfile.title')}
+                                </h3>
+                                <button onClick={() => !isSaving && setIsEditing(false)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="p-5 space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t('editProfile.nameEn')}</label>
+                                    <input 
+                                        type="text" 
+                                        value={editForm.nameEn}
+                                        onChange={e => setEditForm({...editForm, nameEn: e.target.value})}
+                                        className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t('editProfile.nameUr')}</label>
+                                    <input 
+                                        type="text" 
+                                        value={editForm.nameUr}
+                                        onChange={e => setEditForm({...editForm, nameUr: e.target.value})}
+                                        className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all dark:text-white text-right"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t('editProfile.phoneLabel')}</label>
+                                    <input 
+                                        type="text" 
+                                        value={editForm.phone}
+                                        onChange={e => setEditForm({...editForm, phone: e.target.value})}
+                                        className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t('editProfile.salaryLabel')}</label>
+                                    <input 
+                                        type="number" 
+                                        value={editForm.salary}
+                                        onChange={e => setEditForm({...editForm, salary: e.target.value})}
+                                        className="w-full p-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all font-mono font-bold dark:text-white"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="p-5 border-t border-gray-100 dark:border-slate-700 flex justify-end gap-3 bg-gray-50 dark:bg-slate-900/50">
+                                <button 
+                                    onClick={() => !isSaving && setIsEditing(false)}
+                                    className="px-5 py-2 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
+                                >
+                                    {t('editProfile.cancelBtn')}
+                                </button>
+                                <button 
+                                    onClick={handleSaveEdit}
+                                    disabled={isSaving}
+                                    className={`px-6 py-2 rounded-xl text-sm font-bold shadow-md shadow-emerald-500/20 text-white flex items-center gap-2 transition-all ${isSaving ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-105'}`}
+                                >
+                                    {isSaving ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <Save size={16} />
+                                    )}
+                                    {t('editProfile.saveBtn')}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </>
     );
 };

@@ -193,7 +193,7 @@ const MajmoohiHazri = () => {
             console.error('Load error:', error);
             const errMsg = error.message || 'Unknown error';
             setLoadError(errMsg);
-            toast.error(isRTL ? `ڈیٹا لوڈ نہیں ہوا: ${errMsg}` : `Failed to load: ${errMsg}`);
+            toast.error(t('toast.dataLoadError', { msg: errMsg }));
         } finally {
             setLoading(false);
         }
