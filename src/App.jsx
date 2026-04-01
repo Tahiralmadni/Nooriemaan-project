@@ -23,6 +23,7 @@ const AttendanceReports = lazy(() => import('./pages/AttendanceReports'));
 const Settings = lazy(() => import('./pages/Settings'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+
 // Blank fallback — sirf background dikhao, gol spinner nahi
 const PageFallback = () => (
   <div style={{
@@ -108,6 +109,8 @@ function App() {
 
             {/* Standalone Pages (with mini-navbar) */}
             <Route path="/teachers/schedule" element={<ProtectedRoute><AttendanceSchedule /></ProtectedRoute>} />
+
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
