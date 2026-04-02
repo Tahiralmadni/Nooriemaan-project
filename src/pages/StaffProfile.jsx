@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Phone, Mail, MapPin, Calendar, Clock, Banknote, Briefcase, Shield, Camera, Edit2, X, Save } from 'lucide-react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { staffData } from '../utils/migrateStaffToFirebase';
 import toast, { Toaster } from 'react-hot-toast';
 
 const StaffProfile = () => {
@@ -22,8 +23,24 @@ const StaffProfile = () => {
             try {
                 const docRef = doc(db, 'staff', id);
                 const docSnap = await getDoc(docRef);
+                const fallbackStaff = staffData[id];
+
                 if (docSnap.exists()) {
-                    setStaff(docSnap.data());
+                    const firebaseStaff = docSnap.data();
+
+                    if (Number(id) === 15 && fallbackStaff) {
+                        setStaff({
+                            ...firebaseStaff,
+                            ...fallbackStaff,
+                            email: firebaseStaff.email || fallbackStaff.email,
+                            phone: firebaseStaff.phone && firebaseStaff.phone !== '-' ? firebaseStaff.phone : fallbackStaff.phone,
+                            staffId: firebaseStaff.staffId || fallbackStaff.id
+                        });
+                    } else {
+                        setStaff({ ...fallbackStaff, ...firebaseStaff });
+                    }
+                } else if (fallbackStaff) {
+                    setStaff(fallbackStaff);
                 } else {
                     setStaff(null);
                 }
@@ -136,7 +153,9 @@ const StaffProfile = () => {
     // Role display parsing
     const currentRole = isRTL ? staff.roleUr : staff.roleEn;
     const currentName = isRTL ? staff.nameUr : staff.nameEn;
-    const currentTiming = `${staff.entryTime} - ${staff.exitTime}`;
+    const currentTiming = staff.isRemote
+        ? (isRTL ? `ریموٹ — ${staff.totalHours} گھنٹے یومیہ` : `Remote — ${staff.totalHours} Hours/Day`)
+        : `${staff.entryTime} - ${staff.exitTime}`;
 
     return (
         <>
@@ -284,16 +303,20 @@ const StaffProfile = () => {
                             </div>
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
-                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.entryTime}</p>
+                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">
+                                    {staff.isRemote ? currentTiming : staff.entryTime}
+                                </p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
-                                    {t('profile.entry')}
+                                    {staff.isRemote ? t('profile.timing') : t('profile.entry')}
                                 </p>
                             </div>
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
-                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">{staff.exitTime}</p>
+                                <p className="text-lg font-black text-slate-700 dark:text-slate-200">
+                                    {staff.isRemote ? (isRTL ? 'ریموٹ اسٹاف' : 'Remote Staff') : staff.exitTime}
+                                </p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
-                                    {t('profile.exit')}
+                                    {staff.isRemote ? t('profile.role') : t('profile.exit')}
                                 </p>
                             </div>
                         </div>

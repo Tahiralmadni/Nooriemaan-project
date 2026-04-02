@@ -47,7 +47,7 @@ export const staffData = {
     12: { id: 12, nameUr: 'محمد ہاشم', nameEn: 'Muhammad Hashim', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[12], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
     13: { id: 13, nameUr: 'احمد شاہ', nameEn: 'Ahmed Shah', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[13], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
     14: { id: 14, nameUr: 'جواد', nameEn: 'Jawad', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[14], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
-    15: { id: 15, nameUr: 'حنظلہ طاہر', nameEn: 'Hanzalah Tahir', roleUr: 'ڈیولپر', roleEn: 'Developer', entryTime: 'Remote', exitTime: 'Remote', entryHour: 0, exitHour: 0, totalHours: 3, salary: 15000, isRemote: true, perDaySalary: Math.round(15000 / 26), perHourSalary: Math.round(15000 / 26 / 3), perMinuteSalary: 15000 / 26 / 3 / 60, phone: '-', email: 'hanzalahtahir93@gmail.com', city: 'Karachi', country: 'Pakistan', joinDate: 'January 2026', setupDate: '2026-04-01', setupComplete: true },
+    15: { id: 15, nameUr: 'حنظلہ طاہر', nameEn: 'Hanzalah Tahir', roleUr: 'ڈیولپر', roleEn: 'Developer', entryTime: 'Remote', exitTime: 'Remote', entryHour: 0, exitHour: 0, totalHours: 3, salary: 15000, isRemote: true, perDaySalary: Math.round(15000 / 26), perHourSalary: Math.round(15000 / 26 / 3), perMinuteSalary: 15000 / 26 / 3 / 60, phone: '03018544514', email: 'hanzalahtahir93@gmail.com', city: 'Karachi', country: 'Pakistan', joinDate: 'January 2026', setupDate: '2026-04-01', setupComplete: true },
     16: { id: 16, nameUr: 'قاری کاشف جنید', nameEn: 'Qari Kashif Junaid', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[16], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
     17: { id: 17, nameUr: 'عبد القدوس', nameEn: 'Abdul Qudus', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[17], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
     18: { id: 18, nameUr: 'محمد دلاور رضا', nameEn: 'Muhammad Dilawar Raza', roleUr: 'نائب ناظم', roleEn: 'Naib Nazim', entryTime: '7:30 AM', exitTime: '4:00 PM', entryHour: 7.5, exitHour: 16, totalHours: 8.5, salary: 37000, allowance: 1500, allowanceDetail: '1000 ترکیب + 500 موبائل', perDaySalary: Math.round(37000 / 26), perHourSalary: Math.round(37000 / 26 / 8.5), perMinuteSalary: 37000 / 26 / 8.5 / 60, phone: '03072784559', email: 'attaridilawar510@gmail.com', city: 'Karachi', country: 'Pakistan', joinDate: '2018', setupDate: '2026-03-25', setupComplete: true },
@@ -58,17 +58,29 @@ export const staffData = {
     23: { id: 23, nameUr: 'محمد اکرم عطاری (2)', nameEn: 'Muhammad Akram Attari (2)', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[23], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
 };
 
+export const pushSingleStaff = async (staffId) => {
+    try {
+        const staff = staffData[staffId];
+
+        if (!staff) {
+            throw new Error(`Staff ${staffId} not found in staffData`);
+        }
+
+        await setDoc(doc(db, 'staff', String(staff.id)), staff);
+        return true;
+    } catch (error) {
+        console.error(`Single staff push failed for ${staffId}:`, error);
+        return false;
+    }
+};
+
 export const migrateStaff = async () => {
     try {
-
-
         for (const key in staffData) {
             const staff = staffData[key];
             const strId = String(staff.id);
             await setDoc(doc(db, 'staff', strId), staff);
-
         }
-
 
         return true;
     } catch (error) {
