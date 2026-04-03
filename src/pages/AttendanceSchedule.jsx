@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import PageLoader from '../components/PageLoader';
 import useStaffData from '../hooks/useStaffData';
+import { pushSingleStaff } from '../utils/migrateStaffToFirebase';
 
 // Helper: Convert 24-hour time to 12-hour AM/PM format
 export const formatTime12Hour = (time24) => {
@@ -135,6 +136,10 @@ const AttendanceSchedule = () => {
     // Manual time inputs
     const [manualEntryTime, setManualEntryTime] = useState('08:00');
     const [manualExitTime, setManualExitTime] = useState('16:00');
+
+    // Remote Staff States
+    const [hoursWorked, setHoursWorked] = useState(0);
+    const [minutesWorked, setMinutesWorked] = useState(0);
 
     // History State
     const [attendanceHistory, setAttendanceHistory] = useState([]);
@@ -382,7 +387,7 @@ const AttendanceSchedule = () => {
             if (missingDays && missingDays.length > 0) {
                 setIsSaving(false);
                 const datesList = missingDays.join(' ، ');
-                showErrorToast(
+               showErrorToast(
                     t('attendance.fillPreviousFirst', { dates: datesList })
                 );
                 return;
@@ -396,7 +401,7 @@ const AttendanceSchedule = () => {
 
         // Validate time is within working hours for present status
         // Uses staff-specific entry/exit hours instead of hardcoded 8-16
-        if (status === 'present') {
+        if (status === 'present' && !staff.isRemote) {
             const [entryHours, entryMins] = manualEntryTime.split(':').map(Number);
             const [exitHours, exitMins] = manualExitTime.split(':').map(Number);
 
@@ -413,6 +418,12 @@ const AttendanceSchedule = () => {
             // Check exit time
             if (exitHours < minEntryHour || exitHours > maxExitHour || (exitHours === maxExitHour && exitMins > 0)) {
                 showErrorToast(t('hazri.validation.exitTimeInvalid') + ` (Allowed: ${minEntryHour}:00 to ${maxExitHour}:00)`);
+                setIsSaving(false);
+                return;
+            }
+        } else if (status === 'present' && staff.isRemote) {
+            if (hoursWorked === 0 && minutesWorked === 0) {
+                showErrorToast(isRTL ? "برائے مہربانی کام کے گھنٹے لکھیں۔" : "Please provide hours worked.");
                 setIsSaving(false);
                 return;
             }
@@ -450,8 +461,10 @@ const AttendanceSchedule = () => {
                 reason: status !== 'present' ? reason : '',
                 reasonType: status !== 'present' ? reasonType : '',
                 date: Timestamp.fromDate(attendanceDate), // FIXED: Use selectedDate!
-                entryTime: status === 'present' ? manualEntryTime : '-',
-                exitTime: status === 'present' ? manualExitTime : '-',
+                entryTime: status === 'present' ? (staff.isRemote ? 'Remote' : manualEntryTime) : '-',
+                exitTime: status === 'present' ? (staff.isRemote ? 'Remote' : manualExitTime) : '-',
+                hoursWorked: (status === 'present' && staff.isRemote) ? Number(hoursWorked) : 0,
+                minutesWorked: (status === 'present' && staff.isRemote) ? Number(minutesWorked) : 0,
                 markedAt: markedTime,
                 salary: staff.salary,
                 // Use finalized values (false/0 for non-present)
@@ -515,6 +528,8 @@ const AttendanceSchedule = () => {
             setStatus('');
             setReason('');
             setReasonType('');
+            setHoursWorked(0);
+            setMinutesWorked(0);
         } catch (error) {
             console.error('Save Error:', error);
             showErrorToast(t('hazri.validation.saveFailed'));
@@ -619,6 +634,21 @@ const AttendanceSchedule = () => {
                                         className="h-8 w-8 object-contain"
                                         onError={(e) => e.target.style.display = 'none'}
                                     />
+                                </div>
+
+                                {/* Temporary Sync Button */}
+                                <div className="mt-2 text-center">
+                                    <button 
+                                        onClick={async () => {
+                                            const res = await pushSingleStaff(15);
+                                            if(res) toast.success("Hanzalah Synced!");
+                                            else toast.error("Sync Failed");
+                                            window.location.reload();
+                                        }}
+                                        className="text-[10px] text-emerald-400 opacity-50 hover:opacity-100 transition-opacity"
+                                    >
+                                        [ Sync Hanzalah ]
+                                    </button>
                                 </div>
                             </div>
 
@@ -760,20 +790,35 @@ const AttendanceSchedule = () => {
                                                     {t('hazri.timeTable')}
                                                 </h3>
                                             </div>
-                                            <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-slate-700">
+                                            {staff.isRemote ? (
                                                 <div className="p-4 text-center">
-                                                    <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.number')}</p>
-                                                    <p className="text-lg font-bold text-emerald-600">1</p>
+                                                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-800 mb-2">
+                                                        <span className="text-lg">🏠</span>
+                                                        <span className="text-sm font-bold text-blue-700 dark:text-blue-300">{isRTL ? 'ریموٹ ڈیولپر' : 'Remote Developer'}</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                                                        {isRTL ? `روزانہ ${staff.totalHours || 3} گھنٹے کام` : `${staff.totalHours || 3} Hours / Day Target`}
+                                                    </p>
+                                                    <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+                                                        Rs {(staff.salary || 15000).toLocaleString()}
+                                                    </p>
                                                 </div>
-                                                <div className="p-4 text-center">
-                                                    <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.entryTime')}</p>
-                                                    <p className="text-sm font-bold text-gray-700 dark:text-slate-200">{staff.entryTime}</p>
+                                            ) : (
+                                                <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-slate-700">
+                                                    <div className="p-4 text-center">
+                                                        <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.number')}</p>
+                                                        <p className="text-lg font-bold text-emerald-600">1</p>
+                                                    </div>
+                                                    <div className="p-4 text-center">
+                                                        <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.entryTime')}</p>
+                                                        <p className="text-sm font-bold text-gray-700 dark:text-slate-200">{staff.entryTime}</p>
+                                                    </div>
+                                                    <div className="p-4 text-center">
+                                                        <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.exitTime')}</p>
+                                                        <p className="text-sm font-bold text-gray-700 dark:text-slate-200">{staff.exitTime}</p>
+                                                    </div>
                                                 </div>
-                                                <div className="p-4 text-center">
-                                                    <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{t('hazri.exitTime')}</p>
-                                                    <p className="text-sm font-bold text-gray-700 dark:text-slate-200">{staff.exitTime}</p>
-                                                </div>
-                                            </div>
+                                            )}
                                         </div>
 
                                         {/* New Entry Form - Premium Design */}
@@ -813,91 +858,135 @@ const AttendanceSchedule = () => {
                                                 {/* Time Inputs - Premium Grid */}
                                                 {status === 'present' && (
                                                     <>
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            {/* Entry Section */}
-                                                            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100">
-                                                                <div className="flex justify-between items-center mb-2">
-                                                                    <label className="text-[10px] text-emerald-700 font-bold uppercase flex items-center gap-1">
+                                                        {staff.isRemote ? (
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                {/* Remote Hours Section */}
+                                                                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100/50 dark:border-emerald-900/30">
+                                                                    <label className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold uppercase flex items-center gap-1 mb-2">
                                                                         <Clock size={10} />
-                                                                        {t('hazri.entryTime')}
+                                                                        {isRTL ? "گھنٹے (Hours)" : "Hours Worked"}
                                                                     </label>
-                                                                    <div className="flex gap-1 bg-white dark:bg-slate-700 rounded-lg p-0.5 shadow-sm">
-                                                                        <button
-                                                                            onClick={() => setEntryPermission(true)}
-                                                                            className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${entryPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
-                                                                        >
-                                                                            {t('hazri.yes')}
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={() => setEntryPermission(false)}
-                                                                            className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${!entryPermission ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-red-500'}`}
-                                                                        >
-                                                                            {t('hazri.no')}
-                                                                        </button>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <input
+                                                                            type="number"
+                                                                            min="0"
+                                                                            max="24"
+                                                                            value={hoursWorked}
+                                                                            onChange={(e) => setHoursWorked(e.target.value)}
+                                                                            className="w-full p-2.5 text-lg border-2 border-emerald-200 dark:border-emerald-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all"
+                                                                        />
+                                                                        <span className="text-[10px] font-bold text-emerald-600">H</span>
                                                                     </div>
                                                                 </div>
-                                                                <input
-                                                                    type="time"
-                                                                    value={manualEntryTime}
-                                                                    onChange={(e) => setManualEntryTime(e.target.value)}
-                                                                    className="w-full p-2.5 text-sm border-2 border-emerald-200 dark:border-emerald-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all"
-                                                                />
-                                                            </div>
 
-                                                            {/* Exit Section */}
-                                                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-xl border border-amber-100">
-                                                                <div className="flex justify-between items-center mb-2">
-                                                                    <label className="text-[10px] text-amber-700 font-bold uppercase flex items-center gap-1">
+                                                                {/* Remote Minutes Section */}
+                                                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-xl border border-amber-100/50 dark:border-amber-900/30">
+                                                                    <label className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase flex items-center gap-1 mb-2">
                                                                         <Clock size={10} />
-                                                                        {t('hazri.exitTime')}
+                                                                        {isRTL ? "منٹ (Minutes)" : "Minutes Worked"}
                                                                     </label>
-                                                                    <div className="flex gap-1 bg-white dark:bg-slate-700 rounded-lg p-0.5 shadow-sm">
-                                                                        <button
-                                                                            onClick={() => setExitPermission(true)}
-                                                                            className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${exitPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
-                                                                        >
-                                                                            {t('hazri.yes')}
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={() => setExitPermission(false)}
-                                                                            className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${!exitPermission ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-red-500'}`}
-                                                                        >
-                                                                            {t('hazri.no')}
-                                                                        </button>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <input
+                                                                            type="number"
+                                                                            min="0"
+                                                                            max="59"
+                                                                            value={minutesWorked}
+                                                                            onChange={(e) => setMinutesWorked(e.target.value)}
+                                                                            className="w-full p-2.5 text-lg border-2 border-amber-200 dark:border-amber-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-amber-700 dark:text-amber-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all"
+                                                                        />
+                                                                        <span className="text-[10px] font-bold text-amber-600">M</span>
                                                                     </div>
                                                                 </div>
-                                                                <input
-                                                                    type="time"
-                                                                    value={manualExitTime}
-                                                                    onChange={(e) => setManualExitTime(e.target.value)}
-                                                                    className="w-full p-2.5 text-sm border-2 border-amber-200 dark:border-amber-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-amber-700 dark:text-amber-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all"
-                                                                />
                                                             </div>
-                                                        </div>
+                                                        ) : (
+                                                            <>
+                                                                <div className="grid grid-cols-2 gap-4">
+                                                                    {/* Entry Section */}
+                                                                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100">
+                                                                        <div className="flex justify-between items-center mb-2">
+                                                                            <label className="text-[10px] text-emerald-700 font-bold uppercase flex items-center gap-1">
+                                                                                <Clock size={10} />
+                                                                                {t('hazri.entryTime')}
+                                                                            </label>
+                                                                            <div className="flex gap-1 bg-white dark:bg-slate-700 rounded-lg p-0.5 shadow-sm">
+                                                                                <button
+                                                                                    onClick={() => setEntryPermission(true)}
+                                                                                    className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${entryPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
+                                                                                >
+                                                                                    {t('hazri.yes')}
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => setEntryPermission(false)}
+                                                                                    className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${!entryPermission ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-red-500'}`}
+                                                                                >
+                                                                                    {t('hazri.no')}
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <input
+                                                                            type="time"
+                                                                            value={manualEntryTime}
+                                                                            onChange={(e) => setManualEntryTime(e.target.value)}
+                                                                            className="w-full p-2.5 text-sm border-2 border-emerald-200 dark:border-emerald-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all"
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Exit Section */}
+                                                                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-xl border border-amber-100">
+                                                                        <div className="flex justify-between items-center mb-2">
+                                                                            <label className="text-[10px] text-amber-700 font-bold uppercase flex items-center gap-1">
+                                                                                <Clock size={10} />
+                                                                                {t('hazri.exitTime')}
+                                                                            </label>
+                                                                            <div className="flex gap-1 bg-white dark:bg-slate-700 rounded-lg p-0.5 shadow-sm">
+                                                                                <button
+                                                                                    onClick={() => setExitPermission(true)}
+                                                                                    className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${exitPermission ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-400 hover:text-emerald-500'}`}
+                                                                                >
+                                                                                    {t('hazri.yes')}
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => setExitPermission(false)}
+                                                                                    className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${!exitPermission ? 'bg-red-500 text-white shadow-sm' : 'text-gray-400 hover:text-red-500'}`}
+                                                                                >
+                                                                                    {t('hazri.no')}
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <input
+                                                                            type="time"
+                                                                            value={manualExitTime}
+                                                                            onChange={(e) => setManualExitTime(e.target.value)}
+                                                                            className="w-full p-2.5 text-sm border-2 border-amber-200 dark:border-amber-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-amber-700 dark:text-amber-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all"
+                                                                        />
+                                                                    </div>
+                                                                </div>
 
 
-                                                        {/* Late Warning - Premium Alert */}
-                                                        {isLate && !entryPermission && (
-                                                            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
-                                                                <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-                                                                    <AlertTriangle size={16} className="text-amber-500" />
-                                                                </div>
-                                                                <div className="flex-1">
-                                                                    <p className="text-amber-800 text-xs font-bold">{t('hazri.late')} - {lateMinutes} {t('hazri.min')}</p>
-                                                                </div>
-                                                            </div>
-                                                        )}
+                                                                {/* Late Warning - Premium Alert */}
+                                                                {isLate && !entryPermission && (
+                                                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                                                                        <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                                                                            <AlertTriangle size={16} className="text-amber-500" />
+                                                                        </div>
+                                                                        <div className="flex-1">
+                                                                            <p className="text-amber-800 text-xs font-bold">{t('hazri.late')} - {lateMinutes} {t('hazri.min')}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
 
-                                                        {/* Early Leave Warning - Premium Alert */}
-                                                        {isEarlyLeave && !exitPermission && (
-                                                            <div className="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
-                                                                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                                                                    <AlertTriangle size={16} className="text-red-500" />
-                                                                </div>
-                                                                <div className="flex-1">
-                                                                    <p className="text-red-800 text-xs font-bold">{t('hazri.earlyLeave')} - {earlyMinutes} {t('hazri.min')}</p>
-                                                                </div>
-                                                            </div>
+                                                                {/* Early Leave Warning - Premium Alert */}
+                                                                {isEarlyLeave && !exitPermission && (
+                                                                    <div className="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                                                                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                                                                            <AlertTriangle size={16} className="text-red-500" />
+                                                                        </div>
+                                                                        <div className="flex-1">
+                                                                            <p className="text-red-800 text-xs font-bold">{t('hazri.earlyLeave')} - {earlyMinutes} {t('hazri.min')}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </>
                                                         )}
                                                     </>
                                                 )}

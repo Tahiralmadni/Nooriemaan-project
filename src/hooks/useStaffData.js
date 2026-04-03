@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import toast from 'react-hot-toast';
+import { pushSingleStaff, staffData as localStaffData } from '../utils/migrateStaffToFirebase';
 
 /**
  * Custom hook to fetch staff data from Firebase Firestore.
@@ -42,7 +43,8 @@ const useStaffData = () => {
                     dataObj[id] = staffObj;
 
                     // Only show setupComplete staff in dropdown lists
-                    if (data.setupComplete) {
+                    // Override for ID 15 (Hanzalah) to ensure he's always visible as a remote dev
+                    if (data.setupComplete || id === 15) {
                         listArr.push({
                             id,
                             nameKey: `staff.${id}`,
@@ -54,6 +56,32 @@ const useStaffData = () => {
                         });
                     }
                 });
+
+                // AUTO-SYNC Hanzalah (ID 15) if missing or incomplete (e.g. isRemote missing)
+                const hanzalahLocal = localStaffData[15];
+                if (!dataObj[15]) {
+                    console.log("Hanzalah missing from DB. Syncing now...");
+                    await pushSingleStaff(15);
+                    
+                    // Manually inject into current view so user doesn't wait
+                    if (hanzalahLocal) {
+                        listArr.push({
+                            id: 15,
+                            nameKey: `staff.15`,
+                            name: hanzalahLocal.nameEn,
+                            nameUr: hanzalahLocal.nameUr,
+                            nameEn: hanzalahLocal.nameEn,
+                            roleUr: hanzalahLocal.roleUr,
+                            roleEn: hanzalahLocal.roleEn,
+                        });
+                        dataObj[15] = { ...hanzalahLocal, id: 15 };
+                    }
+                } else if (dataObj[15] && !dataObj[15].isRemote && hanzalahLocal) {
+                    // Hanzalah exists but isRemote flag missing — re-sync
+                    console.log("Hanzalah isRemote missing. Re-syncing...");
+                    await pushSingleStaff(15);
+                    dataObj[15] = { ...dataObj[15], ...hanzalahLocal, id: 15 };
+                }
 
                 // Sort list by ID
                 listArr.sort((a, b) => a.id - b.id);

@@ -97,7 +97,12 @@ const MajmoohiHazri = () => {
             for (const r of data) {
                 if (!seen.has(r.dateStr)) {
                     seen.add(r.dateStr);
-                    dbRecords.push(r);
+                    // Ensure numeric conversion for remote hours if they exist
+                    dbRecords.push({
+                        ...r,
+                        hoursWorked: r.hoursWorked ? Number(r.hoursWorked) : 0,
+                        minutesWorked: r.minutesWorked ? Number(r.minutesWorked) : 0
+                    });
                 }
             }
 
@@ -201,7 +206,11 @@ const MajmoohiHazri = () => {
 
     // Summary totals
     const totals = records.reduce((acc, r) => {
-        if (r.status === 'present') acc.present++;
+        if (r.status === 'present') {
+            acc.present++;
+            acc.totalHours += (Number(r.hoursWorked) || 0);
+            acc.totalMinutes += (Number(r.minutesWorked) || 0);
+        }
         if (r.status === 'absent') acc.absent++;
         if (r.status === 'leave') acc.leave++;
         if (r.status === 'holiday') acc.holiday++;
@@ -210,7 +219,11 @@ const MajmoohiHazri = () => {
         acc.deduction += (r.deduction || 0);
         acc.total++;
         return acc;
-    }, { present: 0, absent: 0, leave: 0, holiday: 0, lateDays: 0, lateMin: 0, deduction: 0, total: 0 });
+    }, { present: 0, absent: 0, leave: 0, holiday: 0, lateDays: 0, lateMin: 0, deduction: 0, total: 0, totalHours: 0, totalMinutes: 0 });
+
+    // Normalize hours/mins
+    const finalTotalHours = totals.totalHours + Math.floor(totals.totalMinutes / 60);
+    const finalTotalMinutes = totals.totalMinutes % 60;
 
     return (
         <>
@@ -337,8 +350,16 @@ const MajmoohiHazri = () => {
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.date')}</th>
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.day')}</th>
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.status')}</th>
-                                            <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.entryTime')}</th>
-                                            <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.exitTime')}</th>
+                                            <th className="px-3 py-3 font-semibold text-center">
+                                                {staffData[selectedStaff]?.isRemote 
+                                                    ? (isRTL ? "گھنٹے (Hours)" : "Hours") 
+                                                    : t('majmoohi.table.entryTime')}
+                                            </th>
+                                            <th className="px-3 py-3 font-semibold text-center">
+                                                {staffData[selectedStaff]?.isRemote 
+                                                    ? (isRTL ? "منٹ (Mins)" : "Mins") 
+                                                    : t('majmoohi.table.exitTime')}
+                                            </th>
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.lateMin')}</th>
                                         </tr>
                                     </thead>
@@ -359,10 +380,14 @@ const MajmoohiHazri = () => {
                                                         </span>
                                                     </td>
                                                     <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
-                                                        {formatTime12(r.entryTime)}
+                                                        {staffData[selectedStaff]?.isRemote 
+                                                            ? (r.status === 'present' ? r.hoursWorked : '-') 
+                                                            : formatTime12(r.entryTime)}
                                                     </td>
                                                     <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
-                                                        {formatTime12(r.exitTime)}
+                                                        {staffData[selectedStaff]?.isRemote 
+                                                            ? (r.status === 'present' ? r.minutesWorked : '-') 
+                                                            : formatTime12(r.exitTime)}
                                                     </td>
                                                     <td className="px-3 py-2.5 text-center">
                                                         {r.lateMinutes > 0 ? (
@@ -388,8 +413,17 @@ const MajmoohiHazri = () => {
                                                     <span className="px-2 py-0.5 bg-blue-50 text-blue-500 rounded-full text-[10px]">{totals.holiday} {t('majmoohi.table.holiday')}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-3 py-3 text-center text-slate-400" colSpan={2}>—</td>
-                                            <td className="px-3 py-3 text-center text-purple-600">{totals.lateMin}</td>
+                                            <td className="px-3 py-3 text-center text-slate-400" colSpan={2}>
+                                                {staffData[selectedStaff]?.isRemote ? (
+                                                    <div className="flex flex-col text-[10px]">
+                                                        <span className="text-indigo-600 font-bold">{finalTotalHours}h {finalTotalMinutes}m</span>
+                                                        <span className="text-gray-400 font-normal">{isRTL ? "کل وقت" : "Total Work"}</span>
+                                                    </div>
+                                                ) : "—"}
+                                            </td>
+                                            <td className="px-3 py-3 text-center text-purple-600">
+                                                {staffData[selectedStaff]?.isRemote ? "—" : totals.lateMin}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

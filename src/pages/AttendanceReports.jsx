@@ -99,6 +99,7 @@ const AttendanceReports = () => {
         const [year, month] = selectedMonth.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
         const today = new Date();
+        const staff = staffData ? staffData[selectedStaff] : null;
         const rows = [];
 
         // Stats counters
@@ -109,6 +110,8 @@ const AttendanceReports = () => {
         let lateMins = 0;
         let earlyMins = 0;
         let deduction = 0;
+        let totalHours = 0;
+        let totalMinutes = 0;
 
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month - 1, day);
@@ -178,6 +181,11 @@ const AttendanceReports = () => {
                 // Accumulate numeric stats
                 if (record.isLate) lateMins += (record.lateMinutes || 0);
                 if (record.isEarlyLeave) earlyMins += (record.earlyMinutes || 0);
+                
+                if (staff?.isRemote && record.status === 'present') {
+                    totalHours += Number(record.hoursWorked || 0);
+                    totalMinutes += Number(record.minutesWorked || 0);
+                }
             } else if (isPast && !isSunday) {
                 // If past date and no record found -> Mark it as Absent
                 statusText = t('common.statusAbsent');
@@ -201,6 +209,8 @@ const AttendanceReports = () => {
                 advanceLessMin: 0,
                 remarks: record?.reason || record?.reasonType || '',
                 deduction: record?.deduction || 0,
+                hoursWorked: record?.hoursWorked || 0,
+                minutesWorked: record?.minutesWorked || 0,
                 isSunday,
                 isPast
             });
@@ -216,10 +226,15 @@ const AttendanceReports = () => {
                 lateMins,
                 earlyMins,
                 deduction,
-                totalDays: daysInMonth
+                totalHours: totalHours + Math.floor(totalMinutes / 60),
+                totalMinutes: totalMinutes % 60,
+                totalDays: daysInMonth,
+                netSalary: staff?.isRemote 
+                    ? Math.round((totalHours + totalMinutes / 60) * (staff.perHourSalary || 0))
+                    : (staff?.salary || 0) - deduction
             }
         };
-    }, [selectedMonth, attendanceData, isRTL]);
+    }, [selectedMonth, attendanceData, isRTL, selectedStaff, staffData]);
 
     // Current date/time for footer
     const now = new Date();
@@ -246,8 +261,13 @@ const AttendanceReports = () => {
             [t('reports.tableHeaders.date')]: row.date,
             [t('reports.tableHeaders.day')]: row.day,
             [t('reports.tableHeaders.status')]: row.status,
-            [t('reports.tableHeaders.lateIn')]: row.startLessMin > 0 ? row.startLessMin : '-',
-            [t('reports.tableHeaders.earlyOut')]: row.endLessMin > 0 ? row.endLessMin : '-',
+            ...(staffData[selectedStaff]?.isRemote ? {
+                [isRTL ? "گھنٹے (Hours)" : "Hours"]: row.status === t('common.statusPresent') ? row.hoursWorked : '-',
+                [isRTL ? "منٹ (Mins)" : "Mins"]: row.status === t('common.statusPresent') ? row.minutesWorked : '-'
+            } : {
+                [t('reports.tableHeaders.lateIn')]: row.startLessMin > 0 ? row.startLessMin : '-',
+                [t('reports.tableHeaders.earlyOut')]: row.endLessMin > 0 ? row.endLessMin : '-'
+            }),
             [t('reports.tableHeaders.remarks')]: row.remarks
         }));
 
@@ -263,8 +283,13 @@ const AttendanceReports = () => {
             t('reports.tableHeaders.date'),
             t('reports.tableHeaders.day'),
             t('reports.tableHeaders.status'),
-            t('reports.tableHeaders.lateIn'),
-            t('reports.tableHeaders.earlyOut'),
+            ...(staffData[selectedStaff]?.isRemote ? [
+                (isRTL ? "گھنٹے (Hours)" : "Hours"),
+                (isRTL ? "منٹ (Mins)" : "Mins")
+            ] : [
+                t('reports.tableHeaders.lateIn'),
+                t('reports.tableHeaders.earlyOut')
+            ]),
             t('reports.tableHeaders.remarks')
         ];
 
@@ -273,8 +298,13 @@ const AttendanceReports = () => {
             row.date,
             row.day,
             row.status,
-            row.startLessMin > 0 ? `${row.startLessMin}m` : '-',
-            row.endLessMin > 0 ? `${row.endLessMin}m` : '-',
+            ...(staffData[selectedStaff]?.isRemote ? [
+                row.status === t('common.statusPresent') ? row.hoursWorked : '-',
+                row.status === t('common.statusPresent') ? row.minutesWorked : '-'
+            ] : [
+                row.startLessMin > 0 ? `${row.startLessMin}m` : '-',
+                row.endLessMin > 0 ? `${row.endLessMin}m` : '-'
+            ]),
             row.remarks || '-'
         ]);
 
@@ -466,14 +496,27 @@ const AttendanceReports = () => {
                                                 {/* Table Header — Green gradient */}
                                                 <thead>
                                                     <tr className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
-                                                        {tableHeaders.map((header) => (
-                                                            <th
-                                                                key={header}
-                                                                className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 last:border-r-0 whitespace-nowrap leading-relaxed"
-                                                            >
-                                                                {t(`reports.tableHeaders.${header}`)}
-                                                            </th>
-                                                        ))}
+                                                        <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.serial')}</th>
+                                                        <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.date')}</th>
+                                                        <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.day')}</th>
+                                                        <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.status')}</th>
+                                                        
+                                                        {staffData[selectedStaff]?.isRemote ? (
+                                                            <>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{isRTL ? "گھنٹے (Hours)" : "Hours"}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{isRTL ? "منٹ (Mins)" : "Mins"}</th>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.startLessMin')}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.duringLessMin')}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.endLessMin')}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.totalLessMin')}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.totalOvertime')}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.advanceLessMin')}</th>
+                                                            </>
+                                                        )}
+                                                        <th className="px-2 py-3 font-bold text-[11px] text-center whitespace-nowrap leading-relaxed">{t('reports.tableHeaders.remarks')}</th>
                                                     </tr>
                                                 </thead>
 
@@ -501,12 +544,22 @@ const AttendanceReports = () => {
                                                                         {row.status}
                                                                     </span>
                                                                 </td>
-                                                                <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.startLessMin}</td>
-                                                                <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.duringLessMin}</td>
-                                                                <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.endLessMin}</td>
-                                                                <td className="px-2 py-2.5 text-center text-gray-700 font-bold border-r border-gray-100">{row.totalLessMin}</td>
-                                                                <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.totalOvertime}</td>
-                                                                <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.advanceLessMin}</td>
+
+                                                                {staffData[selectedStaff]?.isRemote ? (
+                                                                    <>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.statusRaw === 'present' ? row.hoursWorked : '-'}</td>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.statusRaw === 'present' ? row.minutesWorked : '-'}</td>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.startLessMin}</td>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.duringLessMin}</td>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.endLessMin}</td>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-700 font-bold border-r border-gray-100">{row.totalLessMin}</td>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.totalOvertime}</td>
+                                                                        <td className="px-2 py-2.5 text-center text-gray-500 border-r border-gray-100">{row.advanceLessMin}</td>
+                                                                    </>
+                                                                )}
                                                                 <td className="px-2 py-2.5 text-center text-gray-400">{row.remarks || '-'}</td>
                                                             </motion.tr>
                                                         ))
@@ -561,6 +614,13 @@ const AttendanceReports = () => {
                                                         <span className="text-gray-500">{t('reports.summaryLabels.totalLeave')}:</span>
                                                         <span className="font-bold text-amber-600">{stats.leave}</span>
                                                     </div>
+                                                    {staffData[selectedStaff]?.isRemote && (
+                                                        <div className="flex items-center gap-1.5 px-3 border-l border-gray-200 ml-2">
+                                                            <Clock size={14} className="text-indigo-500" />
+                                                            <span className="text-gray-500">{isRTL ? "کل وقت" : "Total Work"}:</span>
+                                                            <span className="font-bold text-indigo-600">{stats.totalHours}h {stats.totalMinutes}m</span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </motion.div>
                                         )}
@@ -604,10 +664,23 @@ const AttendanceReports = () => {
                                                         <span className="text-emerald-700 font-medium">{t('reports.monthlyStats.totalPresent')}</span>
                                                         <span className="text-lg font-bold text-emerald-700">{stats.present}</span>
                                                     </div>
-                                                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-600 font-medium">{t('reports.summaryLabels.totalLateMin')}</span>
-                                                        <span className="text-lg font-bold text-red-500">{stats.lateMins} m</span>
-                                                    </div>
+                                                    {staffData[selectedStaff]?.isRemote ? (
+                                                        <>
+                                                            <div className="flex justify-between items-center p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+                                                                <span className="text-indigo-700 font-medium">{isRTL ? "کل کام کے گھنٹے" : "Total Work Hours"}</span>
+                                                                <span className="text-lg font-bold text-indigo-700">{stats.totalHours}h {stats.totalMinutes}m</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
+                                                                <span className="text-emerald-700 font-medium">{isRTL ? "حساب شدہ تنخواہ" : "Calculated Salary"}</span>
+                                                                <span className="text-lg font-bold text-emerald-700">Rs {stats.netSalary.toLocaleString()}</span>
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                                            <span className="text-gray-600 font-medium">{t('reports.summaryLabels.totalLateMin')}</span>
+                                                            <span className="text-lg font-bold text-red-500">{stats.lateMins} m</span>
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
