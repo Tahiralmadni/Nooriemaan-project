@@ -57,14 +57,12 @@ const useStaffData = () => {
                     }
                 });
 
-                // AUTO-SYNC Hanzalah (ID 15) if missing or incomplete (e.g. isRemote missing)
+                // AUTO-SYNC Hanzalah (ID 15) — always ensure latest local data is in Firestore
                 const hanzalahLocal = localStaffData[15];
-                if (!dataObj[15]) {
-                    console.log("Hanzalah missing from DB. Syncing now...");
-                    await pushSingleStaff(15);
+                if (hanzalahLocal) {
+                    await pushSingleStaff(15).catch(() => {});
                     
-                    // Manually inject into current view so user doesn't wait
-                    if (hanzalahLocal) {
+                    if (!dataObj[15]) {
                         listArr.push({
                             id: 15,
                             nameKey: `staff.15`,
@@ -74,14 +72,12 @@ const useStaffData = () => {
                             roleUr: hanzalahLocal.roleUr,
                             roleEn: hanzalahLocal.roleEn,
                         });
-                        dataObj[15] = { ...hanzalahLocal, id: 15 };
                     }
-                } else if (dataObj[15] && !dataObj[15].isRemote && hanzalahLocal) {
-                    // Hanzalah exists but isRemote flag missing — re-sync
-                    console.log("Hanzalah isRemote missing. Re-syncing...");
-                    await pushSingleStaff(15);
                     dataObj[15] = { ...dataObj[15], ...hanzalahLocal, id: 15 };
                 }
+
+                // SYNC Rizwan (ID 10) — push updated setupComplete:false
+                await pushSingleStaff(10).catch(() => {});
 
                 // Sort list by ID
                 listArr.sort((a, b) => a.id - b.id);

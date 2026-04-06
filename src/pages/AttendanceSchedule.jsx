@@ -422,7 +422,7 @@ const AttendanceSchedule = () => {
                 return;
             }
         } else if (status === 'present' && staff.isRemote) {
-            if (hoursWorked === 0 && minutesWorked === 0) {
+            if (Number(hoursWorked) === 0 && Number(minutesWorked) === 0) {
                 showErrorToast(isRTL ? "برائے مہربانی کام کے گھنٹے لکھیں۔" : "Please provide hours worked.");
                 setIsSaving(false);
                 return;
@@ -866,17 +866,15 @@ const AttendanceSchedule = () => {
                                                                         <Clock size={10} />
                                                                         {isRTL ? "گھنٹے (Hours)" : "Hours Worked"}
                                                                     </label>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <input
-                                                                            type="number"
-                                                                            min="0"
-                                                                            max="24"
-                                                                            value={hoursWorked}
-                                                                            onChange={(e) => setHoursWorked(e.target.value)}
-                                                                            className="w-full p-2.5 text-lg border-2 border-emerald-200 dark:border-emerald-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all"
-                                                                        />
-                                                                        <span className="text-[10px] font-bold text-emerald-600">H</span>
-                                                                    </div>
+                                                                    <select
+                                                                        value={hoursWorked}
+                                                                        onChange={(e) => setHoursWorked(Number(e.target.value))}
+                                                                        className="w-full p-2.5 text-lg border-2 border-emerald-200 dark:border-emerald-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all cursor-pointer"
+                                                                    >
+                                                                        {[0,1,2,3,4,5,6,7,8,9,10,11,12].map(h => (
+                                                                            <option key={h} value={h}>{h}</option>
+                                                                        ))}
+                                                                    </select>
                                                                 </div>
 
                                                                 {/* Remote Minutes Section */}
@@ -885,17 +883,15 @@ const AttendanceSchedule = () => {
                                                                         <Clock size={10} />
                                                                         {isRTL ? "منٹ (Minutes)" : "Minutes Worked"}
                                                                     </label>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <input
-                                                                            type="number"
-                                                                            min="0"
-                                                                            max="59"
-                                                                            value={minutesWorked}
-                                                                            onChange={(e) => setMinutesWorked(e.target.value)}
-                                                                            className="w-full p-2.5 text-lg border-2 border-amber-200 dark:border-amber-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-amber-700 dark:text-amber-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all"
-                                                                        />
-                                                                        <span className="text-[10px] font-bold text-amber-600">M</span>
-                                                                    </div>
+                                                                    <select
+                                                                        value={minutesWorked}
+                                                                        onChange={(e) => setMinutesWorked(Number(e.target.value))}
+                                                                        className="w-full p-2.5 text-lg border-2 border-amber-200 dark:border-amber-800 rounded-lg bg-white dark:bg-slate-800 text-center font-mono font-bold text-amber-700 dark:text-amber-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:focus:ring-amber-900/30 outline-none transition-all cursor-pointer"
+                                                                    >
+                                                                        {[0,5,10,15,20,25,30,35,40,45,50,55].map(m => (
+                                                                            <option key={m} value={m}>{m}</option>
+                                                                        ))}
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                         ) : (
