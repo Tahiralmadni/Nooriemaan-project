@@ -34,7 +34,7 @@ const AttendanceReports = () => {
 
     // Loading screen — 5s to match progress bar
     useEffect(() => {
-        const timer = setTimeout(() => setIsPageLoading(false), 5000);
+        const timer = setTimeout(() => setIsPageLoading(false), 1500);
         return () => clearTimeout(timer);
     }, []);
 
@@ -113,6 +113,18 @@ const AttendanceReports = () => {
         let totalHours = 0;
         let totalMinutes = 0;
 
+        // Calculate Effective Joining Date ONCE (not per day)
+        let effectiveDate = null;
+        if (staff && staff.setupDate) {
+            const [sYear, sMonth, sDay] = staff.setupDate.split('-').map(Number);
+            if (sDay <= 10) {
+                effectiveDate = new Date(sYear, sMonth - 1, 1);
+            } else {
+                effectiveDate = new Date(sYear, sMonth - 1, sDay);
+            }
+            effectiveDate.setHours(0, 0, 0, 0);
+        }
+
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month - 1, day);
             const dayOfWeek = date.getDay();
@@ -122,22 +134,8 @@ const AttendanceReports = () => {
 
             const record = attendanceData[dateStr];
 
-            // Calculate Effective Joining Date for 'Not Joined' logic
-            let isBeforeJoin = false;
-            const staff = staffData[selectedStaff];
-            if (staff && staff.setupDate) {
-                const [sYear, sMonth, sDay] = staff.setupDate.split('-').map(Number);
-                let effectiveDate;
-                if (sDay <= 10) {
-                    effectiveDate = new Date(sYear, sMonth - 1, 1);
-                } else {
-                    effectiveDate = new Date(sYear, sMonth - 1, sDay);
-                }
-                effectiveDate.setHours(0, 0, 0, 0);
-                if (date < effectiveDate) {
-                    isBeforeJoin = true;
-                }
-            }
+            // Check if before effective joining date
+            const isBeforeJoin = effectiveDate ? date < effectiveDate : false;
 
             // Determine status text/color from real record or default logic
             let statusText = '-';

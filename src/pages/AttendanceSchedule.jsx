@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import PageLoader from '../components/PageLoader';
 import useStaffData from '../hooks/useStaffData';
-import { pushSingleStaff } from '../utils/migrateStaffToFirebase';
+
 
 // Helper: Convert 24-hour time to 12-hour AM/PM format
 export const formatTime12Hour = (time24) => {
@@ -155,7 +155,7 @@ const AttendanceSchedule = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsPageLoading(false);
-        }, 5000);
+        }, 1500);
         return () => clearTimeout(timer);
     }, []);
 
@@ -217,7 +217,7 @@ const AttendanceSchedule = () => {
         }
     }, [selectedDate]);
 
-    // AUTO-SAVE Sunday Holiday for ALL staff - Only on that Sunday, not in advance
+    // AUTO-SAVE Sunday Holiday for ALL staff - Only ONCE per session on Sunday
     useEffect(() => {
         const autoSaveSundayHoliday = async () => {
             const today = new Date();
@@ -225,6 +225,10 @@ const AttendanceSchedule = () => {
 
             // Only proceed if TODAY is Sunday
             if (dayOfWeek !== 0) return;
+
+            // Check if already ran this session (avoid running on every page load)
+            const sundayKey = `sunday_saved_${today.toISOString().split('T')[0]}`;
+            if (sessionStorage.getItem(sundayKey)) return;
 
             const startOfDay = new Date(today);
             startOfDay.setHours(0, 0, 0, 0);
@@ -271,6 +275,9 @@ const AttendanceSchedule = () => {
                     console.error('Auto-save Sunday error for', s.nameEn, ':', error);
                 }
             }
+
+            // Mark as done for this session
+            sessionStorage.setItem(sundayKey, 'true');
         };
 
         if (!staffLoading && staffList && staffList.length > 0) {
@@ -636,20 +643,7 @@ const AttendanceSchedule = () => {
                                     />
                                 </div>
 
-                                {/* Temporary Sync Button */}
-                                <div className="mt-2 text-center">
-                                    <button 
-                                        onClick={async () => {
-                                            const res = await pushSingleStaff(15);
-                                            if(res) toast.success("Hanzalah Synced!");
-                                            else toast.error("Sync Failed");
-                                            window.location.reload();
-                                        }}
-                                        className="text-[10px] text-emerald-400 opacity-50 hover:opacity-100 transition-opacity"
-                                    >
-                                        [ Sync Hanzalah ]
-                                    </button>
-                                </div>
+
                             </div>
 
                             {/* Main Content Container - Premium Design */}

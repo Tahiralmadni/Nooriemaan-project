@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import toast from 'react-hot-toast';
-import { pushSingleStaff, staffData as localStaffData } from '../utils/migrateStaffToFirebase';
+import { staffData as localStaffData } from '../utils/migrateStaffToFirebase';
 
 /**
  * Custom hook to fetch staff data from Firebase Firestore.
@@ -57,11 +57,10 @@ const useStaffData = () => {
                     }
                 });
 
-                // AUTO-SYNC Hanzalah (ID 15) — always ensure latest local data is in Firestore
+                // Hanzalah (ID 15) — merge local data to ensure isRemote, setupDate etc are correct
+                // No Firebase write here — data already synced
                 const hanzalahLocal = localStaffData[15];
                 if (hanzalahLocal) {
-                    await pushSingleStaff(15).catch(() => {});
-                    
                     if (!dataObj[15]) {
                         listArr.push({
                             id: 15,
@@ -75,9 +74,6 @@ const useStaffData = () => {
                     }
                     dataObj[15] = { ...dataObj[15], ...hanzalahLocal, id: 15 };
                 }
-
-                // SYNC Rizwan (ID 10) — push updated setupComplete:false
-                await pushSingleStaff(10).catch(() => {});
 
                 // Sort list by ID
                 listArr.sort((a, b) => a.id - b.id);
