@@ -340,14 +340,14 @@ const AttendanceSchedule = () => {
     }, [activeTab, staff]);
 
     // Check for missing previous days attendance in the current month
+    // OPTIMIZED: Single query for the whole range instead of per-day queries
     const checkMissingDays = async () => {
         if (!staff) return [];
         const selectedDateObj = new Date(selectedDate);
         selectedDateObj.setHours(0, 0, 0, 0);
-        const missingDays = [];
 
         // Skip if before staff setup date
-        const setupDateStr = staff.setupDate || '2020-01-01'; // Default
+        const setupDateStr = staff.setupDate || '2020-01-01';
         const setupDateObj = new Date(setupDateStr);
         setupDateObj.setHours(0, 0, 0, 0);
 
@@ -355,26 +355,38 @@ const AttendanceSchedule = () => {
         const startOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), 1);
         const loopStart = new Date(Math.max(startOfMonth.getTime(), setupDateObj.getTime()));
 
-        // Check every day from loopStart up to (but not including) selectedDateObj
+        // If loopStart >= selectedDate, no previous days to check
+        if (loopStart >= selectedDateObj) return [];
+
+        // ONE query for the entire range (loopStart to selectedDate)
+        const rangeStart = new Date(loopStart);
+        rangeStart.setHours(0, 0, 0, 0);
+        const rangeEnd = new Date(selectedDateObj);
+        rangeEnd.setHours(0, 0, 0, 0); // Up to but not including selected date
+
+        const q = query(
+            collection(db, 'attendance'),
+            where('staffId', '==', staff.id),
+            where('date', '>=', Timestamp.fromDate(rangeStart)),
+            where('date', '<', Timestamp.fromDate(rangeEnd))
+        );
+
+        const snapshot = await getDocs(q);
+
+        // Build a Set of dates that HAVE records (format: YYYY-MM-DD)
+        const recordedDates = new Set();
+        snapshot.forEach((doc) => {
+            const date = doc.data().date.toDate();
+            const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            recordedDates.add(key);
+        });
+
+        // Now check locally which days are missing
+        const missingDays = [];
         for (let d = new Date(loopStart); d < selectedDateObj; d.setDate(d.getDate() + 1)) {
-            const checkDate = new Date(d);
-            checkDate.setHours(0, 0, 0, 0);
-
-            // Query Firebase for this date
-            const startOfDay = new Date(checkDate);
-            const endOfDay = new Date(checkDate);
-            endOfDay.setHours(23, 59, 59, 999);
-
-            const q = query(
-                collection(db, 'attendance'),
-                where('staffId', '==', staff.id),
-                where('date', '>=', Timestamp.fromDate(startOfDay)),
-                where('date', '<=', Timestamp.fromDate(endOfDay))
-            );
-
-            const snapshot = await getDocs(q);
-            if (snapshot.empty) {
-                const dateStr = checkDate.toLocaleDateString(isRTL ? 'ur-PK' : 'en-GB');
+            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            if (!recordedDates.has(key)) {
+                const dateStr = new Date(d).toLocaleDateString(isRTL ? 'ur-PK' : 'en-GB');
                 missingDays.push(dateStr);
             }
         }

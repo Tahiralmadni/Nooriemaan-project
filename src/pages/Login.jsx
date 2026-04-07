@@ -54,7 +54,7 @@ const Login = () => {
         // Initial loading animation - 5 seconds for better visibility
         setTimeout(() => {
             setInitialLoading(false);
-        }, 5000);
+        }, 1500);
     }, []);
 
     // --- INTERNET CONNECTIVITY CHECK ---
