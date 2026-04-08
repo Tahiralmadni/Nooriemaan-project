@@ -143,6 +143,12 @@ const AttendanceSchedule = () => {
 
     // History State
     const [attendanceHistory, setAttendanceHistory] = useState([]);
+
+    // Last Saved Indicator — localStorage se load hota hai
+    const [lastSaved, setLastSaved] = useState(() => {
+        const saved = localStorage.getItem('lastSavedAttendance');
+        return saved ? JSON.parse(saved) : null;
+    });
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
     // Font Settings Modal State
@@ -497,6 +503,17 @@ const AttendanceSchedule = () => {
             setSavedTime(markedTime);
             showSuccessToast(t('hazri.validation.attendanceSaved'));
 
+            // Last Saved Indicator — save to localStorage
+            const lastSavedInfo = {
+                staffName: isRTL ? staff.nameUr : staff.nameEn,
+                staffId: staff.id,
+                status: status,
+                date: selectedDate,
+                time: markedTime
+            };
+            localStorage.setItem('lastSavedAttendance', JSON.stringify(lastSavedInfo));
+            setLastSaved(lastSavedInfo);
+
             // ===== AUTO-SAVE NEXT DAY SUNDAY HOLIDAY =====
             const nextDay = new Date(selectedDate);
             nextDay.setDate(nextDay.getDate() + 1);
@@ -655,8 +672,43 @@ const AttendanceSchedule = () => {
                                     />
                                 </div>
 
-
                             </div>
+
+                            {/* Last Saved Indicator Badge */}
+                            {lastSaved && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="w-full max-w-lg mx-auto px-4 mt-2"
+                                >
+                                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-700/50 rounded-xl px-4 py-2.5 flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <CheckCircle size={16} className="text-white" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+                                                {isRTL ? 'آخری محفوظ شدہ' : 'Last Saved'}
+                                            </p>
+                                            <p className="text-xs text-slate-600 dark:text-slate-300 font-medium truncate">
+                                                {lastSaved.staffName} — {lastSaved.status === 'present' ? '✅' : lastSaved.status === 'absent' ? '❌' : lastSaved.status === 'leave' ? '🟡' : '🔵'} {t(`hazri.${lastSaved.status}`)}
+                                            </p>
+                                        </div>
+                                        <div className="text-right flex-shrink-0">
+                                            <p className="text-[10px] text-emerald-500 font-mono font-bold">{lastSaved.time}</p>
+                                            <p className="text-[9px] text-slate-400">{lastSaved.date}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                localStorage.removeItem('lastSavedAttendance');
+                                                setLastSaved(null);
+                                            }}
+                                            className="text-slate-300 hover:text-red-400 transition-colors flex-shrink-0"
+                                        >
+                                            <XCircle size={14} />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
 
                             {/* Main Content Container - Premium Design */}
                             <div className="w-full max-w-lg mx-auto px-4 py-6">
