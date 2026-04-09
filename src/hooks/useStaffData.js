@@ -75,6 +75,23 @@ const useStaffData = () => {
                     dataObj[15] = { ...dataObj[15], ...hanzalahLocal, id: 15 };
                 }
 
+                // Rizwan (ID 10) — merge local data to ensure timing, salary breakdowns are correct
+                const rizwanLocal = localStaffData[10];
+                if (rizwanLocal) {
+                    if (!dataObj[10]) {
+                        listArr.push({
+                            id: 10,
+                            nameKey: `staff.10`,
+                            name: rizwanLocal.nameEn,
+                            nameUr: rizwanLocal.nameUr,
+                            nameEn: rizwanLocal.nameEn,
+                            roleUr: rizwanLocal.roleUr,
+                            roleEn: rizwanLocal.roleEn,
+                        });
+                    }
+                    dataObj[10] = { ...dataObj[10], ...rizwanLocal, id: 10 };
+                }
+
                 // Sort list by ID
                 listArr.sort((a, b) => a.id - b.id);
 
