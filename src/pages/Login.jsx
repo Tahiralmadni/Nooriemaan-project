@@ -10,7 +10,6 @@ import { auth } from '../config/firebase';
 import PageLoader from '../components/PageLoader';
 
 import logoMain from '../assets/logo-main.png';
-import i18n from '../config/i18n';
 import appConfig from '../config/appConfig';
 
 /**
@@ -614,8 +613,8 @@ const Login = () => {
                                             e.target.parentElement.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
                                         }}
                                         onBlur={(e) => {
-                                            e.target.parentElement.style.borderColor = '#e2e8f0';
-                                            e.target.parentElement.style.backgroundColor = '#f8fafc';
+                                            e.target.parentElement.style.borderColor = isDark ? '#334155' : '#e2e8f0';
+                                            e.target.parentElement.style.backgroundColor = isDark ? '#0f172a' : '#f8fafc';
                                             e.target.parentElement.style.boxShadow = 'none';
                                         }}
                                     />

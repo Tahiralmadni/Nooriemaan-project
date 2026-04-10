@@ -6,6 +6,7 @@ import { db } from '../config/firebase';
 import { AlertTriangle, CheckCircle, XCircle, Clock, UserCheck, UserX, AlertCircle, Calendar, Type } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import PageLoader from '../components/PageLoader';
 import useStaffData from '../hooks/useStaffData';
@@ -454,7 +455,30 @@ const AttendanceSchedule = () => {
             }
         }
 
-        setIsSaving(true);
+        // Check for duplicate record on the same date for the same staff
+        try {
+            const dupDate = new Date(selectedDate);
+            const dupStart = new Date(dupDate);
+            dupStart.setHours(0, 0, 0, 0);
+            const dupEnd = new Date(dupDate);
+            dupEnd.setHours(23, 59, 59, 999);
+
+            const dupQ = query(
+                collection(db, 'attendance'),
+                where('staffId', '==', staff.id),
+                where('date', '>=', Timestamp.fromDate(dupStart)),
+                where('date', '<=', Timestamp.fromDate(dupEnd))
+            );
+            const dupSnap = await getDocs(dupQ);
+            if (!dupSnap.empty) {
+                showErrorToast(isRTL ? 'اس تاریخ کی حاضری پہلے سے موجود ہے۔' : 'Attendance already exists for this date.');
+                setIsSaving(false);
+                return;
+            }
+        } catch (error) {
+            console.error('Duplicate check error:', error);
+        }
+
         const markedTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
         // Katooti abhi nahi hogi — sirf late/early minutes count
@@ -635,15 +659,15 @@ const AttendanceSchedule = () => {
                             {/* ===== TOP BAR - Premium Glassmorphism ===== */}
                             <div className="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 md:px-6 py-3 border-b border-white/50 dark:border-slate-700/50 flex justify-between items-center gap-3 sticky top-0 z-50 shadow-sm">
                                 {/* Back to Dashboard */}
-                                <a
-                                    href="/dashboard"
+                                <Link
+                                    to="/dashboard"
                                     className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-all text-sm font-semibold group"
                                 >
                                     <span className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
                                         {isRTL ? '→' : '←'}
                                     </span>
                                     <span className="hidden sm:inline">{t('common.backDashboard')}</span>
-                                </a>
+                                </Link>
 
                                 {/* Right side buttons - Premium Style */}
                                 <div className={`flex items-center gap-2 md:gap-3 ${isRTL ? 'mr-auto ml-2' : 'ml-auto mr-2'}`}>

@@ -328,7 +328,7 @@ const StaffProfile = () => {
                     {[
                         { icon: Phone, label: t('profile.phoneNumber'), value: staff.phone, accent: '#3b82f6' },
                         { icon: Mail, label: t('profile.email'), value: staff.email, accent: '#8b5cf6', dim: staff.email === '-' },
-                        { icon: MapPin, label: t('profile.address'), value: staff.city + ', ' + staff.country, accent: '#ef4444' },
+                        { icon: MapPin, label: t('profile.address'), value: (staff.city || '-') + ', ' + (staff.country || '-'), accent: '#ef4444' },
                         { icon: Calendar, label: t('profile.joinDate'), value: staff.joinDate, accent: '#f59e0b' },
                         { icon: Clock, label: t('profile.timing'), value: currentTiming, accent: '#0d9488' },
                     ].map((item, index) => (

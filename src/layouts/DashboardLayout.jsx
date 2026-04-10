@@ -90,7 +90,7 @@ const DashboardLayout = () => {
         { labelKey: 'sidebar.attendanceSchedule', path: '/teachers/schedule', icon: Calendar },
         { labelKey: 'sidebar.attendanceSummary', path: '/teachers/summary', icon: BarChart3 },
         { labelKey: 'sidebar.dailyAttendance', path: '/teachers/daily', icon: ClipboardList },
-        { labelKey: 'sidebar.hazriReports', path: '/teachers/reports', icon: FileText, isNew: true },
+        { labelKey: 'sidebar.hazriReports', path: '/teachers/reports', icon: FileText },
     ];
 
     // Main menu items
@@ -297,6 +297,7 @@ const DashboardLayout = () => {
                         {location.pathname === '/teachers/reports' && t('sidebar.hazriReports')}
                         {location.pathname === '/settings' && t('common.settings')}
                         {location.pathname === '/students' && t('sidebar.students')}
+                        {location.pathname.startsWith('/teachers/profile') && t('sidebar.teachersList')}
                     </h2>
 
                     {/* Language Toggle — mobile only */}

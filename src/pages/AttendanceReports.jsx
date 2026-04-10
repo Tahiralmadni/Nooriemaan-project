@@ -179,6 +179,7 @@ const AttendanceReports = () => {
                 // Accumulate numeric stats
                 if (record.isLate) lateMins += (record.lateMinutes || 0);
                 if (record.isEarlyLeave) earlyMins += (record.earlyMinutes || 0);
+                deduction += (record.deduction || 0);
                 
                 if (staff?.isRemote && record.status === 'present') {
                     totalHours += Number(record.hoursWorked || 0);
@@ -684,7 +685,7 @@ const AttendanceReports = () => {
                                                 <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
                                                     <span className="text-gray-500 font-medium text-sm">{t('reports.monthlyStats.attendancePercentage')}</span>
                                                     <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-                                                        {stats.totalDays > 0 ? Math.round(((stats.present + stats.leave) / (stats.totalDays - stats.holiday)) * 100) || 0 : 0}%
+                                                        {(stats.totalDays - stats.holiday) > 0 ? Math.round(((stats.present + stats.leave) / (stats.totalDays - stats.holiday)) * 100) : 0}%
                                                     </span>
                                                 </div>
                                             </div>
