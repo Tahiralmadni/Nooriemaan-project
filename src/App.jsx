@@ -6,7 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase';
 
 import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
-
+import Pageloader from './components/PageLoader'
 // ===== LAZY LOADING — Pages load sirf jab zaroorat ho =====
 const DeveloperIntro = lazy(() => import('./components/DeveloperIntro'));
 const Login = lazy(() => import('./pages/Login'));
@@ -25,12 +25,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 
 
 // Blank fallback — sirf background dikhao, gol spinner nahi
-const PageFallback = () => (
-  <div style={{
-    height: '100vh',
-    background: 'linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%)'
-  }} />
-);
+const PageFallback = () => <Pageloader />;
 
 
 /**

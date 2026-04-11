@@ -352,12 +352,12 @@ const MajmoohiHazri = () => {
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.status')}</th>
                                             <th className="px-3 py-3 font-semibold text-center">
                                                 {staffData[selectedStaff]?.isRemote 
-                                                    ? (isRTL ? "گھنٹے (Hours)" : "Hours") 
+                                                    ? t('majmoohi.table.hours') 
                                                     : t('majmoohi.table.entryTime')}
                                             </th>
                                             <th className="px-3 py-3 font-semibold text-center">
                                                 {staffData[selectedStaff]?.isRemote 
-                                                    ? (isRTL ? "منٹ (Mins)" : "Mins") 
+                                                    ? t('majmoohi.table.mins') 
                                                     : t('majmoohi.table.exitTime')}
                                             </th>
                                             <th className="px-3 py-3 font-semibold text-center">{t('majmoohi.table.lateMin')}</th>
@@ -417,7 +417,7 @@ const MajmoohiHazri = () => {
                                                 {staffData[selectedStaff]?.isRemote ? (
                                                     <div className="flex flex-col text-[10px]">
                                                         <span className="text-indigo-600 font-bold">{finalTotalHours}h {finalTotalMinutes}m</span>
-                                                        <span className="text-gray-400 font-normal">{isRTL ? "کل وقت" : "Total Work"}</span>
+                                                        <span className="text-gray-400 font-normal">{t('majmoohi.table.totalWork')}</span>
                                                     </div>
                                                 ) : "—"}
                                             </td>

@@ -154,7 +154,7 @@ const StaffProfile = () => {
     const currentRole = isRTL ? staff.roleUr : staff.roleEn;
     const currentName = isRTL ? staff.nameUr : staff.nameEn;
     const currentTiming = staff.isRemote
-        ? (isRTL ? `ریموٹ — ${staff.totalHours} گھنٹے یومیہ` : `Remote — ${staff.totalHours} Hours/Day`)
+        ? t('profile.remoteHours', { hours: staff.totalHours })
         : `${staff.entryTime} - ${staff.exitTime}`;
 
     return (
@@ -313,7 +313,7 @@ const StaffProfile = () => {
                             <div className="w-px bg-gray-200 dark:bg-slate-600" />
                             <div className="text-center">
                                 <p className="text-lg font-black text-slate-700 dark:text-slate-200">
-                                    {staff.isRemote ? (isRTL ? 'ریموٹ اسٹاف' : 'Remote Staff') : staff.exitTime}
+                                    {staff.isRemote ? t('profile.remoteStaff') : staff.exitTime}
                                 </p>
                                 <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
                                     {staff.isRemote ? t('profile.role') : t('profile.exit')}

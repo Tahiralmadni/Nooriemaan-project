@@ -8,10 +8,8 @@ import { FileText, Calendar, Users, Search, Download, Copy, ChevronDown, ArrowLe
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
-import AttendanceSummaryChart from '../components/AttendanceSummaryChart';
 import { formatTime12Hour } from './AttendanceSchedule';
 import useStaffData from '../hooks/useStaffData';
-import { exportToExcel, exportToPDF } from '../utils/exportUtils';
 
 const AttendanceReports = () => {
     const { t, i18n } = useTranslation();
@@ -272,6 +270,7 @@ const AttendanceReports = () => {
 
         const fileName = `${t('reports.title')}_${selectedMonth}_${selectedStaff}`;
         const title = `${t('reports.title')} - ${selectedMonth}`;
+        const { exportToExcel } = await import('../utils/exportUtils');
         await exportToExcel(dataToExport, fileName, title, isRTL, stats);
     };
 
@@ -309,6 +308,7 @@ const AttendanceReports = () => {
 
         const fileName = `${t('reports.title')}_${selectedMonth}_${selectedStaff}`;
         const title = `${t('reports.title')} - ${selectedMonth}`;
+        const { exportToPDF } = await import('../utils/exportUtils');
         await exportToPDF(title, columns, rows, fileName);
     };
 

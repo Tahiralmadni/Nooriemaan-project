@@ -110,7 +110,10 @@
             "entryTime": "وقت آمد",
             "exitTime": "وقت رخصت",
             "lateMin": "تاخیر (منٹ)",
-            "total": "کل"
+            "total": "کل",
+            "hours": "گھنٹے (Hours)",
+            "mins": "منٹ (Mins)",
+            "totalWork": "کل وقت"
         }
     },
     "table": {
@@ -216,7 +219,9 @@
         "role": "عہدہ",
         "entry": "آمد",
         "exit": "روانگی",
-        "phoneNumber": "فون نمبر"
+        "phoneNumber": "فون نمبر",
+        "remoteStaff": "ریموٹ اسٹاف",
+        "remoteHours": "ریموٹ — {{hours}} گھنٹے یومیہ"
     },
     "hazri": {
         "title": "حاضری جدول",

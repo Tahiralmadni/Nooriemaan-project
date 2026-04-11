@@ -149,7 +149,7 @@ const PageLoader = ({ loadingText }) => {
                         initial={{ width: '0%' }}
                         animate={{ width: '100%' }}
                         transition={{
-                            duration: 5,
+                            duration: 1.5,
                             ease: 'easeOut'
                         }}
                         style={{

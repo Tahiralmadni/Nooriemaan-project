@@ -110,7 +110,10 @@
             "entryTime": "Entry Time",
             "exitTime": "Exit Time",
             "lateMin": "Late (min)",
-            "total": "Total"
+            "total": "Total",
+            "hours": "Hours",
+            "mins": "Mins",
+            "totalWork": "Total Work"
         }
     },
     "table": {
@@ -216,7 +219,9 @@
         "role": "Role",
         "entry": "Entry",
         "exit": "Exit",
-        "phoneNumber": "Phone Number"
+        "phoneNumber": "Phone Number",
+        "remoteStaff": "Remote Staff",
+        "remoteHours": "Remote — {{hours}} Hours/Day"
     },
     "hazri": {
         "title": "Attendance Schedule",
