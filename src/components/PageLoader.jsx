@@ -1,7 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import logoMain from '../assets/logo-main.png';
-import i18n from '../config/i18n';
 
 /**
  * PageLoader Component - UPDATED VERSION
@@ -9,12 +7,15 @@ import i18n from '../config/i18n';
  * Now accepts custom text via props
  */
 const PageLoader = ({ loadingText }) => {
-    const { t } = useTranslation();
-    const isRTL = i18n.language === 'ur';
+    // DO NOT USE useTranslation() inside a Suspense Fallback! It will crash React.
+    // Instead, just read the language from localStorage manually.
+    const currentLang = localStorage.getItem('i18nextLng') || 'en';
+    const isRTL = currentLang === 'ur';
     const isDark = localStorage.getItem('darkMode') === 'true';
 
     // Default text agar prop nahi diya
-    const displayText = loadingText || t('loader.loading');
+    const defaultText = isRTL ? 'لوڈ ہو رہا ہے...' : 'Loading...';
+    const displayText = loadingText || defaultText;
 
     return (
         <div style={{
