@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { deleteStaff } from '../utils/migrateStaffToFirebase';
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
@@ -14,6 +15,17 @@ const Dashboard = () => {
     // Update title when language changes
     useEffect(() => {
         document.title = t('pageTitles.dashboard');
+        
+        // TEMPORARY: Auto-delete Hashim (Staff 12) from Firebase since he's removed
+        const cleanupHashim = async () => {
+            try {
+                await deleteStaff(12);
+                console.log("Muhammad Hashim has been removed from Firebase.");
+            } catch (e) {
+                console.error("Cleanup error:", e);
+            }
+        };
+        cleanupHashim();
     }, [t, i18n.language]);
 
     // Fetch today's attendance count (no composite index needed)

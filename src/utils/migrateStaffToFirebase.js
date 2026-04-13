@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 // Original emails from Teachers.jsx
@@ -15,7 +15,7 @@ const emails = {
     9: 'ubaidattari0326@gmail.com',
     10: '-',
     11: '-',
-    12: '-',
+
     13: '-',
     14: 'jawadsoomrowork@gmail.com',
     15: 'hanzalahtahir93@gmail.com',
@@ -44,7 +44,7 @@ export const staffData = {
     9:  { id: 9,  nameUr: 'عبید رضا (3)', nameEn: 'Ubaid Raza (3)', roleUr: 'تحریر', roleEn: 'Tharir', entryTime: '11:00 AM', exitTime: '12:00 PM', entryHour: 11, exitHour: 12, totalHours: 1, salary: 3500, perDaySalary: Math.round(3500 / 26), perHourSalary: Math.round(3500 / 26 / 1), perMinuteSalary: 3500 / 26 / 1 / 60, phone: '03269676389', email: 'ubaidattari0326@gmail.com', city: 'Karachi', country: 'Pakistan', joinDate: 'January 2023', setupDate: '2026-03-16', setupComplete: true },
     10: { id: 10, nameUr: 'محمد رضوان حسین', nameEn: 'Muhammad Rizwan Hussain', roleUr: 'پنچسر', roleEn: 'Panchser', entryTime: '1:30 PM', exitTime: '4:00 PM', entryHour: 13.5, exitHour: 16, totalHours: 2.5, salary: 10000, allowance: 0, perDaySalary: Math.round(10000 / 26), perHourSalary: Math.round(10000 / 26 / 2.5), perMinuteSalary: 10000 / 26 / 2.5 / 60, phone: '03190423371', email: '-', city: 'Karachi', country: 'Pakistan', joinDate: 'October 2025', setupDate: '2026-03-26', setupComplete: true },
     11: { id: 11, nameUr: 'محمد کاشف عطاری', nameEn: 'Muhammad Kashif Attari', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[11], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
-    12: { id: 12, nameUr: 'محمد ہاشم', nameEn: 'Muhammad Hashim', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[12], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
+
     13: { id: 13, nameUr: 'احمد شاہ', nameEn: 'Ahmed Shah', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[13], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
     14: { id: 14, nameUr: 'جواد', nameEn: 'Jawad', roleUr: '-', roleEn: '-', entryTime: '-', exitTime: '-', entryHour: 0, exitHour: 0, totalHours: 0, salary: 0, perDaySalary: 0, perHourSalary: 0, perMinuteSalary: 0, phone: '-', email: emails[14], city: 'Karachi', country: 'Pakistan', joinDate: '-', setupDate: '', setupComplete: false },
     15: { id: 15, nameUr: 'حنظلہ طاہر', nameEn: 'Hanzalah Tahir', roleUr: 'ڈیولپر', roleEn: 'Developer', entryTime: 'Remote', exitTime: 'Remote', entryHour: 0, exitHour: 0, totalHours: 3, salary: 15000, isRemote: true, perDaySalary: Math.round(15000 / 26), perHourSalary: Math.round(15000 / 26 / 3), perMinuteSalary: 15000 / 26 / 3 / 60, phone: '03018544514', email: 'hanzalahtahir93@gmail.com', city: 'Karachi', country: 'Pakistan', joinDate: 'January 2026', setupDate: '2026-01-01', setupComplete: true },
@@ -70,6 +70,18 @@ export const pushSingleStaff = async (staffId) => {
         return true;
     } catch (error) {
         console.error(`Single staff push failed for ${staffId}:`, error);
+        return false;
+    }
+};
+
+// DELETE staff from Firebase (use for removed staff like Hashim)
+export const deleteStaff = async (staffId) => {
+    try {
+        await deleteDoc(doc(db, 'staff', String(staffId)));
+        console.log(`Staff ${staffId} deleted from Firebase!`);
+        return true;
+    } catch (error) {
+        console.error(`Delete failed for ${staffId}:`, error);
         return false;
     }
 };
