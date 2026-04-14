@@ -55,7 +55,7 @@ const Teachers = () => {
         navigate(`/teachers/profile/${id}`);
     };
 
-    const canViewProfile = (staff) => staff.setupComplete || Number(staff.id) === 15;
+    const canViewProfile = (staff) => staff.setupComplete || Number(staff.id) === 1;
 
     return (
         <>

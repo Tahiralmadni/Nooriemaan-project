@@ -4,7 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { deleteStaff } from '../utils/migrateStaffToFirebase';
+import { migrateStaff } from '../utils/migrateStaffToFirebase';
+
+let isMigrationRunning = false;
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
@@ -16,16 +18,20 @@ const Dashboard = () => {
     useEffect(() => {
         document.title = t('pageTitles.dashboard');
         
-        // TEMPORARY: Auto-delete Hashim (Staff 12) from Firebase since he's removed
-        const cleanupHashim = async () => {
+        // ONE-TIME SYNC: Push all 22 staff to Firebase (Strict Mode Safe)
+        const runSync = async () => {
+            if (isMigrationRunning) return;
+            isMigrationRunning = true;
+            
             try {
-                await deleteStaff(12);
-                console.log("Muhammad Hashim has been removed from Firebase.");
+                console.log("Syncing staff to Firebase...");
+                await migrateStaff();
+                console.log("Staff sync complete! 22 staff pushed.");
             } catch (e) {
-                console.error("Cleanup error:", e);
+                console.error("Sync error:", e);
             }
         };
-        cleanupHashim();
+        runSync();
     }, [t, i18n.language]);
 
     // Fetch today's attendance count (no composite index needed)
