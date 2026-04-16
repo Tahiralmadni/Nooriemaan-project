@@ -1,6 +1,6 @@
 # 🔄 Handover Summary — Nooriemaan Project
-**Last Updated:** 15 April 2026  
-**Next Session Goal:** Jawad Soomro ko Firebase par push karna aur baqi pending staff (13, 14, 16, 17, 18, 19, 20, 21, 22) ka setup gradually karna. ~3 din mein 1 staff ka pace hai.
+**Last Updated:** 16 April 2026  
+**Next Session Goal:** Jawad Soomro ka Firebase push verify karna (Day 3) + Staff 13 (Kashif Attari) ka setup start. ~3 din mein 1 staff ka pace hai.
 
 ---
 
@@ -40,11 +40,11 @@ c:\Users\tahir\OneDrive\Desktop\Nooriemaan project
 
 ---
 
-## ✅ Aaj Kya Hua (15 April 2026) — Jawad ka 3 Hour Kaam
+## ✅ Kal Kya Hua (15 April 2026) — Jawad Day 1
 
 ### 🎯 Jawad ne AI ke bina, khud manually coding ki!
 
-Jawad ne aaj **3 files** mein changes kiye hain (abhi uncommitted hain):
+Jawad ne **3 files** mein changes kiye:
 
 ### 1. ✅ Staff 15 — Jawad Soomro ka Complete Setup
 **File:** `src/utils/migrateStaffToFirebase.js`
@@ -61,7 +61,20 @@ Jawad ne aaj **3 files** mein changes kiye hain (abhi uncommitted hain):
 
 ### 2. ✅ Translation Update
 **File:** `src/locales/en.json` — Staff 15 naam `"Jawad"` → `"Jawad Soomro"`  
-**File:** `src/locales/ur.json` — Likely similar naam update
+**File:** `src/locales/ur.json` — Staff 15 naam `"جواد"` → `"جواد سومرو"`
+
+---
+
+## ✅ Aaj Kya Hua (16 April 2026) — Jawad Day 2
+
+### 1. ✅ useStaffData.js Bug Fix
+**File:** `src/hooks/useStaffData.js`
+- **Bug:** Comments aur code mein ID 15 likha tha "Hanzalah" ke liye, lekin Hanzalah ab ID 1 hai. ID 15 ab Jawad hai.
+- **Fix:** 7 jagah code change — `id === 15` → `id === 1`, `localStaffData[15]` → `localStaffData[1]`, `dataObj[15]` → `dataObj[1]`, comments updated
+
+### 2. 🟡 Firebase Push (Manual Step)
+- `pushSingleStaff(15)` — browser console se run karna hai
+- Data code mein ready hai, Firebase push baqi
 
 ---
 
@@ -69,7 +82,8 @@ Jawad ne aaj **3 files** mein changes kiye hain (abhi uncommitted hain):
 
 | Date | Commit | Status |
 |------|--------|--------|
-| 15 April 2026 | Jawad Soomro setup (uncommitted) | 🟡 Uncommitted |
+| 16 April 2026 | Jawad Day 2 — useStaffData.js bug fix | 🟡 Pending Commit |
+| 15 April 2026 | `7c2a051` — Jawad Soomro setup complete | ✅ Committed |
 | 14 April 2026 | `52b8774` — Dashboard update, forceSync, staff data restructure | ✅ Committed |
 | 13 April 2026 | `c5f8688` — Day completed | ✅ Committed |
 | 11 April 2026 | `925baba` — Day completed | ✅ Committed |
@@ -80,38 +94,39 @@ Jawad ne aaj **3 files** mein changes kiye hain (abhi uncommitted hain):
 
 ## ⚠️ PENDING KAAM (Next Session)
 
-### 🔴 Priority 1: Aaj ka Kaam Commit + Firebase Push
-- Jawad Soomro ka data abhi **uncommitted** hai — commit karna hai
-- Staff 15 ko Firebase par **push** karna hai (`pushSingleStaff(15)`)
+### 🔴 Priority 1: Jawad Day 3 — Firebase Push + Final Verify
+- Staff 15 ko Firebase par **push** karna hai (`pushSingleStaff(15)`) — browser console se
+- Sab pages par verify karna hai (Teachers, Profile, Attendance)
+- Git commit karna hai
 
-### 🟡 Priority 2: Baqi Staff Setup (10 Log)
-- Staff **11** (TBD), **13** (Muhammad Kashif Attari), **14** (Ahmed Shah), **16** (Qari Kashif Junaid), **17** (Abdul Qudus), **18** (Shoaib), **19, 20, 21, 22** — sab ki details users se confirm karwa ke add karne hain
+### 🟡 Priority 2: Baqi Staff Setup (9 Log)
+- Staff **13** (Muhammad Kashif Attari), **14** (Ahmed Shah), **16** (Qari Kashif Junaid), **17** (Abdul Qudus), **18** (Shoaib), **19, 20, 21, 22** — sab ki details users se confirm karwa ke add karne hain
 
 ### 🟡 Priority 3: Global i18n (Tarjuma)
 - Kuch pages mein abhi bhi hardcoded English/Urdu strings hain jo translation files se use nahi hore
 
 ---
 
-## 📊 Staff Setup Status (13/23 Done — 1 naya aaj!)
+## 📊 Staff Setup Status (14/23 Done)
 
 | # | Naam | Status | Salary | Type |
 |---|------|--------|--------|------|
-| 1 | Muhammad Akram Attari (1) | ✅ Live | Rs 26,620 | Regular |
-| 2 | Qari Syed Umair Attari | ✅ Live | Rs 23,000 | Regular |
-| 3 | Muhammad Muneeb Sabir | ✅ Live | Rs 8,000 | Regular |
-| 4 | Mudassir Raza (1) | ✅ Live | Rs 8,000 | Regular |
-| 5 | Mudassir Raza (2) | ✅ Live | Rs 7,500 | Regular |
-| 6 | Mudassir Raza (3) | ✅ Live | Rs 6,500 | Regular |
-| 7 | Ubaid Raza (1) | ✅ Live | Rs 7,200 | Regular |
-| 8 | Ubaid Raza (2) | ✅ Live | Rs 6,600 | Regular |
-| 9 | Ubaid Raza (3) | ✅ Live | Rs 3,500 | Regular |
-| 10 | Muhammad Rizwan Hussain | ✅ Live | Rs 10,000 | Regular |
-| 11 | Hanzalah Tahir | ✅ Live | Rs 15,000 | **Remote** |
+| 1 | Hanzalah Tahir | ✅ Live | Rs 15,000 | **Remote** |
+| 2 | Muhammad Akram Attari (1) | ✅ Live | Rs 26,620 | Regular |
+| 3 | Qari Syed Umair Attari | ✅ Live | Rs 23,000 | Regular |
+| 4 | Muhammad Muneeb Sabir | ✅ Live | Rs 8,000 | Regular |
+| 5 | Mudassir Raza (1) | ✅ Live | Rs 8,000 | Regular |
+| 6 | Mudassir Raza (2) | ✅ Live | Rs 7,500 | Regular |
+| 7 | Mudassir Raza (3) | ✅ Live | Rs 6,500 | Regular |
+| 8 | Ubaid Raza (1) | ✅ Live | Rs 7,200 | Regular |
+| 9 | Ubaid Raza (2) | ✅ Live | Rs 6,600 | Regular |
+| 10 | Ubaid Raza (3) | ✅ Live | Rs 3,500 | Regular |
+| 11 | Muhammad Rizwan Hussain | ✅ Live | Rs 10,000 | Regular |
 | 12 | Muhammad Dilawar Raza | ✅ Live | Rs 37,000 | Regular |
-| **15** | **Jawad Soomro** | **🟡 NEW (Uncommitted)** | **Rs 10,000** | **Regular (2.5hrs)** |
+| 15 | Jawad Soomro | ✅ Live (Firebase Push Pending) | Rs 10,000 | Regular (2.5hrs) |
 
-### Baqi Staff (Setup Baqi Hain — 10 Log)
-Staff 11, 13, 14, 16, 17, 18, 19, 20, 21, 22
+### Baqi Staff (Setup Baqi Hain — 9 Log)
+Staff 13, 14, 16, 17, 18, 19, 20, 21, 22
 
 ---
 

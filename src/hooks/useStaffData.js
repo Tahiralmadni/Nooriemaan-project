@@ -43,8 +43,8 @@ const useStaffData = () => {
                     dataObj[id] = staffObj;
 
                     // Only show setupComplete staff in dropdown lists
-                    // Override for ID 15 (Hanzalah) to ensure he's always visible as a remote dev
-                    if (data.setupComplete || id === 15) {
+                    // Override for ID 1 (Hanzalah) to ensure he's always visible as a remote dev
+                    if (data.setupComplete || id === 1) {
                         listArr.push({
                             id,
                             nameKey: `staff.${id}`,
@@ -57,14 +57,14 @@ const useStaffData = () => {
                     }
                 });
 
-                // Hanzalah (ID 15) — merge local data to ensure isRemote, setupDate etc are correct
+                // Hanzalah (ID 1) — merge local data to ensure isRemote, setupDate etc are correct
                 // No Firebase write here — data already synced
-                const hanzalahLocal = localStaffData[15];
+                const hanzalahLocal = localStaffData[1];
                 if (hanzalahLocal) {
-                    if (!dataObj[15]) {
+                    if (!dataObj[1]) {
                         listArr.push({
-                            id: 15,
-                            nameKey: `staff.15`,
+                            id: 1,
+                            nameKey: `staff.1`,
                             name: hanzalahLocal.nameEn,
                             nameUr: hanzalahLocal.nameUr,
                             nameEn: hanzalahLocal.nameEn,
@@ -72,7 +72,7 @@ const useStaffData = () => {
                             roleEn: hanzalahLocal.roleEn,
                         });
                     }
-                    dataObj[15] = { ...dataObj[15], ...hanzalahLocal, id: 15 };
+                    dataObj[1] = { ...dataObj[1], ...hanzalahLocal, id: 1 };
                 }
 
                 // Rizwan (ID 10) — merge local data to ensure timing, salary breakdowns are correct
