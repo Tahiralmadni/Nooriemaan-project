@@ -72,9 +72,18 @@ Jawad ne **3 files** mein changes kiye:
 - **Bug:** Comments aur code mein ID 15 likha tha "Hanzalah" ke liye, lekin Hanzalah ab ID 1 hai. ID 15 ab Jawad hai.
 - **Fix:** 7 jagah code change — `id === 15` → `id === 1`, `localStaffData[15]` → `localStaffData[1]`, `dataObj[15]` → `dataObj[1]`, comments updated
 
-### 2. 🟡 Firebase Push (Manual Step)
-- `pushSingleStaff(15)` — browser console se run karna hai
-- Data code mein ready hai, Firebase push baqi
+### 2. ✅ Jawad Soomro ID Swap: 15 → 13
+**Files:** `migrateStaffToFirebase.js`, `en.json`, `ur.json`
+- Jawad complete tha toh usse 13 number par le aaye (pehle 15 tha)
+- Kashif Attari 13 se 15 par shift hua (pending staff)
+
+### 3. ✅ StaffProfile.jsx Bug Fix
+**File:** `src/pages/StaffProfile.jsx`
+- Line 31 mein `id === 15` tha (Hanzalah ke liye) → `id === 1` fix kiya
+
+### 4. 🟡 Firebase Push (Automatic)
+- Dashboard.jsx mein `migrateStaff()` automatically sab staff push karta hai
+- Browser mein Dashboard kholne se Firebase update ho jayega
 
 ---
 
@@ -123,10 +132,10 @@ Jawad ne **3 files** mein changes kiye:
 | 10 | Ubaid Raza (3) | ✅ Live | Rs 3,500 | Regular |
 | 11 | Muhammad Rizwan Hussain | ✅ Live | Rs 10,000 | Regular |
 | 12 | Muhammad Dilawar Raza | ✅ Live | Rs 37,000 | Regular |
-| 15 | Jawad Soomro | ✅ Live (Firebase Push Pending) | Rs 10,000 | Regular (2.5hrs) |
+| 13 | Jawad Soomro | ✅ Live | Rs 10,000 | Regular (2.5hrs) |
 
 ### Baqi Staff (Setup Baqi Hain — 9 Log)
-Staff 13, 14, 16, 17, 18, 19, 20, 21, 22
+Staff 14, 15, 16, 17, 18, 19, 20, 21, 22
 
 ---
 

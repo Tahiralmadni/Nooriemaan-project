@@ -711,7 +711,7 @@ const AttendanceSchedule = () => {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
-                                                {isRTL ? 'آخری محفوظ شدہ' : 'Last Saved'}
+                                                {t('hazri.lastSaved')}
                                             </p>
                                             <p className="text-xs text-slate-600 dark:text-slate-300 font-medium truncate">
                                                 {lastSaved.staffName} — {lastSaved.status === 'present' ? '✅' : lastSaved.status === 'absent' ? '❌' : lastSaved.status === 'leave' ? '🟡' : '🔵'} {t(`hazri.${lastSaved.status}`)}
@@ -876,7 +876,7 @@ const AttendanceSchedule = () => {
                                                 <div className="p-4 text-center">
                                                     <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-800 mb-2">
                                                         <span className="text-lg">🏠</span>
-                                                        <span className="text-sm font-bold text-blue-700 dark:text-blue-300">{isRTL ? 'ریموٹ ڈیولپر' : 'Remote Developer'}</span>
+                                                        <span className="text-sm font-bold text-blue-700 dark:text-blue-300">{t('hazri.remoteDeveloper')}</span>
                                                     </div>
                                                     <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
                                                         {isRTL ? `روزانہ ${staff.totalHours || 3} گھنٹے کام` : `${staff.totalHours || 3} Hours / Day Target`}

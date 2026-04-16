@@ -169,7 +169,7 @@ const MajmoohiHazri = () => {
                         isEarlyLeave: false,
                         earlyMinutes: 0,
                         deduction: 0,
-                        reason: 'Auto Marked (No Record)'
+                        reason: t('majmoohi.table.autoMarked')
                     });
                 } else if (d <= now && dayOfWeek === 0) { // If past date and is Sunday
                     // Inject an empty HOLIDAY record

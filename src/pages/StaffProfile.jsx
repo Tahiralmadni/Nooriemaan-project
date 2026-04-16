@@ -28,7 +28,7 @@ const StaffProfile = () => {
                 if (docSnap.exists()) {
                     const firebaseStaff = docSnap.data();
 
-                    if (Number(id) === 15 && fallbackStaff) {
+                    if (Number(id) === 1 && fallbackStaff) {
                         setStaff({
                             ...firebaseStaff,
                             ...fallbackStaff,
