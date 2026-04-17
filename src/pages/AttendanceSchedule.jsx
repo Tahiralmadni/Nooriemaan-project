@@ -449,7 +449,7 @@ const AttendanceSchedule = () => {
             }
         } else if (status === 'present' && staff.isRemote) {
             if (Number(hoursWorked) === 0 && Number(minutesWorked) === 0) {
-                showErrorToast(isRTL ? "برائے مہربانی کام کے گھنٹے لکھیں۔" : "Please provide hours worked.");
+                showErrorToast(t('hazri.provideHoursError'));
                 setIsSaving(false);
                 return;
             }
@@ -471,7 +471,7 @@ const AttendanceSchedule = () => {
             );
             const dupSnap = await getDocs(dupQ);
             if (!dupSnap.empty) {
-                showErrorToast(isRTL ? 'اس تاریخ کی حاضری پہلے سے موجود ہے۔' : 'Attendance already exists for this date.');
+                showErrorToast(t('hazri.duplicateAttendance'));
                 setIsSaving(false);
                 return;
             }
@@ -816,7 +816,7 @@ const AttendanceSchedule = () => {
                                         {/* ===== STAFF SELECTOR ===== */}
                                         <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-md border border-white/80 dark:border-slate-700 p-3">
                                             <label className="text-[10px] text-slate-500 font-bold uppercase block mb-1.5">
-                                                {t('hazri.selectStaff') || (isRTL ? 'عملہ منتخب کریں' : 'Select Staff')}
+                                                {t('hazri.selectStaff')}
                                             </label>
                                             <select
                                                 value={selectedStaffId}
@@ -879,7 +879,7 @@ const AttendanceSchedule = () => {
                                                         <span className="text-sm font-bold text-blue-700 dark:text-blue-300">{t('hazri.remoteDeveloper')}</span>
                                                     </div>
                                                     <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-                                                        {isRTL ? `روزانہ ${staff.totalHours || 3} گھنٹے کام` : `${staff.totalHours || 3} Hours / Day Target`}
+                                                        {t('hazri.dailyTarget', { hours: staff.totalHours || 3 })}
                                                     </p>
                                                     <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-1">
                                                         Rs {(staff.salary || 15000).toLocaleString()}
@@ -946,7 +946,7 @@ const AttendanceSchedule = () => {
                                                                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100/50 dark:border-emerald-900/30">
                                                                     <label className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold uppercase flex items-center gap-1 mb-2">
                                                                         <Clock size={10} />
-                                                                        {isRTL ? "گھنٹے (Hours)" : "Hours Worked"}
+                                                                        {t('hazri.hoursWorked')}
                                                                     </label>
                                                                     <select
                                                                         value={hoursWorked}
@@ -963,7 +963,7 @@ const AttendanceSchedule = () => {
                                                                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-xl border border-amber-100/50 dark:border-amber-900/30">
                                                                     <label className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase flex items-center gap-1 mb-2">
                                                                         <Clock size={10} />
-                                                                        {isRTL ? "منٹ (Minutes)" : "Minutes Worked"}
+                                                                        {t('hazri.minutesWorked')}
                                                                     </label>
                                                                     <select
                                                                         value={minutesWorked}

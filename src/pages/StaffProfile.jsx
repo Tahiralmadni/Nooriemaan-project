@@ -55,7 +55,7 @@ const StaffProfile = () => {
 
     useEffect(() => {
         if (staff) {
-            document.title = `${isRTL ? staff.nameUr : staff.nameEn} - Profile`;
+            document.title = `${isRTL ? staff.nameUr : staff.nameEn} - ${t('profile.title')}`;
         }
     }, [staff, isRTL]);
 
@@ -160,7 +160,7 @@ const StaffProfile = () => {
     return (
         <>
             <Helmet defer={false}>
-                <title>{currentName} - Profile</title>
+                <title>{currentName} - {t('profile.title')}</title>
             </Helmet>
 
             <div

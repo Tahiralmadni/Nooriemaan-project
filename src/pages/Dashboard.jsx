@@ -24,9 +24,7 @@ const Dashboard = () => {
             isMigrationRunning = true;
             
             try {
-                console.log("Syncing staff to Firebase...");
                 await migrateStaff();
-                console.log("Staff sync complete! 22 staff pushed.");
             } catch (e) {
                 console.error("Sync error:", e);
             }

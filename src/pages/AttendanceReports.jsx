@@ -259,8 +259,8 @@ const AttendanceReports = () => {
             [t('reports.tableHeaders.day')]: row.day,
             [t('reports.tableHeaders.status')]: row.status,
             ...(staffData[selectedStaff]?.isRemote ? {
-                [isRTL ? "گھنٹے (Hours)" : "Hours"]: row.status === t('common.statusPresent') ? row.hoursWorked : '-',
-                [isRTL ? "منٹ (Mins)" : "Mins"]: row.status === t('common.statusPresent') ? row.minutesWorked : '-'
+                [t('hazri.hoursLabel')]: row.status === t('common.statusPresent') ? row.hoursWorked : '-',
+                [t('hazri.minsLabel')]: row.status === t('common.statusPresent') ? row.minutesWorked : '-'
             } : {
                 [t('reports.tableHeaders.lateIn')]: row.startLessMin > 0 ? row.startLessMin : '-',
                 [t('reports.tableHeaders.earlyOut')]: row.endLessMin > 0 ? row.endLessMin : '-'
@@ -282,8 +282,8 @@ const AttendanceReports = () => {
             t('reports.tableHeaders.day'),
             t('reports.tableHeaders.status'),
             ...(staffData[selectedStaff]?.isRemote ? [
-                (isRTL ? "گھنٹے (Hours)" : "Hours"),
-                (isRTL ? "منٹ (Mins)" : "Mins")
+                t('hazri.hoursLabel'),
+                t('hazri.minsLabel')
             ] : [
                 t('reports.tableHeaders.lateIn'),
                 t('reports.tableHeaders.earlyOut')
@@ -458,7 +458,7 @@ const AttendanceReports = () => {
                                                 className="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-200 text-xs font-semibold rounded hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-1 border border-gray-200 dark:border-slate-600"
                                             >
                                                 <FileText size={14} />
-                                                PDF / Print
+                                                {t('hazri.pdfPrint')}
                                             </button>
                                             <button
                                                 onClick={() => {
@@ -502,8 +502,8 @@ const AttendanceReports = () => {
                                                         
                                                         {staffData[selectedStaff]?.isRemote ? (
                                                             <>
-                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{isRTL ? "گھنٹے (Hours)" : "Hours"}</th>
-                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{isRTL ? "منٹ (Mins)" : "Mins"}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('hazri.hoursLabel')}</th>
+                                                                <th className="px-2 py-3 font-bold text-[11px] text-center border-r border-emerald-400/30 whitespace-nowrap leading-relaxed">{t('hazri.minsLabel')}</th>
                                                             </>
                                                         ) : (
                                                             <>
@@ -616,7 +616,7 @@ const AttendanceReports = () => {
                                                     {staffData[selectedStaff]?.isRemote && (
                                                         <div className="flex items-center gap-1.5 px-3 border-l border-gray-200 ml-2">
                                                             <Clock size={14} className="text-indigo-500" />
-                                                            <span className="text-gray-500">{isRTL ? "کل وقت" : "Total Work"}:</span>
+                                                            <span className="text-gray-500">{t('hazri.totalWork')}:</span>
                                                             <span className="font-bold text-indigo-600">{stats.totalHours}h {stats.totalMinutes}m</span>
                                                         </div>
                                                     )}
@@ -666,11 +666,11 @@ const AttendanceReports = () => {
                                                     {staffData[selectedStaff]?.isRemote ? (
                                                         <>
                                                             <div className="flex justify-between items-center p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
-                                                                <span className="text-indigo-700 font-medium">{isRTL ? "کل کام کے گھنٹے" : "Total Work Hours"}</span>
+                                                                <span className="text-indigo-700 font-medium">{t('hazri.totalWorkHours')}</span>
                                                                 <span className="text-lg font-bold text-indigo-700">{stats.totalHours}h {stats.totalMinutes}m</span>
                                                             </div>
                                                             <div className="flex justify-between items-center p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
-                                                                <span className="text-emerald-700 font-medium">{isRTL ? "حساب شدہ تنخواہ" : "Calculated Salary"}</span>
+                                                                <span className="text-emerald-700 font-medium">{t('hazri.calculatedSalary')}</span>
                                                                 <span className="text-lg font-bold text-emerald-700">Rs {stats.netSalary.toLocaleString()}</span>
                                                             </div>
                                                         </>

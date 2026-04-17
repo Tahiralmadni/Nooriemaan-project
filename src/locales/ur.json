@@ -209,6 +209,7 @@
         "fees": "فیس - نورِ ایمان"
     },
     "profile": {
+        "title": "پروفائل",
         "back": "واپس",
         "email": "ای میل",
         "phone": "فون نمبر",
@@ -267,6 +268,17 @@
         "loadingAttendance": "حاضری کا نظام لوڈ ہو رہا ہے",
         "lastSaved": "آخری محفوظ شدہ",
         "remoteDeveloper": "ریموٹ ڈیولپر",
+        "hoursWorked": "گھنٹے (Hours)",
+        "minutesWorked": "منٹ (Minutes)",
+        "hoursLabel": "گھنٹے (Hours)",
+        "minsLabel": "منٹ (Mins)",
+        "provideHoursError": "برائے مہربانی کام کے گھنٹے لکھیں۔",
+        "duplicateAttendance": "اس تاریخ کی حاضری پہلے سے موجود ہے۔",
+        "dailyTarget": "روزانہ {{hours}} گھنٹے کام",
+        "totalWork": "کل وقت",
+        "totalWorkHours": "کل کام کے گھنٹے",
+        "calculatedSalary": "حساب شدہ تنخواہ",
+        "pdfPrint": "PDF / پرنٹ",
         "reasons": {
             "select": "وجہ منتخب کریں",
             "traffic": "ٹریفک کے سبب",

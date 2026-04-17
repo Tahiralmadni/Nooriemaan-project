@@ -209,6 +209,7 @@
         "fees": "Fees - Nooriemaan"
     },
     "profile": {
+        "title": "Profile",
         "back": "Back",
         "email": "Email",
         "phone": "Phone",
@@ -267,6 +268,17 @@
         "loadingAttendance": "Loading Attendance System",
         "lastSaved": "Last Saved",
         "remoteDeveloper": "Remote Developer",
+        "hoursWorked": "Hours Worked",
+        "minutesWorked": "Minutes Worked",
+        "hoursLabel": "Hours",
+        "minsLabel": "Mins",
+        "provideHoursError": "Please provide hours worked.",
+        "duplicateAttendance": "Attendance already exists for this date.",
+        "dailyTarget": "{{hours}} Hours / Day Target",
+        "totalWork": "Total Work",
+        "totalWorkHours": "Total Work Hours",
+        "calculatedSalary": "Calculated Salary",
+        "pdfPrint": "PDF / Print",
         "reasons": {
             "select": "Select Reason",
             "traffic": "Due to Traffic",
