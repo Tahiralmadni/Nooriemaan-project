@@ -6,6 +6,7 @@ import { Eye, ArrowRight, ArrowLeft, Search, X } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import toast from 'react-hot-toast';
+import PageLoader from '../components/PageLoader';
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
@@ -90,7 +91,7 @@ const Teachers = () => {
                 {/* Search Bar */}
                 <div className="mb-4 relative">
                     <div className="relative">
-                        <Search size={18} className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" />
+                        <Search size={18} className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'right-4' : 'left-4'} text-gray-400`} />
                         <input
                             type="text"
                             dir="auto"
@@ -103,7 +104,7 @@ const Teachers = () => {
                         {searchQuery && (
                             <button
                                 onClick={() => setSearchQuery('')}
-                                className="absolute top-1/2 -translate-y-1/2 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                                className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-4' : 'right-4'} text-gray-400 hover:text-red-500 transition-colors`}
                             >
                                 <X size={18} />
                             </button>
@@ -118,10 +119,7 @@ const Teachers = () => {
 
                 {/* Main Content Area */}
                 {loading ? (
-                    <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 text-center">
-                        <div className="animate-spin w-8 h-8 rounded-full border-4 border-emerald-500 border-t-transparent mx-auto mb-4"></div>
-                        <p className="text-gray-500">{t('common.loading')}</p>
-                    </div>
+                    <PageLoader loadingText={t('common.loading')} />
                 ) : (
                     <>
                         {/* Desktop Table - Hidden on Mobile */}
@@ -132,10 +130,10 @@ const Teachers = () => {
                                         <th className="px-6 py-4 text-white font-semibold text-center w-20">
                                             {t('table.serial')}
                                         </th>
-                                        <th className="px-6 py-4 text-white font-semibold">
+                                        <th className="px-6 py-4 text-white font-semibold text-start">
                                             {t('table.name')}
                                         </th>
-                                        <th className="px-6 py-4 text-white font-semibold">
+                                        <th className="px-6 py-4 text-white font-semibold text-start">
                                             {t('table.email')}
                                         </th>
                                         <th className="px-6 py-4 text-white font-semibold text-center w-24">
@@ -152,10 +150,10 @@ const Teachers = () => {
                                             <td className="px-6 py-4 text-center border-b border-gray-100 dark:border-slate-700 text-emerald-600 font-bold text-lg">
                                                 {staff.id}
                                             </td>
-                                            <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-medium">
+                                            <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-medium text-start">
                                                 {isRTL ? staff.nameUr : staff.nameEn}
                                             </td>
-                                            <td className={`px-6 py-4 border-b border-gray-100 dark:border-slate-700 ${staff.email === '-' ? 'text-gray-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                                            <td className={`px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-start font-sans ${staff.email === '-' ? 'text-gray-400' : 'text-blue-600 dark:text-blue-400'}`} dir="ltr">
                                                 {staff.email}
                                             </td>
                                             <td className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 text-center">
@@ -220,8 +218,7 @@ const Teachers = () => {
                                         </button>
                                     </div>
 
-                                    {/* Email Row */}
-                                    <div className={`text-sm ${isRTL ? 'pr-11' : 'pl-11'} ${staff.email === '-' ? 'text-gray-400' : 'text-blue-500'}`}>
+                                    <div className={`text-sm ${isRTL ? 'pr-11 text-right' : 'pl-11 text-left'} ${staff.email === '-' ? 'text-gray-400' : 'text-blue-500'}`} dir="ltr">
                                         📧 {staff.email}
                                     </div>
                                 </div>

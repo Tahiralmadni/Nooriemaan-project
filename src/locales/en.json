@@ -302,6 +302,7 @@
         }
     },
     "common": {
+        "sunday": "Sunday",
         "backToDashboard": "Back to Dashboard",
         "cancel": "Cancel",
         "confirm": "Confirm",

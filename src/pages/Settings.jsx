@@ -164,7 +164,7 @@ const Settings = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
                         onClick={() => setShowFontModal(true)}
-                        className="w-full bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow text-left"
+                        className="w-full bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow text-start"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
@@ -188,7 +188,7 @@ const Settings = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
                         onClick={handleClearCache}
-                        className="w-full bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow text-left group"
+                        className="w-full bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow text-start group"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-red-50 dark:bg-red-900/30 rounded-lg flex items-center justify-center">

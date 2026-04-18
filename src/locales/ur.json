@@ -252,7 +252,7 @@
         "lateReason": "غیر حاضری / تاخیر کی وجہ",
         "otherReason": "دیگر وجہ",
         "otherReasonPlaceholder": "وجہ یہاں لکھیں...",
-        "save": "محفوظ کریں",
+        "save": "حاضری لگائیں",
         "saved": "محفوظ ہو گیا",
         "locked": "مقفل",
         "late": "دیر سے آئے",
@@ -302,6 +302,7 @@
         }
     },
     "common": {
+        "sunday": "اتوار",
         "backToDashboard": "ڈیش بورڈ پر واپس جائیں",
         "cancel": "منسوخ کریں",
         "confirm": "تصدیق کریں",
@@ -323,7 +324,7 @@
         "statusAbsent": "غیر حاضر",
         "statusLeave": "رخصت",
         "statusHolidaySunday": "تعطیل: اتوار",
-        "settings": "پسند کریں"
+        "settings": "ترتیبات"
     },
     "logoutModal": {
         "title": "لاگ آؤٹ کی تصدیق",

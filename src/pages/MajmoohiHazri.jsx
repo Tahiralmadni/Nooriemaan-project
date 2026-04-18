@@ -185,7 +185,7 @@ const MajmoohiHazri = () => {
                         isEarlyLeave: false,
                         earlyMinutes: 0,
                         deduction: 0,
-                        reason: 'Sunday'
+                        reason: t('common.sunday')
                     });
                 }
             }

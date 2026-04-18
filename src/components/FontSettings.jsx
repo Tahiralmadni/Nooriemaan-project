@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Type, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import i18n from '../config/i18n';
 
 /**
@@ -43,6 +44,7 @@ export const saveFont = (language, fontId) => {
 };
 
 const FontSettings = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     const isRTL = i18n.language === 'ur';
 
     const [selectedUrduFont, setSelectedUrduFont] = useState(() => getSavedFont('ur'));

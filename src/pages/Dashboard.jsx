@@ -4,9 +4,6 @@ import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { migrateStaff } from '../utils/migrateStaffToFirebase';
-
-let isMigrationRunning = false;
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
@@ -17,19 +14,6 @@ const Dashboard = () => {
     // Update title when language changes
     useEffect(() => {
         document.title = t('pageTitles.dashboard');
-        
-        // ONE-TIME SYNC: Push all 22 staff to Firebase (Strict Mode Safe)
-        const runSync = async () => {
-            if (isMigrationRunning) return;
-            isMigrationRunning = true;
-            
-            try {
-                await migrateStaff();
-            } catch (e) {
-                console.error("Sync error:", e);
-            }
-        };
-        runSync();
     }, [t, i18n.language]);
 
     // Fetch today's attendance count (no composite index needed)

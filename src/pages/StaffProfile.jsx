@@ -297,7 +297,7 @@ const StaffProfile = () => {
                                         </span>
                                     ) : null}
                                 </p>
-                                <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
+                                <p className="text-xs text-gray-400 font-bold uppercase mt-0.5">
                                     {t('profile.salary')}
                                 </p>
                             </div>
@@ -306,7 +306,7 @@ const StaffProfile = () => {
                                 <p className="text-lg font-black text-slate-700 dark:text-slate-200">
                                     {staff.isRemote ? currentTiming : staff.entryTime}
                                 </p>
-                                <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
+                                <p className="text-xs text-gray-400 font-bold uppercase mt-0.5">
                                     {staff.isRemote ? t('profile.timing') : t('profile.entry')}
                                 </p>
                             </div>
@@ -315,7 +315,7 @@ const StaffProfile = () => {
                                 <p className="text-lg font-black text-slate-700 dark:text-slate-200">
                                     {staff.isRemote ? t('profile.remoteStaff') : staff.exitTime}
                                 </p>
-                                <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
+                                <p className="text-xs text-gray-400 font-bold uppercase mt-0.5">
                                     {staff.isRemote ? t('profile.role') : t('profile.exit')}
                                 </p>
                             </div>
@@ -346,8 +346,8 @@ const StaffProfile = () => {
                                 <item.icon size={18} style={{ color: item.accent }} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{item.label}</p>
-                                <p className={`text-sm font-semibold truncate ${item.dim ? 'text-gray-300' : 'text-slate-700 dark:text-slate-200'}`}>
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-start">{item.label}</p>
+                                <p dir="auto" className={`text-sm font-semibold truncate text-start ${item.dim ? 'text-gray-300' : 'text-slate-700 dark:text-slate-200'}`}>
                                     {item.value}
                                 </p>
                             </div>
