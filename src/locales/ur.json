@@ -149,7 +149,19 @@
         "22": "محمد اکرم عطاری (2)"
     },
     "roles": {
-        "panchser": "پنچسر"
+        "developer": "ڈیولپر",
+        "naibNazim": "نائب ناظم",
+        "madrasaNazim": "مدرسہ ناظم حسین آباد",
+        "mudarisBilal": "مدرس - بلال مسجد",
+        "mudarisNayabadSubha": "مدرس — نیا آباد صبح",
+        "mudarisNayabadDopher": "مدرس — نیا آباد دوپہر",
+        "aattiyaMusaLine": "عطیہ — موسیٰ لائن",
+        "mudarisNayabad": "مدرس — نیا آباد",
+        "mudarisMusaLine": "مدرس — موسیٰ لائن",
+        "tharir": "تحریر",
+        "panchser": "پنچسر",
+        "socialMediaMusaLine": "سوشل میڈیا — موسیٰ لائن",
+        "mudaris": "مدرس"
     },
     "loader": {
         "loading": "نوری ایمان ڈیجیٹل پورٹل لوڈ ہو رہا ہے...",

@@ -149,7 +149,19 @@
         "22": "Muhammad Akram Attari (2)"
     },
     "roles": {
-        "panchser": "Panchser"
+        "developer": "Developer",
+        "naibNazim": "Naib Nazim",
+        "madrasaNazim": "Madrasa Nazim Hussainabad",
+        "mudarisBilal": "Mudarris - Bilal Masjid",
+        "mudarisNayabadSubha": "Mudaris — Nayabad Subha",
+        "mudarisNayabadDopher": "Mudaris — Nayabad Dopher",
+        "aattiyaMusaLine": "Aattiya — Musa line",
+        "mudarisNayabad": "Mudaris (Nayabad)",
+        "mudarisMusaLine": "Mudaris (Mosalane)",
+        "tharir": "Tharir",
+        "panchser": "Panchser",
+        "socialMediaMusaLine": "Social Media — Musa Line",
+        "mudaris": "Mudaris"
     },
     "loader": {
         "loading": "Loading NooriEmaan Digital Portal...",
