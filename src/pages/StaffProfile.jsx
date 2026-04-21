@@ -151,7 +151,7 @@ const StaffProfile = () => {
     }
 
     // Role display parsing
-    const currentRole = isRTL ? staff.roleUr : staff.roleEn;
+    const currentRole = staff.roleKey ? t('roles.' + staff.roleKey) : (isRTL ? staff.roleUr : staff.roleEn);
     const currentName = isRTL ? staff.nameUr : staff.nameEn;
     const currentTiming = staff.isRemote
         ? t('profile.remoteHours', { hours: staff.totalHours })

@@ -832,7 +832,7 @@ const AttendanceSchedule = () => {
                                             >
                                                 {staffList.map(s => (
                                                     <option key={s.id} value={s.id}>
-                                                        {isRTL ? s.nameUr : s.nameEn} — {isRTL ? s.roleUr : s.roleEn}
+                                                        {isRTL ? s.nameUr : s.nameEn} — {s.roleKey ? t('roles.' + s.roleKey) : (isRTL ? s.roleUr : s.roleEn)}
                                                     </option>
                                                 ))}
                                             </select>
@@ -847,7 +847,7 @@ const AttendanceSchedule = () => {
                                                     </div>
                                                     <div>
                                                         <h3 className="text-sm font-bold text-gray-800 dark:text-white">{isRTL ? staff.nameUr : staff.nameEn}</h3>
-                                                        <p className="text-[10px] text-gray-400 font-medium">{isRTL ? staff.roleUr : staff.roleEn}</p>
+                                                        <p className="text-[10px] text-gray-400 font-medium">{staff.roleKey ? t('roles.' + staff.roleKey) : (isRTL ? staff.roleUr : staff.roleEn)}</p>
                                                     </div>
                                                 </div>
 

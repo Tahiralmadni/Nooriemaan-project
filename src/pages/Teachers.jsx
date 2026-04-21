@@ -7,6 +7,9 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import toast from 'react-hot-toast';
 import PageLoader from '../components/PageLoader';
+import { migrateStaff } from '../utils/migrateStaffToFirebase';
+
+let isSyncRunning = false;
 
 const Teachers = () => {
     const { t, i18n } = useTranslation();
@@ -19,7 +22,20 @@ const Teachers = () => {
 
     useEffect(() => {
         document.title = t('pageTitles.teachers');
-        fetchStaff();
+        
+        const syncAndFetch = async () => {
+            if (!isSyncRunning) {
+                isSyncRunning = true;
+                try {
+                    await migrateStaff();
+                } catch (e) {
+                    // silent
+                }
+            }
+            await fetchStaff();
+        };
+        
+        syncAndFetch();
     }, [t]);
 
     const fetchStaff = async () => {

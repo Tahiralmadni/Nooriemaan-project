@@ -1,6 +1,6 @@
 # 🔄 Handover Summary — Nooriemaan Project
-**Last Updated:** 16 April 2026  
-**Next Session Goal:** Jawad Soomro ka Firebase push verify karna (Day 3) + Staff 13 (Kashif Attari) ka setup start. ~3 din mein 1 staff ka pace hai.
+**Last Updated:** 21 April 2026  
+**Next Session Goal:** Day 3 — Firebase push verify + next staff setup. ~3 din mein 1 staff ka pace hai.
 
 ---
 
@@ -31,92 +31,66 @@ c:\Users\tahir\OneDrive\Desktop\Nooriemaan project
 | `src/pages/StaffProfile.jsx` | Staff ki profile — Edit Profile Modal aur Remote Support live |
 | `src/pages/Teachers.jsx` | Staff list page — Incomplete profiles locked hain |
 | `src/pages/MajmoohiHazri.jsx` | Majmoohi (collective) Hazri page |
-| `src/pages/Dashboard.jsx` | Main dashboard — recently updated |
+| `src/pages/Dashboard.jsx` | Main dashboard — ⚠️ migrateStaff() REMOVED for safety |
 | `src/pages/Login.jsx` | Login page (46KB — complex authentication) |
 | `src/hooks/useStaffData.js` | Shared hook — sab pages staff data ke liye |
 | `src/locales/en.json` & `ur.json` | Translation files (English + Urdu) |
 | `src/config/firebase.js` | Firebase config (project: nooeriemaan) |
-| `forceSync.js` | Force sync utility — 14 April ko add hua |
 
 ---
 
-## ✅ Kal Kya Hua (15 April 2026) — Jawad Day 1
+## ✅ 18 April 2026 — UI Bugs & Critical Fix
 
-### 🎯 Jawad ne AI ke bina, khud manually coding ki!
+### 1. ✅ Critical: Dashboard Database Wipe Bug REMOVED
+**File:** `src/pages/Dashboard.jsx`
+- `migrateStaff()` jo har Dashboard load par Firebase se sara data DELETE karta tha — permanently remove kiya gaya
+- Ab Firebase data safe hai, koi auto-wipe nahi hoga
 
-Jawad ne **3 files** mein changes kiye:
+### 2. ✅ UI/Visual Bug Fixes (8 bugs)
+- Settings RTL alignment (`text-left` → `text-start`)
+- Teachers search bar icon overlap in RTL mode
+- StaffProfile font sizes aur alignment
+- FontSettings modal crash fix (`useTranslation` import missing)
+- MajmoohiHazri hardcoded "Sunday" → `t('common.sunday')`
+- Teachers loading spinner → `<PageLoader />`
 
-### 1. ✅ Staff 15 — Jawad Soomro ka Complete Setup
+---
+
+## ✅ 20-21 April 2026 — Muhammad Aliyan (Staff 14) Setup
+
+### Day 1 (20 April): Data Configuration
 **File:** `src/utils/migrateStaffToFirebase.js`
-- **Naam:** `Jawad` → `Jawad Soomro` (full name set kiya)
-- **Urdu Naam:** `جواد` → `جواد سومرو`
-- **Role:** `Social Media — Musa Line` (سوشل میڈیا — موسیٰ لائن)
-- **Timing:** 11:00 AM se 1:30 PM (2.5 hours daily)
-- **Salary:** Rs 10,000/month
-- **Phone:** 03112077842
-- **Email:** jawadsoomrowork@gmail.com
-- **Join Date:** 2019
-- **Setup Date:** 2026-04-15
-- **setupComplete:** ✅ `true`
+- ID 19 ki empty line fill ki — Name, Role (مدرس/Mudaris), Timing (2:00 PM - 4:00 PM)
+- Salary: Rs 3,850 + Allowance: Rs 500
+- Email typo fix: `aliyn` → `aliyan00177@gmail.com`
+- Phone: 03705254773, joinDate: 2024
+- `setupComplete: true`
 
-### 2. ✅ Translation Update
-**File:** `src/locales/en.json` — Staff 15 naam `"Jawad"` → `"Jawad Soomro"`  
-**File:** `src/locales/ur.json` — Staff 15 naam `"جواد"` → `"جواد سومرو"`
+**Files:** `en.json`, `ur.json`
+- `roles` section mein 13 roles add kiye (pehle sirf 1 tha)
 
----
-
-## ✅ Aaj Kya Hua (16 April 2026) — Jawad Day 2
-
-### 1. ✅ useStaffData.js Bug Fix
-**File:** `src/hooks/useStaffData.js`
-- **Bug:** Comments aur code mein ID 15 likha tha "Hanzalah" ke liye, lekin Hanzalah ab ID 1 hai. ID 15 ab Jawad hai.
-- **Fix:** 7 jagah code change — `id === 15` → `id === 1`, `localStaffData[15]` → `localStaffData[1]`, `dataObj[15]` → `dataObj[1]`, comments updated
-
-### 2. ✅ Jawad Soomro ID Swap: 15 → 13
+### Day 2 (21 April): ID Swap + roleKey Architecture
 **Files:** `migrateStaffToFirebase.js`, `en.json`, `ur.json`
-- Jawad complete tha toh usse 13 number par le aaye (pehle 15 tha)
-- Kashif Attari 13 se 15 par shift hua (pending staff)
+- Muhammad Aliyan: ID 19 → **ID 14** (completed staff sequential)
+- Ahmed Shah: ID 14 → **ID 19** (pending staff)
+- Comment updated: `COMPLETED: Jawad Soomro (13), Muhammad Aliyan (14)`
 
-### 3. ✅ StaffProfile.jsx Bug Fix
-**File:** `src/pages/StaffProfile.jsx`
-- Line 31 mein `id === 15` tha (Hanzalah ke liye) → `id === 1` fix kiya
+**Architecture Upgrade — `roleKey` System:**
+- Har staff object mein `roleKey` field add kiya (jaise `roleKey: 'mudaris'`)
+- `StaffProfile.jsx` mein `isRTL ? staff.roleUr : staff.roleEn` → `t('roles.' + staff.roleKey)`
+- `AttendanceSchedule.jsx` mein 2 jagah same change (dropdown + card)
+- Ab roles sirf JSON translation files se aati hain, hardcoded nahi
 
-### 4. 🟡 Firebase Push (Automatic)
-- Dashboard.jsx mein `migrateStaff()` automatically sab staff push karta hai
-- Browser mein Dashboard kholne se Firebase update ho jayega
-
----
-
-## 📅 Recent Daily Progress (Git Commits)
-
-| Date | Commit | Status |
-|------|--------|--------|
-| 16 April 2026 | Jawad Day 2 — useStaffData.js bug fix | 🟡 Pending Commit |
-| 15 April 2026 | `7c2a051` — Jawad Soomro setup complete | ✅ Committed |
-| 14 April 2026 | `52b8774` — Dashboard update, forceSync, staff data restructure | ✅ Committed |
-| 13 April 2026 | `c5f8688` — Day completed | ✅ Committed |
-| 11 April 2026 | `925baba` — Day completed | ✅ Committed |
-| 10 April 2026 | `4aa6465` — Day completed | ✅ Committed |
-| 9 April 2026 | `7f47c3c` — Day completed | ✅ Committed |
+### 🟡 Firebase Push (Manual — Console se)
+```js
+import('/src/utils/migrateStaffToFirebase.js').then(m => window._m = m)
+window._m.pushSingleStaff(14) // Muhammad Aliyan
+window._m.pushSingleStaff(19) // Ahmed Shah
+```
 
 ---
 
-## ⚠️ PENDING KAAM (Next Session)
-
-### 🔴 Priority 1: Jawad Day 3 — Firebase Push + Final Verify
-- Staff 15 ko Firebase par **push** karna hai (`pushSingleStaff(15)`) — browser console se
-- Sab pages par verify karna hai (Teachers, Profile, Attendance)
-- Git commit karna hai
-
-### 🟡 Priority 2: Baqi Staff Setup (9 Log)
-- Staff **13** (Muhammad Kashif Attari), **14** (Ahmed Shah), **16** (Qari Kashif Junaid), **17** (Abdul Qudus), **18** (Shoaib), **19, 20, 21, 22** — sab ki details users se confirm karwa ke add karne hain
-
-### 🟡 Priority 3: Global i18n (Tarjuma)
-- Kuch pages mein abhi bhi hardcoded English/Urdu strings hain jo translation files se use nahi hore
-
----
-
-## 📊 Staff Setup Status (14/23 Done)
+## 📊 Staff Setup Status (14/22 Done)
 
 | # | Naam | Status | Salary | Type |
 |---|------|--------|--------|------|
@@ -133,9 +107,10 @@ Jawad ne **3 files** mein changes kiye:
 | 11 | Muhammad Rizwan Hussain | ✅ Live | Rs 10,000 | Regular |
 | 12 | Muhammad Dilawar Raza | ✅ Live | Rs 37,000 | Regular |
 | 13 | Jawad Soomro | ✅ Live | Rs 10,000 | Regular (2.5hrs) |
+| 14 | Muhammad Aliyan | ✅ Live | Rs 3,850 | Regular (2hrs) |
 
-### Baqi Staff (Setup Baqi Hain — 9 Log)
-Staff 14, 15, 16, 17, 18, 19, 20, 21, 22
+### Baqi Staff (Setup Baqi Hain — 8 Log)
+Staff 15, 16, 17, 18, 19, 20, 21, 22
 
 ---
 
@@ -147,3 +122,5 @@ Staff 14, 15, 16, 17, 18, 19, 20, 21, 22
 4. **Roman Urdu mein baat karo** — User Roman Urdu mein hi samajhta aur communicate karta hai
 5. **Git:** `main` branch par kaam hota hai aur client side SDK par architecture hai (serviceAccountKey exist nahi karti)
 6. **Deployment:** Netlify par deploy hota hai (`netlify.toml` config exist karti hai)
+7. **roleKey System:** Ab har staff ke paas `roleKey` field hai. UI mein `t('roles.' + staff.roleKey)` se role display hota hai — hardcoded nahi
+8. **⚠️ Dashboard Safe:** `migrateStaff()` permanently removed from Dashboard.jsx — manual push only via console
