@@ -4,9 +4,6 @@ import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { migrateStaff } from '../utils/migrateStaffToFirebase';
-
-let isSyncRunning = false;
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
@@ -14,15 +11,9 @@ const Dashboard = () => {
     // Dynamic stats from Firestore
     const [presentToday, setPresentToday] = useState('-');
 
-    // Update title + auto-sync staff to Firebase (safe upsert, no delete)
+    // Update title when language changes
     useEffect(() => {
         document.title = t('pageTitles.dashboard');
-        const syncStaff = async () => {
-            if (isSyncRunning) return;
-            isSyncRunning = true;
-            try { await migrateStaff(); } catch (e) { /* silent */ }
-        };
-        syncStaff();
     }, [t, i18n.language]);
 
     // Fetch today's attendance count (no composite index needed)
