@@ -7,6 +7,7 @@ import { db } from '../config/firebase';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import toast, { Toaster } from 'react-hot-toast';
 import useStaffData from '../hooks/useStaffData';
+import { formatTime12Hour } from '../utils/timeUtils';
 
 const MajmoohiHazri = () => {
     const { t, i18n } = useTranslation();
@@ -28,23 +29,11 @@ const MajmoohiHazri = () => {
     const [hasSearched, setHasSearched] = useState(false);
     const [loadError, setLoadError] = useState('');
 
-    // Day names for table
-    const dayNames = isRTL
-        ? ['اتوار', 'پیر', 'منگل', 'بدھ', 'جمعرات', 'جمعہ', 'ہفتہ']
-        : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    // Day names for table is now dynamic via t('clock.days')
 
     useEffect(() => {
         document.title = t('majmoohi.title');
     }, [t, i18n.language]);
-
-    // 12-hour format helper
-    const formatTime12 = (time24) => {
-        if (!time24 || time24 === '-') return '-';
-        const [hours, minutes] = time24.split(':').map(Number);
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const h12 = hours % 12 || 12;
-        return `${h12}:${minutes.toString().padStart(2, '0')} ${period}`;
-    };
 
     // Status badge styling
     const getStatusStyle = (status) => {
@@ -84,7 +73,7 @@ const MajmoohiHazri = () => {
                     ...d,
                     dateObj,
                     dateStr: dateObj.toLocaleDateString('en-GB'),
-                    dayName: dayNames[dateObj.getDay()]
+                    dayName: t(`clock.days.${dateObj.getDay()}`)
                 };
             });
 
@@ -382,12 +371,12 @@ const MajmoohiHazri = () => {
                                                     <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
                                                         {staffData[selectedStaff]?.isRemote 
                                                             ? (r.status === 'present' ? r.hoursWorked : '-') 
-                                                            : formatTime12(r.entryTime)}
+                                                            : formatTime12Hour(r.entryTime)}
                                                     </td>
                                                     <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
                                                         {staffData[selectedStaff]?.isRemote 
                                                             ? (r.status === 'present' ? r.minutesWorked : '-') 
-                                                            : formatTime12(r.exitTime)}
+                                                            : formatTime12Hour(r.exitTime)}
                                                     </td>
                                                     <td className="px-3 py-2.5 text-center">
                                                         {r.lateMinutes > 0 ? (

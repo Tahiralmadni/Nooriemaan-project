@@ -8,7 +8,7 @@ import { FileText, Calendar, Users, Search, Download, Copy, ChevronDown, ArrowLe
 import { useNavigate } from 'react-router-dom';
 import PageLoader from '../components/PageLoader';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
-import { formatTime12Hour } from './AttendanceSchedule';
+import { formatTime12Hour, formatDateString } from '../utils/timeUtils';
 import useStaffData from '../hooks/useStaffData';
 
 const AttendanceReports = () => {
@@ -87,10 +87,6 @@ const AttendanceReports = () => {
         'startLessMin', 'duringLessMin', 'endLessMin',
         'totalLessMin', 'totalOvertime', 'advanceLessMin', 'remarks'
     ];
-
-    // Day names in Urdu
-    const dayNamesUr = ['اتوار', 'پیر', 'منگل', 'بدھ', 'جمعرات', 'جمعہ', 'ہفتہ'];
-    const dayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     // Generate data for the selected month and calculate stats
     const { monthDays, stats } = useMemo(() => {
@@ -194,7 +190,7 @@ const AttendanceReports = () => {
             rows.push({
                 serial: day,
                 date: dateStr,
-                day: isRTL ? dayNamesUr[dayOfWeek] : dayNamesEn[dayOfWeek],
+                day: t(`clock.days.${dayOfWeek}`),
                 status: statusText,
                 statusRaw: record?.status || statusRaw,
                 statusClass: statusClass,

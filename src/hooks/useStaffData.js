@@ -29,8 +29,8 @@ const useStaffData = () => {
                     const totalHours = data.totalHours || 1;
                     const salary = data.salary || 0;
                     const perDaySalary = Math.round(salary / 26);
-                    const perHourSalary = Math.round(salary / 26 / totalHours);
-                    const perMinuteSalary = salary / 26 / totalHours / 60;
+                    const perHourSalary = Math.round(salary / 26 / (totalHours || 1));
+                    const perMinuteSalary = salary / 26 / (totalHours || 1) / 60;
 
                     const staffObj = {
                         ...data,

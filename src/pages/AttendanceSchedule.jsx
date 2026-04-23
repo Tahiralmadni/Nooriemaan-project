@@ -10,16 +10,9 @@ import { Link } from 'react-router-dom';
 import FontSettings, { getSavedFont } from '../components/FontSettings';
 import PageLoader from '../components/PageLoader';
 import useStaffData from '../hooks/useStaffData';
+import { formatTime12Hour } from '../utils/timeUtils';
+import { showSuccessToast, showErrorToast } from '../utils/toastUtils.jsx';
 
-
-// Helper: Convert 24-hour time to 12-hour AM/PM format
-export const formatTime12Hour = (time24) => {
-    if (!time24) return '-';
-    const [hours, minutes] = time24.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const hours12 = hours % 12 || 12; // Convert 0 to 12 for midnight, 13-23 to 1-11
-    return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
-};
 
 const AttendanceSchedule = () => {
     const { t, i18n } = useTranslation();
@@ -34,84 +27,6 @@ const AttendanceSchedule = () => {
     const { staffList, staffData, loading: staffLoading } = useStaffData();
     const [selectedStaffId, setSelectedStaffId] = useState(1);
     const staff = staffData ? staffData[selectedStaffId] : null;
-
-    // Kamyabi (Success) Toast - Professional Green Style
-    const showSuccessToast = (message) => {
-        toast.custom((t) => (
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Green Gradient
-                    color: '#fff',
-                    fontWeight: '600',
-                    padding: '16px 20px',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 40px rgba(16, 185, 129, 0.4)',
-                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
-                    fontSize: isRTL ? '16px' : '14px',
-                    direction: isRTL ? 'rtl' : 'ltr',
-                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
-                    opacity: t.visible ? 1 : 0,
-                    transition: 'all 0.3s ease-in-out',
-                    minWidth: '280px',
-                    zIndex: 99999
-                }}
-            >
-                <div className="bg-white/20 p-1.5 rounded-full flex items-center justify-center">
-                    <CheckCircle size={20} className="text-white" />
-                </div>
-                <span style={{ flex: 1 }}>{message}</span>
-                <button
-                    onClick={() => toast.dismiss(t.id)}
-                    className="text-white/70 hover:text-white transition-colors"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                    <XCircle size={20} />
-                </button>
-            </div>
-        ), { duration: 4000, position: 'top-center' });
-    };
-
-    // Error Toast - Red Style
-    const showErrorToast = (message) => {
-        toast.custom((t) => (
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', // Red Gradient
-                    color: '#fff',
-                    fontWeight: '600',
-                    padding: '16px 20px',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)',
-                    fontFamily: isRTL ? 'var(--font-urdu)' : 'var(--font-english)',
-                    fontSize: isRTL ? '16px' : '14px',
-                    direction: isRTL ? 'rtl' : 'ltr',
-                    transform: t.visible ? 'translateY(0)' : 'translateY(-20px)',
-                    opacity: t.visible ? 1 : 0,
-                    transition: 'all 0.3s ease-in-out',
-                    minWidth: '280px',
-                    zIndex: 99999
-                }}
-            >
-                <div className="bg-white/20 p-1.5 rounded-full flex items-center justify-center">
-                    <AlertCircle size={20} className="text-white" />
-                </div>
-                <span style={{ flex: 1 }}>{message}</span>
-                <button
-                    onClick={() => toast.dismiss(t.id)}
-                    className="text-white/70 hover:text-white transition-colors"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                    <XCircle size={20} />
-                </button>
-            </div>
-        ), { duration: 5000, position: 'top-center' });
-    };
 
     // Active Tab
     const [activeTab, setActiveTab] = useState('attendance');
@@ -525,7 +440,7 @@ const AttendanceSchedule = () => {
             });
 
             setSavedTime(markedTime);
-            showSuccessToast(t('hazri.validation.attendanceSaved'));
+            showSuccessToast(t('hazri.validation.attendanceSaved'), isRTL);
 
             // Last Saved Indicator — save to localStorage
             const lastSavedInfo = {
@@ -580,7 +495,7 @@ const AttendanceSchedule = () => {
                         deduction: 0
                     });
 
-                    showSuccessToast(t('common.sundayAutoSaved'));
+                    showSuccessToast(t('common.sundayAutoSaved'), isRTL);
                 }
             }
 
@@ -592,7 +507,7 @@ const AttendanceSchedule = () => {
             setMinutesWorked(0);
         } catch (error) {
             console.error('Save Error:', error);
-            showErrorToast(t('hazri.validation.saveFailed'));
+            showErrorToast(t('hazri.validation.saveFailed'), isRTL);
         }
         setIsSaving(false);
     };

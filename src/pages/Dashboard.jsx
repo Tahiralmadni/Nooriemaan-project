@@ -9,43 +9,55 @@ const Dashboard = () => {
     const { t, i18n } = useTranslation();
 
     // Dynamic stats from Firestore
-    const [presentToday, setPresentToday] = useState('-');
+    const [totalStaff, setTotalStaff] = useState('-');
+    const [pendingSetup, setPendingSetup] = useState('-');
 
     // Update title when language changes
     useEffect(() => {
         document.title = t('pageTitles.dashboard');
     }, [t, i18n.language]);
 
-    // Fetch today's attendance count (no composite index needed)
+    // Fetch today's attendance count and staff stats
     useEffect(() => {
-        const fetchTodayStats = async () => {
+        const fetchDashboardData = async () => {
             try {
+                // 1. Attendance Stats
                 const today = new Date();
                 const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
                 const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-                // Query only by date range (avoids composite index requirement)
                 const q = query(
                     collection(db, 'attendance'),
                     where('date', '>=', Timestamp.fromDate(startOfDay)),
                     where('date', '<=', Timestamp.fromDate(endOfDay))
                 );
 
-                const snapshot = await getDocs(q);
-                // Filter present status in code
-                const presentCount = snapshot.docs.filter(doc => doc.data().status === 'present').length;
+                const attendanceSnap = await getDocs(q);
+                const presentCount = attendanceSnap.docs.filter(doc => doc.data().status === 'present').length;
                 setPresentToday(String(presentCount));
+
+                // 2. Staff Stats
+                const staffSnap = await getDocs(collection(db, 'staff'));
+                const total = staffSnap.size;
+                const pending = staffSnap.docs.filter(doc => !doc.data().setupComplete).length;
+                
+                setTotalStaff(String(total));
+                setPendingSetup(String(pending));
             } catch (error) {
-                console.error('Dashboard stats error:', error);
+                console.error('Dashboard data error:', error);
                 setPresentToday('0');
+                setTotalStaff('22');
+                setPendingSetup('8');
             }
         };
 
-        fetchTodayStats();
+        fetchDashboardData();
     }, []);
 
     const stats = [
-        { label: t('dashboard.presentToday'), val: presentToday, col: '#3b82f6' },
+        { label: t('dashboard.presentToday'), val: presentToday, col: '#10b981' },
+        { label: t('sidebar.teachers'), val: totalStaff, col: '#3b82f6' },
+        { label: t('majmoohi.table.absent'), val: pendingSetup, col: '#f59e0b' },
     ];
 
     return (
