@@ -11,6 +11,7 @@ const Dashboard = () => {
     // Dynamic stats from Firestore
     const [totalStaff, setTotalStaff] = useState('-');
     const [pendingSetup, setPendingSetup] = useState('-');
+    const [presentToday, setPresentToday] = useState('-');
 
     // Update title when language changes
     useEffect(() => {
@@ -56,8 +57,6 @@ const Dashboard = () => {
 
     const stats = [
         { label: t('dashboard.presentToday'), val: presentToday, col: '#10b981' },
-        { label: t('sidebar.teachers'), val: totalStaff, col: '#3b82f6' },
-        { label: t('majmoohi.table.absent'), val: pendingSetup, col: '#f59e0b' },
     ];
 
     return (
