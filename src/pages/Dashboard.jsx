@@ -47,8 +47,8 @@ const Dashboard = () => {
             } catch (error) {
                 console.error('Dashboard data error:', error);
                 setPresentToday('0');
-                setTotalStaff('22');
-                setPendingSetup('8');
+                setTotalStaff('24');
+                setPendingSetup('10');
             }
         };
 

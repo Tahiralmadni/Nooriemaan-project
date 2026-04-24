@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { Eye, ArrowRight, ArrowLeft, Search, X } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { migrateStaff } from '../utils/migrateStaffToFirebase';
 import toast from 'react-hot-toast';
 import PageLoader from '../components/PageLoader';
 
@@ -16,6 +17,21 @@ const Teachers = () => {
     const [staffList, setStaffList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+
+    // AUTO-SYNC: Push new staff list to Firebase on first load
+    useEffect(() => {
+        const syncData = async () => {
+            const hasSynced = localStorage.getItem('staffSynced_24_april');
+            if (!hasSynced) {
+                const success = await migrateStaff();
+                if (success) {
+                    localStorage.setItem('staffSynced_24_april', 'true');
+                    fetchStaff(); // Refresh list after sync
+                }
+            }
+        };
+        syncData();
+    }, []);
 
     useEffect(() => {
         document.title = t('pageTitles.teachers');
