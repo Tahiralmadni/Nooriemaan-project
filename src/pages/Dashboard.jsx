@@ -4,9 +4,17 @@ import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { pushSingleStaff } from '../utils/migrateStaffToFirebase';
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
+
+    // Temporary Trigger for Ahmed Shah (ID 18)
+    useEffect(() => {
+        pushSingleStaff(18).then(success => {
+            if (success) console.log('Ahmed Shah (ID 18) pushed successfully!');
+        });
+    }, []);
 
     // Dynamic stats from Firestore
     const [totalStaff, setTotalStaff] = useState('-');

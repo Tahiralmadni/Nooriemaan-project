@@ -164,7 +164,20 @@
         "panchser": "پنچسر",
         "socialMediaMusaLine": "سوشل میڈیا — موسیٰ لائن",
         "mudaris": "مدرس",
+        "khadimNayabad": "خادم — نیا آباد",
         "pending": "انتظار (Setup)"
+    },
+    "branches": {
+        "all": "تمام شاخیں",
+        "jamiaTaiba": "جامعہ طیبہ",
+        "moosalane": "موسیٰ لائن",
+        "nayabad": "نیا آباد",
+        "khaddaMarket": "کھڈا مارکیٹ",
+        "bilalMasjid": "بلال مسجد",
+        "hussainabad": "حسین آباد",
+        "socialMedia": "سوشل میڈیا",
+        "attiyat": "عطیات",
+        "software": "سافٹ ویئر"
     },
     "loader": {
         "loading": "نوری ایمان ڈیجیٹل پورٹل لوڈ ہو رہا ہے...",

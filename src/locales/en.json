@@ -164,7 +164,20 @@
         "panchser": "Panchser",
         "socialMediaMusaLine": "Social Media — Musa Line",
         "mudaris": "Mudaris",
+        "khadimNayabad": "Khadim — Nayabad",
         "pending": "Pending Setup"
+    },
+    "branches": {
+        "all": "All Branches",
+        "jamiaTaiba": "Jamia Taiba",
+        "moosalane": "Mooslane",
+        "nayabad": "Nayabad",
+        "khaddaMarket": "Khadda Market",
+        "bilalMasjid": "Bilal Masjid",
+        "hussainabad": "Hussainabad",
+        "socialMedia": "Social Media",
+        "attiyat": "Attiyat",
+        "software": "Software"
     },
     "loader": {
         "loading": "Loading NooriEmaan Digital Portal...",
