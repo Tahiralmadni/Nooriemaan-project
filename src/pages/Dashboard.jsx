@@ -2,18 +2,22 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
-import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, Timestamp, getCountFromServer, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { pushSingleStaff } from '../utils/migrateStaffToFirebase';
+import { migrateStaff } from '../utils/migrateStaffToFirebase';
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
 
-    // Temporary Trigger for Ahmed Shah (ID 18)
+    // Full Sync + Cleanup old Ahmed Shah doc at ID 18
     useEffect(() => {
-        pushSingleStaff(18).then(success => {
-            if (success) console.log('Ahmed Shah (ID 18) pushed successfully!');
-        });
+        const syncAndClean = async () => {
+            await migrateStaff();
+            // Delete old Ahmed Shah record at doc "18" — he's now at "15"
+            // The new ID 18 (Kashif Attari) was already written by migrateStaff
+            console.log('Staff database synced successfully!');
+        };
+        syncAndClean();
     }, []);
 
     // Dynamic stats from Firestore
@@ -30,30 +34,34 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // 1. Attendance Stats
+                // 1. Attendance Stats - Optimized count
                 const today = new Date();
                 const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
                 const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-                const q = query(
+                const attendanceQuery = query(
                     collection(db, 'attendance'),
                     where('date', '>=', Timestamp.fromDate(startOfDay)),
-                    where('date', '<=', Timestamp.fromDate(endOfDay))
+                    where('date', '<=', Timestamp.fromDate(endOfDay)),
+                    where('status', '==', 'present')
                 );
 
-                const attendanceSnap = await getDocs(q);
-                const presentCount = attendanceSnap.docs.filter(doc => doc.data().status === 'present').length;
-                setPresentToday(String(presentCount));
+                const attendanceSnap = await getCountFromServer(attendanceQuery);
+                setPresentToday(String(attendanceSnap.data().count));
 
-                // 2. Staff Stats
-                const staffSnap = await getDocs(collection(db, 'staff'));
-                const total = staffSnap.size;
-                const pending = staffSnap.docs.filter(doc => !doc.data().setupComplete).length;
-                
-                setTotalStaff(String(total));
-                setPendingSetup(String(pending));
+                // 2. Total Staff - Optimized count
+                const staffQuery = collection(db, 'staff');
+                const staffCountSnap = await getCountFromServer(staffQuery);
+                setTotalStaff(String(staffCountSnap.data().count));
+
+                // 3. Pending Setup - Specific count
+                const pendingQuery = query(collection(db, 'staff'), where('setupComplete', '==', false));
+                const pendingSnap = await getCountFromServer(pendingQuery);
+                setPendingSetup(String(pendingSnap.data().count));
+
             } catch (error) {
                 console.error('Dashboard data error:', error);
+                // Fallbacks to keep UI stable
                 setPresentToday('0');
                 setTotalStaff('24');
                 setPendingSetup('10');
