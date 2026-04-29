@@ -51,6 +51,7 @@ const MajmoohiHazri = () => {
         setLoading(true);
         setHasSearched(true);
         setLoadError('');
+        const dayNames = t('clock.days', { returnObjects: true });
         try {
             const start = new Date(startDate);
             start.setHours(0, 0, 0, 0);
@@ -405,7 +406,7 @@ const MajmoohiHazri = () => {
                                             <td className="px-3 py-3 text-center text-slate-400" colSpan={2}>
                                                 {staffData[selectedStaff]?.isRemote ? (
                                                     <div className="flex flex-col text-[10px]">
-                                                        <span className="text-indigo-600 font-bold">{finalTotalHours}h {finalTotalMinutes}m</span>
+                                                        <span className="text-indigo-600 font-bold">{finalTotalHours}{t('hazri.hoursLabel')} {finalTotalMinutes}{t('hazri.minsLabel')}</span>
                                                         <span className="text-gray-400 font-normal">{t('majmoohi.table.totalWork')}</span>
                                                     </div>
                                                 ) : "—"}

@@ -30,9 +30,9 @@ const AttendanceReports = () => {
     const [attendanceData, setAttendanceData] = useState({});
 
 
-    // Loading screen — 5s to match progress bar
+    // Loading screen
     useEffect(() => {
-        const timer = setTimeout(() => setIsPageLoading(false), 1500);
+        const timer = setTimeout(() => setIsPageLoading(false), 300);
         return () => clearTimeout(timer);
     }, []);
 

@@ -2,23 +2,32 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import DigitalClock from '../components/DigitalClock';
-import { collection, query, where, getDocs, Timestamp, getCountFromServer, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, Timestamp, getCountFromServer } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { migrateStaff } from '../utils/migrateStaffToFirebase';
 
 const Dashboard = () => {
     const { t, i18n } = useTranslation();
 
-    // Full Sync + Cleanup old Ahmed Shah doc at ID 18
+    // Targeted Sync for Ahmed Shah (ID 15)
     useEffect(() => {
-        const syncAndClean = async () => {
-            await migrateStaff();
-            // Delete old Ahmed Shah record at doc "18" — he's now at "15"
-            // The new ID 18 (Kashif Attari) was already written by migrateStaff
-            console.log('Staff database synced successfully!');
+        const syncAhmedShah = async () => {
+            const isSynced = localStorage.getItem('ahmed_shah_id15_synced');
+            if (!isSynced) {
+                try {
+                    const { pushSingleStaff } = await import('../utils/migrateStaffToFirebase');
+                    const success = await pushSingleStaff(15);
+                    if (success) {
+                        localStorage.setItem('ahmed_shah_id15_synced', 'true');
+                        console.log('Ahmed Shah (ID 15) Synced');
+                    }
+                } catch (error) {
+                    console.error('Ahmed Shah sync failed:', error);
+                }
+            }
         };
-        syncAndClean();
+        syncAhmedShah();
     }, []);
+
 
     // Dynamic stats from Firestore
     const [totalStaff, setTotalStaff] = useState('-');

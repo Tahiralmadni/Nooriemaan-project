@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import toast from 'react-hot-toast';
-import { staffData as localStaffData } from '../utils/migrateStaffToFirebase';
 
 /**
  * Custom hook to fetch staff data from Firebase Firestore.
@@ -57,41 +56,6 @@ const useStaffData = () => {
                     }
                 });
 
-                // Hanzalah (ID 1) — merge local data to ensure isRemote, setupDate etc are correct
-                // No Firebase write here — data already synced
-                const hanzalahLocal = localStaffData[1];
-                if (hanzalahLocal) {
-                    if (!dataObj[1]) {
-                        listArr.push({
-                            id: 1,
-                            nameKey: `staff.1`,
-                            name: hanzalahLocal.nameEn,
-                            nameUr: hanzalahLocal.nameUr,
-                            nameEn: hanzalahLocal.nameEn,
-                            roleUr: hanzalahLocal.roleUr,
-                            roleEn: hanzalahLocal.roleEn,
-                        });
-                    }
-                    dataObj[1] = { ...dataObj[1], ...hanzalahLocal, id: 1 };
-                }
-
-                // Rizwan (ID 10) — merge local data to ensure timing, salary breakdowns are correct
-                const rizwanLocal = localStaffData[10];
-                if (rizwanLocal) {
-                    if (!dataObj[10]) {
-                        listArr.push({
-                            id: 10,
-                            nameKey: `staff.10`,
-                            name: rizwanLocal.nameEn,
-                            nameUr: rizwanLocal.nameUr,
-                            nameEn: rizwanLocal.nameEn,
-                            roleUr: rizwanLocal.roleUr,
-                            roleEn: rizwanLocal.roleEn,
-                        });
-                    }
-                    dataObj[10] = { ...dataObj[10], ...rizwanLocal, id: 10 };
-                }
-
                 // Sort list by ID
                 listArr.sort((a, b) => a.id - b.id);
 
@@ -99,7 +63,7 @@ const useStaffData = () => {
                 setStaffList(listArr);
             } catch (error) {
                 console.error('Error fetching staff data:', error);
-                toast.error('Failed to load staff data: ' + error.message);
+                toast.error(error.message);
             } finally {
                 setLoading(false);
             }

@@ -73,11 +73,11 @@ const AttendanceSchedule = () => {
     // Page Loading State
     const [isPageLoading, setIsPageLoading] = useState(true);
 
-    // Show loading screen for 5 seconds on mount (matches progress bar)
+    // Show loading screen briefly on mount
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsPageLoading(false);
-        }, 1500);
+        }, 300);
         return () => clearTimeout(timer);
     }, []);
 
